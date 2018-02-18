@@ -104,6 +104,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+'''
+Email settings
+'''
+EMAIL_HOST = 'smtp.gmail.com'
+DEFAULT_FROM_EMAIL = 'feedback@bmsit.in'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'feedback@bmsit.in'
+EMAIL_HOST_PASSWORD = 'Feedback@01'
+EMAIL_USE_TLS = True
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
