@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+
 class FeedbackForm(models.Model):
 	'''
 	Feedback Form: Stores the feedback form for the respective type of user
@@ -8,12 +9,12 @@ class FeedbackForm(models.Model):
 	'''
 	title = models.CharField("Form Title", max_length=50)
 	description = models.CharField("Form Description", max_length=250)
-
-	student = models.BooleanField(default=False)
-	faculty = models.BooleanField(default=False)
-	hod = models.BooleanField(default=False)
-	vice_principal = models.BooleanField(default=False)
-	principal = models.BooleanField(default=False)
+	# The type of user that is allowed to give the feedback for this form
+	user_type = models.ManyToManyField('general.UserType', help_text='Type of user that is allowed to give the feedback for this form')
+	# The code of the form
+	code = models.CharField("Form Code", max_length=2, help_text='Mandatory to enter two charachters', null=False, blank=False)
+	# The type of the user that will receive feedback through this form
+	recipient = models.ForeignKey('general.UserType', help_text='Type of user that is receiving the feedback for this form', related_name='form')
 
 	def __str__(self):
 		return self.title

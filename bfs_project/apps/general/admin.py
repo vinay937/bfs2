@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
-from .models import User, Subject, Department, Teaches
+from .models import *
 
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
@@ -12,7 +12,7 @@ class UserAdmin(DjangoUserAdmin):
 		(('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
 									   'groups', 'user_permissions')}),
 		(('Academic Details'), {'fields': ('sem', 'sec', 'elective', 'batch', 'sub_batch')}),
-		(('Designation'), {'fields': ('faculty', 'hod', 'vice_principal', 'principal', 'institution')}),
+		(('Designation'), {'fields': ('user_type', 'ug')}),
 		(('Important dates'), {'fields': ('last_login', 'date_joined')}),
 		(('Completion'), {'fields': ('partially_done', 'done')})
 	)
@@ -23,10 +23,12 @@ class UserAdmin(DjangoUserAdmin):
 		}),
 	)
 
-	list_display = ('username', 'first_name', 'last_name','faculty', 'hod', 'vice_principal', 'principal', 'institution')
+	list_display = ('username', 'first_name', 'last_name')
 	search_fields = ('email', 'first_name', 'last_name')
 	ordering = ('username',)
 
 admin.site.register(Subject)
 admin.site.register(Department)
 admin.site.register(Teaches)
+admin.site.register(Semester)
+admin.site.register(UserType)

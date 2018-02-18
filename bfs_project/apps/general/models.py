@@ -10,6 +10,26 @@ class Department(models.Model):
 	def __str__(self):
 		return self.name
 
+class Semester(models.Model):
+	'''
+	Semester: Holds the semester and section value
+	'''
+	sem = models.IntegerField(default=1)
+	active = models.BooleanField(default=True)
+
+	def __str__(self):
+		return self.sem
+
+class UserType(models.Model):
+	'''
+	UserType: We consider every recipient of a feedback as a user, if feedback has to be given
+	to a new user a new user type has to be created.
+	'''
+	name = models.CharField("Type of User", max_length=50)
+
+	def __str__(self):
+		return self.name
+
 class User(AbstractUser):
 	'''
 	User: Holds details about the user. By default the user is a Student. 
@@ -22,17 +42,15 @@ class User(AbstractUser):
 	sec = models.CharField("Section", max_length=10, null=True, blank=True)
 	department = models.ForeignKey("Department", on_delete=models.CASCADE, null=True)
 	date_of_joining = models.DateField("Date of Joining", null=True, blank=True)
+	ug = models.BooleanField(default=False)
 
 	elective = models.ManyToManyField("subject", null=True, blank=True)
 	batch = models.CharField("Lab Batch", max_length=50, null=True, blank=True)
 	sub_batch = models.CharField("Lab Sub Batch", max_length=50, null=True, blank=True)
 
-	# Below Boolean Fields denote the designation of the user
-	faculty = models.BooleanField(default=False)
-	hod = models.BooleanField(default=False)
-	vice_principal = models.BooleanField(default=False) 
-	principal = models.BooleanField(default=False)
-	institution = models.BooleanField(default=False)
+	# Below Field denotes the designation of the user
+	user_type = models.ManyToManyField('UserType')
+
 
 	# If a user abonds the feedback, partially done becomes true then 
 	# the user is restricted from giving feedback.
