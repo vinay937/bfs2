@@ -62,10 +62,6 @@ class HomeView(FormView):
 	'''
 	template_name = 'index.html'
 
-	def get_context_data(self, *args, **kwargs):
-	    context = super(HomeView, self).get_context_data(*args, **kwargs)
-	    return context
-
 	def phone_otp(self, random_otp, phone, usn):
 		'''
 		Sends OTP to phone
@@ -97,7 +93,7 @@ class HomeView(FormView):
 		email.send()
 		print('OR: ' + qs.password)
 
-	def if_admin(self, user):
+	def is_admin(self, user):
 		if user.is_superuser:
 			return HttpResponseRedirect("/login/usn=" + user.username)
 
@@ -117,7 +113,9 @@ class HomeView(FormView):
 			usn = usn.upper()
 			otp_page = otp_page + '/usn/' + usn
 			qs = User.objects.get(username=usn)
-			self.if_admin(qs) #Checks if user is admin and redirects directly
+			
+            #Checks if user is admin and redirects directly
+            self.is_admin(qs) 
 
 			# Checks if done=False
 			if not qs.done :
@@ -125,7 +123,8 @@ class HomeView(FormView):
 					# Checks if both email and phone doesn't exist
 					if not qs.email and not qs.phone:
 						context["error_msg"] =  "Contact details incomplete. Contact coordinator"
-					# Checks if both email and phone exist
+					
+                    # Checks if both email and phone exist
 					elif qs.email and qs.phone:
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
