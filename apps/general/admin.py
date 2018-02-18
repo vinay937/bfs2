@@ -7,7 +7,7 @@ from .models import *
 class UserAdmin(DjangoUserAdmin):
 
 	fieldsets = (
-		(None, {'fields': ('email', 'password')}),
+		(None, {'fields': ('username', 'email', 'password')}),
 		(('Personal info'), {'fields': ('first_name', 'last_name', 'phone', 'department', 'date_of_joining')}),
 		(('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser',
 									   'groups', 'user_permissions')}),
