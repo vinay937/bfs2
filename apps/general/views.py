@@ -114,17 +114,17 @@ class HomeView(FormView):
 			otp_page = otp_page + '/usn/' + usn
 			qs = User.objects.get(username=usn)
 			
-            #Checks if user is admin and redirects directly
-            self.is_admin(qs) 
+			#Checks if user is admin and redirects directly
+			self.is_admin(qs) 
 
 			# Checks if done=False
 			if not qs.done :
 				if qs:
 					# Checks if both email and phone doesn't exist
 					if not qs.email and not qs.phone:
-						context["error_msg"] =  "Contact details incomplete. Contact coordinator"
+						messages.error(request, "Contact details incomplete. Contact coordinator")
 					
-                    # Checks if both email and phone exist
+					# Checks if both email and phone exist
 					elif qs.email and qs.phone:
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
