@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 '''
 Copyright 2017 DevX Labs
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -717,5 +716,3 @@ class MainView(TemplateView):
 # 		context['percent'] = ((146 - count)/146)*100
 # 		context['count'] = count
 # 		return render(request, self.template_name, context)
-=======
->>>>>>> 686eddecdeaa73c62098e0ba6a398dce9305287d

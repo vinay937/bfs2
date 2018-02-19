@@ -23,7 +23,7 @@ from apps.feedback.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^feedback/', include('apps.feedback.urls'))
+    url(r'^feedback/', include('apps.feedback.urls')),
 
     url(r'^$', HomeView.as_view()),
 
