@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 '''
 Copyright 2017 DevX Labs
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -109,10 +108,11 @@ class MainView(TemplateView):
 		if self.is_faculty(self.user_types) and not self.is_hod(self.user_types):
 			self._faculty_mandatory()
 
-		# if the hod is faculty remove the faculty mandatory form and only work on
-		# hods mandatory form
-		if self.is_hod(self.user_types) and  self.is_faculty(self.user_types):
-			self.forms.exclude(code="FF")
+		if self.is_hod(self.user_types):
+			# faculty mandatory forms are not required, so removed them
+			if self.is_faculty(self.user_types):
+				self.forms.exclude(code="FF")
+				
 			self._hod_mandatory()
 
 		for form in self.forms:
@@ -717,5 +717,3 @@ class MainView(TemplateView):
 # 		context['percent'] = ((146 - count)/146)*100
 # 		context['count'] = count
 # 		return render(request, self.template_name, context)
-=======
->>>>>>> 686eddecdeaa73c62098e0ba6a398dce9305287d

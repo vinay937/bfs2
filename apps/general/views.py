@@ -24,9 +24,11 @@ from django.views import View
 from django.views.generic import TemplateView, FormView
 from django.core.urlresolvers import resolve
 from django.contrib.auth import logout
-from django.contrib.auth.forms import AuthenticationForm
+
 from .models import User
-from django import forms
+from apps.feedback.models import FeedbackForm
+
+from apps.feedback.forms import FeedbackAnswerForm
 
 from django.contrib.auth.hashers import make_password, check_password
 import random
@@ -185,6 +187,100 @@ def get_rating_view(request):
 	return render(request, template_name, context)
 
 
+
+class MainView(TemplateView):
+	'''
+	Checks for the type of user and renders the count and users of their mandatory
+	forms. 
+	All the other individual forms are generated subsequently
+
+	Passing the following to the variabes to the session
+	`faclties` - if the user is a faculty, a list of all the faculties of 
+		same department except the the user is stored 
+	`hods` - if the user is hod, a list all the hods from different departments
+		 are stored
+	`count` - it is the total no of forms that the user needs to give feedback for.
+		ie, for a faculty no. of collegues + no of individual forms
+
+	TODO:// 
+		1 - Move this to general `views.py` . Doesn't belong here
+		2 - Add student check
+	'''
+	template_name = ""
+	form_class = FeedbackAnswerForm
+	user_type = None
+
+	def is_faculty(self, user_type):
+		faculty = UserType.objects.get(name="Faculty")
+		if faculty in user_type:
+			self.user_type = faculty
+			return True
+		return False
+
+	def is_hod(self, user_type):
+		hod = UserType.objects.get(name="HOD")
+		if hod in user_type:
+			self.user_type = hod
+			return True
+		return False
+
+	def _faculty_mandatory(self):
+		"""
+		This is a compulsory form for the faculty where they give the 
+		feedack to he other faculties
+		"""
+
+		# if the hod is also a faculty, he should be removed form the `faculties` list
+		hod = UserType.objects.get(name="HOD")
+
+		faculties = get_user_model().objects.filter(department=self.user.department,
+			user_type__in=self.user_types).exclude(pk=self.user.pk, user_type__in=[hod,])
+
+		self.request.session['faculties'] = faculties
+		self.request.session['count'] = faculties.count()
+
+		# remove the form as it is already counted
+		self.forms.exclude(code="FF")
+		
+		return
+
+	def _hod_mandatory(self):
+		"""
+		Compulsory form for HOD where they give feedback to the department HODs
+		"""
+		hods = get_user_model().objects.filter(user_type__in=self.user_types).exclude(pk=self.user.pk)
+		
+		self.request.session['hods'] = hods
+		self.request.session['count'] = hods.count()
+
+		# remove the form as it is already counted
+		self.forms.exclude(code="HH")
+		
+		return
+
+	def get_context_data(self, **kwargs):
+		context = super(MainView, self).get_context_data(**kwargs)
+		self.user = self.request.user
+		self.user_types = self.user.user_type.all()
+		self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+
+		# if the user is hod as well as faculty, faculties mandatory forms shouldn't 
+		# be displayed
+		if self.is_faculty(self.user_types) and not self.is_hod(self.user_types):
+			self._faculty_mandatory()
+
+		if self.is_hod(self.user_types):
+			# faculty mandatory forms are not required, so removed them
+			if self.is_faculty(self.user_types):
+				self.forms.exclude(code="FF")
+				
+			self._hod_mandatory()
+
+		for form in self.forms:
+			self.request.session['count'] += 1
+		
+		return context
+
 # @login_required(login_url='/signin/')
 # def main_view(request):
 # 	'''
@@ -341,15 +437,6 @@ def get_rating_view(request):
 # 	context = {"total" : total_done}
 # 	return render(request, template_name, context)
 
-
-# class LoginForm1(AuthenticationForm):
-# 	'''
-# 	Form for taking USN and password
-# 	'''
-# 	username = forms.CharField(label="usn", max_length=30,
-# 							   widget=forms.TextInput(attrs={'class': 'form-control', 'name': 'usn1', 'id': 'usn','placeholder': 'Enter USN'}))
-# 	password = forms.CharField(label="Password", max_length=30,
-# 							   widget=forms.PasswordInput(attrs={'class': 'form-control', 'name': 'otp', 'id': 'otp', 'placeholder': 'Enter OTP'}))
 
 
 # def done_cron(request, dept_name):
