@@ -23,10 +23,8 @@ from apps.feedback.views import *
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-<<<<<<< HEAD
     url(r'^feedback/', include('apps.feedback.urls'))
-=======
+
     url(r'^$', HomeView.as_view()),
 
->>>>>>> 686eddecdeaa73c62098e0ba6a398dce9305287d
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
