@@ -717,3 +717,4 @@ class MainView(TemplateView):
 # 		context['percent'] = ((146 - count)/146)*100
 # 		context['count'] = count
 # 		return render(request, self.template_name, context)
+

@@ -11,411 +11,374 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 <head>
-
-<title>Login | BFS</title>
-
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Login | BFS</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/mdb.css' %}" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=PT+Sans:700" rel="stylesheet">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/EasePack.min.js"></script>
+    <script src="https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/rAF.js"></script>
+    <script src="https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/TweenLite.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script type="application/x-javascript"> addEventListener("load", function() { setTimeout(hideURLbar, 0); }, false); function hideURLbar(){ window.scrollTo(0,1); } </script>
-
-<link rel="stylesheet" href="css/style.css"     type="text/css" media="all">
-<link rel="stylesheet" href="css/jquery-ui.css" type="text/css" media="all">
-
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" type="text/css" media="all">
-<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700"             type="text/css" media="all">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/demo.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/component.css' %}" />
+    <script src="{% static 'js/snap.svg-min.js' %}"></script>
 <style>
-html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,dl,dt,dd,ol,nav ul,nav li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{margin:0;padding:0;border:0;font-size:100%;font:inherit;vertical-align:baseline;}
-article, aside, details, figcaption, figure,footer, header, hgroup, menu, nav, section {display: block;}
-ol,ul{list-style:none;padding:0;margin:0;}
-blockquote,q{quotes:none;}
-blockquote:before,blockquote:after,q:before,q:after{content:'';content:none;}
-table{border-collapse:collapse;border-spacing:0;}
-a{text-decoration:none;}
-.txt-rt{text-align:right;}
-.txt-lt{text-align:left;}
-.txt-center{text-align:center;}
-/*-- w3layouts --*/
-/*-- agileits --*/
-.float-rt{float:right;}
-.float-lt{float:left;}
-.clear{clear:both;}
-.pos-relative{position:relative;}
-.pos-absolute{position:absolute;}
-.vertical-base{vertical-align:baseline;}
-.vertical-top{vertical-align:top;}
-.underline{ padding-bottom:5px; border-bottom:1px solid #eee;margin:0 0 20px 0;}
-nav.vertical ul li{display:block;}
-nav.horizontal ul li{display: inline-block;}
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
+/* Header */
+input:focus {
+    outline:none;
 }
+::placeholder { /* Most modern browsers support this now. */
+   color:    #e5e5e5;
+}
+body{
+    position: relative;
+    width: 100%;
+    background: #333;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center center;
+}
+
 body {
-    font-family: 'Roboto', sans-serif;
+    background-image: url('../static/img/sky.jpg');
+}
+
+.main-title {
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    color: #f9f1e9;
     text-align: center;
-    background-image: url('../static/img/bg02.jpg');
-    background-size:100%;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate3d(-50%,-50%,0);
+    transform: translate3d(-50%,-50%,0);
 }
-body a, body a:hover, input[type="button"], input[type="submit"], input[type="submit"]:hover {
-    transition: 0.5s all;
-    -webkit-transition: 0.5s all;
-    -moz-transition: 0.5s all;
-    /*-- w3layouts --*/
-    /*-- agileits --*/
-    -o-transition: 0.5s all;
-    -ms-transition: 0.5s all;
-    text-decoration: none;
+
+.main-title {
+    text-transform: uppercase;
 }
-.alert {
-    padding: 20px;
-    background-color: #5a945b;
-    color: white;
-    opacity: 1;
-    transition: opacity 0.6s;
-    margin-bottom: 15px;
-    text-align: center;
+
+.main-title .thin {
+    font-weight: 200;
 }
-h1 {
-    font-size: 50px;
-    margin: 50px 0;
-    color: #FFF;
+
+@media only screen and (max-width : 768px) {
+    .main-title {
+        font-size: 3em;
+    }
 }
-p {
-    padding-top:-5%;
+#earth {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  margin: 3em auto;
+  background: url(../static/img/earthmap.jpg) 0 0 repeat;
+  border-radius: 50%;
+  border:1px solid #9ecaed;
+  background-size: 630px;
+  animation: rotate 8s linear infinite;
+  transition: transform 200ms linear;
+  transform-style: preserve-3d;
+  box-shadow: inset 20px 0 80px 6px rgba(0, 0, 0, 1);
+  color: #000;
+  box-shadow: 0 0 30px 3px #9ecaed;
 }
-.containerw3layouts-agileits {
-    width: 50% ; 
-    margin: 0 auto;
-    background-color: #003471;
-    color:white;
+
+#earth:after {
+  content: "";
+  position: absolute;
+  top: 0%;
+  left: 0%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: -80px 15px 80px 10px rgba(0,0,0,.9) inset;
 }
-.w3imageaits, .aitsloginwthree {
-    width: 50%;
-    float: left;
+
+#earth:before {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0.2;
+  background: radial-gradient(circle at 100px 100px, #fff, #000);
 }
-.w3imageaits img.user {
-    width: 110px;
-    margin: 100px 0;
+@keyframes rotate {
+  0% {background-position: 0 0;}
+  100% {background-position: 630px 0;}
 }
-img.user {
-    margin-top: 50px !important;
+.signin {
+    background-color:rgba(229,229,229,0) !important;
+    color:#e5e5e5;
+    width:40%;
 }
-h2 {
-    font-size: 25px;
-    margin-top: -45px;
-}
-.w3imageaits p {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 15px;
-}
-.aitsloginwthree {
-    background-color: #FFF;
-    padding-top: 19%;
-    padding-bottom: 10%;
-}
-input[type="text"], input.fill.email, input[type="password"], input.fill.tel, input#datepicker1 {
-    padding: 7px 0;
-    width: 90%;
-    border: none;
-    border-bottom: 1px solid #777;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
-    color: #333;
-    outline: none;
-    margin-bottom: 20px;
-}
-.send-button {
-    margin-bottom: 30px;
-}
-input[type="submit"] {
-    padding: 10px 30px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 15px;
-    border: none;
-    outline: none;
-    border-radius: 3px;
-    background-color: #E91E63;
-    color: #fff;
-    cursor: pointer;
+.signin:hover {
+    background-color: white !important;
 }
 .help {
-    padding: 10px 30px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
-    border: none;
-    outline: none;
-    border-radius: 3px;
-    background-color: #E91E63;
-    color: #fff;
-    cursor: pointer;
+    background-color:rgba(229,229,229,0) !important;
+    color:#e5e5e5;
+    margin-left:2%;
+    width:52%;
 }
-input[type="submit"]:hover {
-    color: #FFF;
-    background-color: #009688;
-}
-@media screen and (max-width: 1920px) {
-    h1 {
-        margin: 100px 0;
-    }
-    .containerw3layouts-agileits {
-        width: 41.6%;
-    }
-    .w3lsfooteragileits {
-        margin-top: 200px;
-        /*-- w3-agile --*/
-        /*-- agileits --*/
-    }
-}
-@media screen and (max-width: 1680px) {
-    .containerw3layouts-agileits {
-        width: 47.6%;
-    }
-}
-@media screen and (max-width: 1600px) {
-    h1 {
-        margin: 50px 0;
-    }
-    .containerw3layouts-agileits {
-        width: 49.9%;
-        /*-- w3-agile --*/
-        /*-- agileits --*/
-    }
-    .w3lsfooteragileits {
-        margin-top: 100px;
-    }
-}
-@media screen and (max-width: 1440px) {
-    .containerw3layouts-agileits {
-        width: 55.5%;
-    }
-}
-@media screen and (max-width: 1366px) {
-    .containerw3layouts-agileits {
-        width: 58.5%;
-    }
-}
-@media screen and (max-width: 1280px) {
-    .containerw3layouts-agileits {
-        width: 62.4%;
-    }
-}
-@media screen and (max-width: 1080px) {
-    h1 {
-        font-size: 40px; 
-        margin: 50px 0;
-    }
-    .containerw3layouts-agileits {
-        width: 74%;
-    }
-}
-@media screen and (max-width: 1024px) {
-    .containerw3layouts-agileits {
-        width: 78%;
-    }
-}
-@media screen and (max-width: 991px) {
-    .containerw3layouts-agileits {
-        width: 80.6%;
-    }
-}
-@media screen and (max-width: 966px) {
-    .containerw3layouts-agileits {
-        width: 84.1%;
-    }
-}
-@media screen and (max-width: 900px) {
-    h1 {
-        /*-- w3layouts --*/
-        /*-- w3-agileits --*/
-        margin: 40px 0;
-    }
-    .containerw3layouts-agileits {
-        width: 90.6%;
-    }
-    .w3lsfooteragileits {
-        margin-top: 50px;
-    }
-}
-@media screen and (max-width: 853px) {
-    .containerw3layouts-agileits {
-        width: 95.6%;
-    }
-}
-@media screen and (max-width: 667px) {
-    .w3imageaits p {
-        font-size: 14px;
-    }
-}
-@media screen and (max-width: 640px) {
-    h1 {
-        font-size: 35px;
-        margin: 35px 0;
-    }
-    .containerw3layouts-agileits {
-        width: 65%;
-        background-color: #68061e;
-    }
-    .w3imageaits, .aitsloginwthree {
-        width: 100%;
-    }
-    .w3imageaits img.user {
-        margin: 25px 0;
-        width: 80px;
-    }
-    .w3imageaits p {
-        padding-bottom: 30px;
-    }
-    input[type="submit"] {
-        padding: 8px 30px;
-        font-size: 14px;
-    }
-}
-@media screen and (max-width: 533px) {
-    .w3lsfooteragileits p {
-        font-size: 14px;
-        background-color: #68061e;
-    }
-    .alert {
-        background-color: #003471;
-    }
-}
-@media screen and (max-width: 480px) {
-    h1 {
-        font-size: 30px;
-        margin: 30px 0;
-    }
-    .containerw3layouts-agileits {
-        width: 75%;
-        background-color: #68061e;
-    }
-    .alert {
-        background-color: #003471;
-    }
-}
-@media screen and (max-width: 414px) {
-    .containerw3layouts-agileits {
-        width: 90%;
-        background-color: #68061e;
-    }
-    .drinkcard-cc {
-        width: 35px;
-        height: 35px;
-    }
-    .alert {
-        background-color: #003471;
-    }
-}
-@media screen and (max-width: 384px) {
-    h1 {
-        font-size: 28px;
-    }
-}
-@media screen and (max-width: 320px) {
-    h1 {
-        font-size: 24px;
-    }
-    h2 {
-        font-size: 22px;
-        margin-bottom: 15px;
-    }
-}
-footer {
-    background: #68061e !important;   
-}
-.send-button {
-    margin-top: 10% !important;
-}
-form {
-    margin-top: -10% !important;
-}
-h5 {
-    padding-bottom: 1%;
-}
-.containerw3layouts-agileits {
-    margin-top: 7%;
-}
+.help:hover {
+    background-color: #ed5588 !important;
+    border:1px solid #ed5588;
+    color:white;
+} 
 </style>
 </head>
-
-<body>
-    {% for message in messages %}
-            <div class="alert">
-                <strong>{{ message }}</strong>
-            </div>
-        {% endfor %}
-    <h1></h1>
-    <div class="containerw3layouts-agileits">
-
-        <div class="w3imageaits">
-            <img class="user" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png" alt="Custom Signup Form">
-            <br><br><br><br>
-            <h2>BMSIT FEEDBACK SYSTEM</h2><br>
-            <!--p>Please login to continue</p-->
+<div style="position:relative;" class="col-md-12" id="large-header">
+<div class="col-md-4" style="margin-top:13%;z-index:100;position:absolute;" id="earth"></div>
+<h1 style="margin-left:-4%;z-index:100;" class="col-md-4 main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#4ca64c;" class="thin">360</span></h1>
+<div class="col-md-4 aitsloginwthree w3layouts agileits" style="margin-top:15%;padding-top:10%;padding-bottom:1%;float:right;background-color: rgba(250,250,250, 0.3);z-index:1000;border-radius:5%;">
+    <div style="left:0;top:3%;position: absolute;" class="col-md-4">
+    <img style="padding:10%;" width="100" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"></div>
+    <div style="top:3%;left:27%;position:absolute;padding:2%;" class="col-md-8">
+    <h3 style="color:#e5e5e5;text-align: center;">BMS INSTITUTE OF TECHNOLOGY</h3>
+</div>
+    <form style="margin-left:3%;margin-top:3%;" action="#" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
+        <input style="color:white;background:none;border:none;border-bottom:1px solid #e5e5e5;margin-bottom:2%;width:93%;font-size:120%;" type="text" name="usn1" id="usn" placeholder="Enter USN">
+        <div style="margin-top:2%;" class="send-button wthree agileits">
+            <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
+            <a class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Need Help?</a>
+            <p style="padding-top: 10%;"><a style="color:#e5e5e5;text-decoration:underline;" href="https://docs.google.com/spreadsheets/d/1G3tACUwyzig8I-8X6jw8LEh27Wu1rP4Dd_do5zL_M-M/edit#gid=0" target="blank">List of USN for 1st year students</a></p>
         </div>
-
-        <div class="aitsloginwthree w3layouts agileits">
-            <form action="#" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
-                <input style="font-size:120%;" type="text" name="usn1" id="usn" placeholder="Enter USN">
-                <div class="send-button wthree agileits">
-                    <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
-                    <a class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Need Help?</a>
-                    <p style="padding-top: 10%;"><a href="https://docs.google.com/spreadsheets/d/1G3tACUwyzig8I-8X6jw8LEh27Wu1rP4Dd_do5zL_M-M/edit#gid=0" target="blank">List of USN for 1st year students</a></p>
-                </div>
-            </form>
-            <!--h1 style="margin-top:-10%; font-size:200%; color:black;">The Feedback Session is now closed.</h1>
-            <p style="color:black;"> Thanks for coming!</p-->
-        </div>
-
-        <div class="clear"></div>
-
-    </div>
-    <footer class="page-footer fixed-bottom center-on-small-only footer-main">
+    </form>
+</div>
+<canvas style="position:absolute;z-index:-100;" id="demo-canvas"></canvas>
+</div>
+<footer style="position:fixed;bottom:0;" class="page-footer fixed-bottom center-on-small-only footer-main">
         <div class="container-fluid">
-            <h5><strong><center>A product by<a href="https://infoniumlabs.site" target="blank"> DevX<img id="logo" src="{% static 'img/logo2.png' %}" style="width:50px; vertical-align: middle; margin-top: -5px;"></a></center></strong></h5>
+            <h5><strong><center><span style="color:white;">A product by</span><a style="color:#ffc05b;" href="https://infoniumlabs.site" target="blank"> DevX<img id="logo" src="{% static 'img/logo2.png' %}" style="width:50px; vertical-align: middle; margin-top: -5px;"></a></center></strong></h5>
         </div>
     </footer>
+<div id="loader" class="pageload-overlay" data-opening="M20,15 50,30 50,30 30,30 Z;M0,0 80,0 50,30 20,45 Z;M0,0 80,0 60,45 0,60 Z;M0,0 80,0 80,60 0,60 Z" data-closing="M0,0 80,0 60,45 0,60 Z;M0,0 80,0 50,30 20,45 Z;M20,15 50,30 50,30 30,30 Z;M30,30 50,30 50,30 30,30 Z">
+    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 80 60" preserveAspectRatio="none">
+        <path d="M30,30 50,30 50,30 30,30 Z"/>
+    </svg>
+</div>
+<script src="{% static 'js/classie.js' %}"></script>
+<script src="{% static 'js/svgLoader.js' %}"></script>
+<script>
+    (function() {
 
-    <div class="modal fade" id="cbModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>
-    <div class="modal-body">
-    <iframe src="https://goo.gl/forms/tSlNVC31lu8pQ5013" frameborder="0" onmousewheel="" width="100%" height="1072" style="background: transparent;"></iframe>
-    </div>
-    </div>
-    </div>
-    </div>
-    <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
-    <script type="text/javascript" src="js/popper.min.js"></script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/mdb.min.js"></script>
-    <script>
-        $(document).ready(function(){
-            $("#usn").keyup(function(){
-                $("#usn").val($("#usn").val().toUpperCase());
-            });
-        });
-    </script>
-    <script>
-    function checkForm(form)
-    {
-        form.myButton.disabled = true;
-        form.myButton.value = "Please Wait..."
-        return true;
+    var width, height, largeHeader, canvas, ctx, points, target, animateHeader = true;
+
+    // Main
+    initHeader();
+    initAnimation();
+    addListeners();
+
+    function initHeader() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        target = {x: width/2, y: height/2};
+
+        largeHeader = document.getElementById('large-header');
+        largeHeader.style.height = height+'px';
+
+        canvas = document.getElementById('demo-canvas');
+        canvas.width = width;
+        canvas.height = height;
+        ctx = canvas.getContext('2d');
+
+        // create points
+        points = [];
+        for(var x = 0; x < width; x = x + width/20) {
+            for(var y = 0; y < height; y = y + height/20) {
+                var px = x + Math.random()*width/20;
+                var py = y + Math.random()*height/20;
+                var p = {x: px, originX: px, y: py, originY: py };
+                points.push(p);
+            }
+        }
+
+        // for each point find the 5 closest points
+        for(var i = 0; i < points.length; i++) {
+            var closest = [];
+            var p1 = points[i];
+            for(var j = 0; j < points.length; j++) {
+                var p2 = points[j]
+                if(!(p1 == p2)) {
+                    var placed = false;
+                    for(var k = 0; k < 5; k++) {
+                        if(!placed) {
+                            if(closest[k] == undefined) {
+                                closest[k] = p2;
+                                placed = true;
+                            }
+                        }
+                    }
+
+                    for(var k = 0; k < 5; k++) {
+                        if(!placed) {
+                            if(getDistance(p1, p2) < getDistance(p1, closest[k])) {
+                                closest[k] = p2;
+                                placed = true;
+                            }
+                        }
+                    }
+                }
+            }
+            p1.closest = closest;
+        }
+
+        // assign a circle to each point
+        for(var i in points) {
+            var c = new Circle(points[i], 2+Math.random()*2, 'rgba(255,255,255,0.3)');
+            points[i].circle = c;
+        }
     }
+
+    // Event handling
+    function addListeners() {
+        if(!('ontouchstart' in window)) {
+            window.addEventListener('mousemove', mouseMove);
+        }
+        window.addEventListener('scroll', scrollCheck);
+        window.addEventListener('resize', resize);
+    }
+
+    function mouseMove(e) {
+        var posx = posy = 0;
+        if (e.pageX || e.pageY) {
+            posx = e.pageX;
+            posy = e.pageY;
+        }
+        else if (e.clientX || e.clientY)    {
+            posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+            posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+        }
+        target.x = posx;
+        target.y = posy;
+    }
+
+    function scrollCheck() {
+        if(document.body.scrollTop > height) animateHeader = false;
+        else animateHeader = true;
+    }
+
+    function resize() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        largeHeader.style.height = height+'px';
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    // animation
+    function initAnimation() {
+        animate();
+        for(var i in points) {
+            shiftPoint(points[i]);
+        }
+    }
+
+    function animate() {
+        if(animateHeader) {
+            ctx.clearRect(0,0,width,height);
+            for(var i in points) {
+                // detect points in range
+                if(Math.abs(getDistance(target, points[i])) < 4000) {
+                    points[i].active = 0.3;
+                    points[i].circle.active = 0.6;
+                } else if(Math.abs(getDistance(target, points[i])) < 20000) {
+                    points[i].active = 0.1;
+                    points[i].circle.active = 0.3;
+                } else if(Math.abs(getDistance(target, points[i])) < 40000) {
+                    points[i].active = 0.02;
+                    points[i].circle.active = 0.1;
+                } else {
+                    points[i].active = 0;
+                    points[i].circle.active = 0;
+                }
+
+                drawLines(points[i]);
+                points[i].circle.draw();
+            }
+        }
+        requestAnimationFrame(animate);
+    }
+
+    function shiftPoint(p) {
+        TweenLite.to(p, 1+1*Math.random(), {x:p.originX-50+Math.random()*100,
+            y: p.originY-50+Math.random()*100, ease:Circ.easeInOut,
+            onComplete: function() {
+                shiftPoint(p);
+            }});
+    }
+
+    // Canvas manipulation
+    function drawLines(p) {
+        if(!p.active) return;
+        for(var i in p.closest) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p.closest[i].x, p.closest[i].y);
+            ctx.strokeStyle = 'rgba(156,217,249,'+ p.active+')';
+            ctx.stroke();
+        }
+    }
+
+    function Circle(pos,rad,color) {
+        var _this = this;
+
+        // constructor
+        (function() {
+            _this.pos = pos || null;
+            _this.radius = rad || null;
+            _this.color = color || null;
+        })();
+
+        this.draw = function() {
+            if(!_this.active) return;
+            ctx.beginPath();
+            ctx.arc(_this.pos.x, _this.pos.y, _this.radius, 0, 2 * Math.PI, false);
+            ctx.fillStyle = 'rgba(156,217,249,'+ _this.active+')';
+            ctx.fill();
+        };
+    }
+
+    // Util
+    function getDistance(p1, p2) {
+        return Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+    }
+    
+})();
     </script>
-</body>
-</html>
+    <script>
+            (function() {
+                var pageWrap = document.getElementById( 'pagewrap' ),
+                    pages = [].slice.call( pageWrap.querySelectorAll( 'div.container' ) ),
+                    currentPage = 0,
+                    triggerLoading = [].slice.call( pageWrap.querySelectorAll( 'a.pageload-link' ) ),
+                    loader = new SVGLoader( document.getElementById( 'loader' ), { speedIn : 100 } );
+
+                function init() {
+                    triggerLoading.forEach( function( trigger ) {
+                        trigger.addEventListener( 'click', function( ev ) {
+                            ev.preventDefault();
+                            loader.show();
+                            // after some time hide loader
+                            setTimeout( function() {
+                                loader.hide();
+
+                                classie.removeClass( pages[ currentPage ], 'show' );
+                                // update..
+                                currentPage = currentPage ? 0 : 1;
+                                classie.addClass( pages[ currentPage ], 'show' );
+
+                            }, 2000 );
+                        } );
+                    } );    
+                }
+
+                init();
+            })();
+        </script>
