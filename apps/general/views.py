@@ -16,6 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.contrib.auth import get_user_model
 
 import json
 import csv
@@ -210,16 +211,16 @@ class MainView(TemplateView):
 	form_class = FeedbackAnswerForm
 	user_type = None
 
-	def is_faculty(self, user_type):
+	def is_faculty(self):
 		faculty = UserType.objects.get(name="Faculty")
-		if faculty in user_type:
+		if faculty in self.user_types:
 			self.user_type = faculty
 			return True
 		return False
 
-	def is_hod(self, user_type):
-		hod = UserType.objects.get(name="HOD")
-		if hod in user_type:
+	def is_hod(self):
+		hod = UserType.objects.get(name="Hod")
+		if hod in self.user_types:
 			self.user_type = hod
 			return True
 		return False
@@ -231,16 +232,17 @@ class MainView(TemplateView):
 		"""
 
 		# if the hod is also a faculty, he should be removed form the `faculties` list
-		hod = UserType.objects.get(name="HOD")
+		hod = UserType.objects.get(name="Hod")
 
 		faculties = get_user_model().objects.filter(department=self.user.department,
 			user_type__in=self.user_types).exclude(pk=self.user.pk, user_type__in=[hod,])
 
+		print(faculties)
 		self.request.session['faculties'] = faculties
 		self.request.session['count'] = faculties.count()
 
 		# remove the form as it is already counted
-		self.forms.exclude(code="FF")
+		self.forms = self.forms.exclude(code="FF")
 		
 		return
 
@@ -248,13 +250,14 @@ class MainView(TemplateView):
 		"""
 		Compulsory form for HOD where they give feedback to the department HODs
 		"""
+		faculty = UserType.objects.get(name="Faculty")
 		hods = get_user_model().objects.filter(user_type__in=self.user_types).exclude(pk=self.user.pk)
 		
 		self.request.session['hods'] = hods
 		self.request.session['count'] = hods.count()
-
+		print(hods)
 		# remove the form as it is already counted
-		self.forms.exclude(code="HH")
+		self.forms = self.forms.exclude(code="HH")
 		
 		return
 
@@ -262,22 +265,26 @@ class MainView(TemplateView):
 		context = super(MainView, self).get_context_data(**kwargs)
 		self.user = self.request.user
 		self.user_types = self.user.user_type.all()
-		self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+		
 
 		# if the user is hod as well as faculty, faculties mandatory forms shouldn't 
 		# be displayed
-		if self.is_faculty(self.user_types) and not self.is_hod(self.user_types):
+		if self.is_faculty() and not self.is_hod():
+			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 			self._faculty_mandatory()
 
-		if self.is_hod(self.user_types):
+		if self.is_hod():
 			# faculty mandatory forms are not required, so removed them
-			if self.is_faculty(self.user_types):
-				self.forms.exclude(code="FF")
-				
+			faculty = UserType.objects.get(name="Faculty")
+
+			self.user_types = self.user_types.exclude(name="Faculty")
+			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+			
 			self._hod_mandatory()
 
 		for form in self.forms:
 			self.request.session['count'] += 1
+		print(self.forms)
 		
 		return context
 
