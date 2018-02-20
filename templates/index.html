@@ -458,7 +458,7 @@ li {
     </form>
 </div>
 <canvas style="position:absolute;z-index:-100;" id="demo-canvas"></canvas>
-<div class="popup-box chat-popup" id="qnimate">
+<div style="z-index:100;" class="popup-box chat-popup" id="qnimate">
               <div class="popup-head">
                 <div class="popup-head-left pull-left"><img src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg" alt="iamgurdeeposahan"></div>
                       <div class="popup-head-right pull-right">
@@ -519,8 +519,7 @@ li {
                 </div>
             </div>
             <div class="popup-messages-footer">
-            <textarea id="status_message" placeholder="Type a message..." rows="10" cols="40" name="message">
-            </textarea>
+            <input style="z-index:100;" id="status_message" placeholder="Type a message..." name="message">
 
             <div class="btn-footer">
             <button class="bg_none pull-right"><i class="glyphicon glyphicon-thumbs-up"></i></button>
