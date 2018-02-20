@@ -26,5 +26,10 @@ urlpatterns = [
     url(r'^', include('apps.feedback.urls')),
     url(r'^', include('apps.general.urls')),
     url(r'^$', HomeView.as_view()),
+    url(
+        r'^chatterbot/',
+        include('apps.django_chatterbot.urls',
+        namespace='chatterbot')
+    ),
 
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
