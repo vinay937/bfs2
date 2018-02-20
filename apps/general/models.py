@@ -57,6 +57,17 @@ class User(AbstractUser):
 	partially_done = models.BooleanField(default=False)
 	done = models.BooleanField(default=False)
 
+	def is_faculty(self):
+		faculty = UserType.objects.get(name="Faculty")
+		if faculty in self.user_type.all():
+			return True
+		return False
+
+	def is_hod(self):
+		hod = UserType.objects.get(name="Hod")
+		if hod in self.user_type.all():
+			return True
+		return False
 
 class Subject(models.Model):
 	'''

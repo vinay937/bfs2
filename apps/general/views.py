@@ -17,6 +17,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
+from django.core import serializers
 
 import json
 import csv
@@ -91,7 +92,7 @@ class HomeView(FormView):
 					'Feedback OTP',
 					'Hi,' + qs.first_name + '\n\n' +'Your OTP for feedback is:' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedback@bmsit.in>',
-					[qs.email],
+					['aayush@bmsit.in',],
 					)
 		email.send()
 		print('OR: ' + qs.password)
@@ -115,13 +116,13 @@ class HomeView(FormView):
 			usn = request.POST.get("usn1")
 			usn = usn.upper()
 			otp_page = otp_page + '/usn/' + usn
-			qs = User.objects.get(username=usn)
-			
+			qs = get_user_model().objects.get(username=usn)
 			#Checks if user is admin and redirects directly
 			self.is_admin(qs) 
 
 			# Checks if done=False
 			if not qs.done :
+
 				if qs:
 					# Checks if both email and phone doesn't exist
 					if not qs.email and not qs.phone:
@@ -137,7 +138,7 @@ class HomeView(FormView):
 
 					# Checks if only phone exists    
 					elif qs.phone and not qs.email:
-						self.phone_otp(random_otp, qs.profile.phone, usn)
+						self.phone_otp(random_otp, qs.phone, usn)
 						self.password_update(random_otp, usn)
 						messages.error(request, "Email not found, OTP sent to "+qs.phone)
 						return HttpResponseRedirect("/login/usn=" + usn)
@@ -208,22 +209,8 @@ class MainView(TemplateView):
 		2 - Add student check
 	'''
 	template_name = ""
-	form_class = FeedbackAnswerForm
 	user_type = None
 
-	def is_faculty(self):
-		faculty = UserType.objects.get(name="Faculty")
-		if faculty in self.user_types:
-			self.user_type = faculty
-			return True
-		return False
-
-	def is_hod(self):
-		hod = UserType.objects.get(name="Hod")
-		if hod in self.user_types:
-			self.user_type = hod
-			return True
-		return False
 
 	def _faculty_mandatory(self):
 		"""
@@ -237,8 +224,8 @@ class MainView(TemplateView):
 		faculties = get_user_model().objects.filter(department=self.user.department,
 			user_type__in=self.user_types).exclude(pk=self.user.pk, user_type__in=[hod,])
 
-		print(faculties)
-		self.request.session['faculties'] = faculties
+		# print(faculties)
+		self.request.session['recipients'] = self.serialize_obj(faculties)
 		self.request.session['count'] = faculties.count()
 
 		# remove the form as it is already counted
@@ -253,9 +240,9 @@ class MainView(TemplateView):
 		faculty = UserType.objects.get(name="Faculty")
 		hods = get_user_model().objects.filter(user_type__in=self.user_types).exclude(pk=self.user.pk)
 		
-		self.request.session['hods'] = hods
+		self.request.session['recipients'] = self.serialize_obj(hods)
 		self.request.session['count'] = hods.count()
-		print(hods)
+		# print(hods)
 		# remove the form as it is already counted
 		self.forms = self.forms.exclude(code="HH")
 		
@@ -269,11 +256,11 @@ class MainView(TemplateView):
 
 		# if the user is hod as well as faculty, faculties mandatory forms shouldn't 
 		# be displayed
-		if self.is_faculty() and not self.is_hod():
+		if self.user.is_faculty() and not self.user.is_hod():
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 			self._faculty_mandatory()
 
-		if self.is_hod():
+		if self.user.is_hod():
 			# faculty mandatory forms are not required, so removed them
 			faculty = UserType.objects.get(name="Faculty")
 
@@ -284,9 +271,20 @@ class MainView(TemplateView):
 
 		for form in self.forms:
 			self.request.session['count'] += 1
-		print(self.forms)
-		
+		context['form'] = self.serialize_obj(self.forms)
+		print(context['forms'])		
 		return context
+
+	def get(self, request, *args, **kwargs):
+		context = self.get_context_data(**kwargs)
+		return HttpResponseRedirect('/entry')
+
+	def serialize_obj(self, obj):
+	    data = serializers.serialize('json', obj)
+	    struct = json.loads(data)
+	    data = json.dumps(struct[0])
+	    return data
+
 
 # @login_required(login_url='/signin/')
 # def main_view(request):

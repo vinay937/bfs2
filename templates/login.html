@@ -153,7 +153,7 @@ body {
     <div style="top:3%;left:27%;position:absolute;padding:2%;" class="col-md-8">
     <h3 style="color:#e5e5e5;text-align: center;">BMS INSTITUTE OF TECHNOLOGY</h3>
 </div>
-    <form style="margin-left:3%;margin-top:3%;" action="/login" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
+    <form style="margin-left:3%;margin-top:3%;" action="/login/" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
         <p id="usn1">{{ form.username }}</p>
         <p>{{ form.password }}</p>
         <p style="z-index:100;"><i id="eye" class="fa fa-eye" aria-hidden="true"></i></p>

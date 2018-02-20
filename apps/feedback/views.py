@@ -27,99 +27,73 @@ from apps.general.models import UserType
 import random
 from decimal import Decimal
 
-class MainView(TemplateView):
-	'''
-	Checks for the type of user and renders the count and users of their mandatory
-	forms. 
-	All the other individual forms are generated subsequently
 
-	Passing the following to the variabes to the session
-	`faclties` - if the user is a faculty, a list of all the faculties of 
-		same department except the the user is stored 
-	`hods` - if the user is hod, a list all the hods from different departments
-		 are stored
-	`count` - it is the total no of forms that the user needs to give feedback for.
-		ie, for a faculty no. of collegues + no of individual forms
+class FeedbackView(FormView):
 
-	TODO:// 
-		1 - Move this to general `views.py` . Doesn't belong here
-		2 - Add student check
-	'''
-	template_name = ""
+	template_name = 'feedback/entry.html'
 	form_class = FeedbackAnswerForm
-	user_type = None
-
-	def is_faculty(self, user_type):
-		faculty = UserType.objects.get(name="Faculty")
-		if faculty in user_type:
-			self.user_type = faculty
-			return True
-		return False
-
-	def is_hod(self, user_type):
-		hod = UserType.objects.get(name="HOD")
-		if hod in user_type:
-			self.user_type = hod
-			return True
-		return False
-
-	def _faculty_mandatory(self):
-		"""
-		This is a compulsory form for the faculty where they give the 
-		feedack to he other faculties
-		"""
-
-		# if the hod is also a faculty, he should be removed form the `faculties` list
-		hod = UserType.objects.get(name="HOD")
-
-		faculties = get_user_model().objects.filter(department=self.user.department,
-			user_type__in=self.user_types).exclude(pk=self.user.pk, user_type__in=[hod,])
-
-		self.request.session['faculties'] = faculties
-		self.request.session['count'] = faculties.count()
-
-		# remove the form as it is already counted
-		self.forms.exclude(code="FF")
-		
-		return
-
-	def _hod_mandatory(self):
-		"""
-		Compulsory form for HOD where they give feedback to the department HODs
-		"""
-		hods = get_user_model().objects.filter(user_type__in=self.user_types).exclude(pk=self.user.pk)
-		
-		self.request.session['hods'] = hods
-		self.request.session['count'] = hods.count()
-
-		# remove the form as it is already counted
-		self.forms.exclude(code="HH")
-		
-		return
 
 	def get_context_data(self, **kwargs):
-		context = super(MainView, self).get_context_data(**kwargs)
-		self.user = self.request.user
-		self.user_types = self.user.user_type.all()
-		self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+		context = super(FeedbackView, self).get_context_data(**kwargs)
+		recipients = self.request.session['recipients']
+		count = self.request.session['count']
+		iterable_forms = []#self.request.session['form']
 
-		# if the user is hod as well as faculty, faculties mandatory forms shouldn't 
-		# be displayed
-		if self.is_faculty(self.user_types) and not self.is_hod(self.user_types):
-			self._faculty_mandatory()
-
-		if self.is_hod(self.user_types):
-			# faculty mandatory forms are not required, so removed them
-			if self.is_faculty(self.user_types):
-				self.forms.exclude(code="FF")
-				
-			self._hod_mandatory()
-
-		for form in self.forms:
-			self.request.session['count'] += 1
-		
+		if count:
+			if recipients:
+				if self.request.user.is_hod():
+					feedback_form = FeedbackForm.objects.get(code='HH')
+					question_count = feedback_form.question.all().count()
+					print(question_count)
+					AnswerFormSet = modelformset_factory(Answer, 
+						form=FeedbackAnswerForm, extra=question_count)
+					formset = AnswerFormSet(queryset=Answer.objects.none())
+					context['formset'] = formset
+					form_zip = zip(formset, feedback_form.question.all())
+					context['forms'] = form_zip
+					context['recipients_name'] = recipients[-1]
+					print(recipients.get('first_name'))
+			if iterable_forms:
+				feedback_form = iterable_forms[-1]
+				question_count = feedback_form.question.all().count()
+				print(question_count)
+				AnswerFormSet = modelformset_factory(Answer, 
+					form=FeedbackAnswerForm, extra=question_count)
+				formset = AnswerFormSet(queryset=Answer.objects.none())
+				context['formset'] = formset
+				form_zip = zip(formset, feedback_form.question.all())
+				context['forms'] = form_zip
 		return context
-		
+
+	def post(self, request, *args, **kwargs):
+		recipients = self.request.session['recipients']
+		count = self.request.session['count']
+		iterable_forms = self.request.session['form']
+		if formset.is_valid():
+			if count:
+				if recipients:
+					if self.request.user.is_hod():
+						feedback_form = FeedbackForm.objects.get(code='HH')
+						question = feedback_form.question.all()
+						for form, question in zip(formset, question):
+							ans = form.cleaned_data.get('answer')
+							answer = Answer.objects.create(question=question, 
+								value=ans, recipient=recipient[-1])
+				if iterable_forms:
+					feedback_form = iterable_forms[-1]
+					question_count = feedback_form.question.all().count()
+					print(question_count)
+					for form, que in zip(formset, ):
+						ans = form.cleaned_data.get('answer')
+						answer = Answer.objects.create(question=question, 
+								value=ans, recipient=recipient[-1])
+		if request.session['count']:
+			return HttpResponseRedirect(reverse_lazy('feedback_form'))
+		else:
+			user.done = 'True'
+			user.save()
+			return HttpResponseRedirect(reverse_lazy('logout'))
+
 
 # def feedback(request):
 # 	'''

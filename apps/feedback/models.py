@@ -39,7 +39,7 @@ class Question(models.Model):
 	'''
 	Question: Holds the questions for respective user type
 	'''
-	form = models.ForeignKey('FeedbackForm', on_delete=models.CASCADE)
+	form = models.ForeignKey('FeedbackForm', on_delete=models.CASCADE, related_name='question')
 	text = models.TextField("Question")
 
 	def __str__(self):
