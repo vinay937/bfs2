@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.general',
-    'apps.feedback'
+    'apps.feedback',
+    'chatterbot.ext.django_chatterbot',
 ]
 
 MIDDLEWARE = [
@@ -145,3 +146,16 @@ STATICFILES_DIRS = [STATIC_DIR, ]
 #Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = MEDIA_DIR
+
+
+CHATTERBOT = {
+    'name': 'DevX Bot',
+    'logic_adapters': [
+        'chatterbot.logic.BestMatch'
+    ],
+    'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
+    'training_data': [
+         'chatterbot.corpus.english.greetings',
+         'chatterbot.corpus.english.conversations',
+    ]
+}
