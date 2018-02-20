@@ -20,6 +20,7 @@ limitations under the License.
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
 /* Header */
 input:focus {
@@ -112,7 +113,7 @@ body {
 .signin {
     background-color:rgba(229,229,229,0) !important;
     color:#e5e5e5;
-    width:40%;
+    width:44%;
 }
 .signin:hover {
     background-color: white !important;
@@ -128,22 +129,80 @@ body {
     border:1px solid #ed5588;
     color:white;
 } 
+#usn {
+    color:#e5e5e5;
+    background:none;
+    border:0px;
+    border-radius:0px;
+    border-bottom:1px solid #e5e5e5;
+}
+#otp {
+    color:#e5e5e5;
+    background:none;
+    border:0px;
+    border-radius:0px;
+    border-bottom:1px solid #e5e5e5;
+}
 </style>
 </head>
 <div style="position:relative;" class="col-md-12" id="large-header">
 <h1 style="z-index:100;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#4ca64c;" class="thin">360</span></h1>
-<div class="col-md-4 aitsloginwthree w3layouts agileits" style="margin-top:15%;left:33%;padding-top:10%;padding-bottom:1%;background-color: rgba(250,250,250, 0.3);z-index:1000;border-radius:5%;">
+<div class="col-md-4 aitsloginwthree w3layouts agileits" style="margin-top:13%;left:33%;padding-top:10%;padding-bottom:1%;background-color: rgba(250,250,250, 0.3);z-index:1000;border-radius:5%;">
     <div style="left:0;top:3%;position: absolute;" class="col-md-4">
-    <img style="padding:10%;" width="100" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png">
-    </div>
+    <img style="padding:10%;" width="100" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"></div>
     <div style="top:3%;left:27%;position:absolute;padding:2%;" class="col-md-8">
-        <h3 style="color:#e5e5e5;text-align: center;">BMS INSTITUTE OF TECHNOLOGY</h3>
-    </div>
-    <form style="margin-left:3%;margin-top:3%;" action="#" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
-        <input style="color:white;background:none;border:none;border-bottom:1px solid #e5e5e5;margin-bottom:2%;width:93%;font-size:120%;" type="text" name="usn1" id="usn" placeholder="Enter Username/USN">
-        <div style="margin-top:2%;" class="send-button wthree agileits">
-            <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
-            <a class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Need Help?</a>
+    <h3 style="color:#e5e5e5;text-align: center;">BMS INSTITUTE OF TECHNOLOGY</h3>
+</div>
+    <form style="margin-left:3%;margin-top:3%;" action="/login" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
+        <p id="usn1">{{ form.username }}</p>
+        <p>{{ form.password }}</p>
+        <p style="z-index:100;"><i id="eye" class="fa fa-eye" aria-hidden="true"></i></p>
+        <script>
+            var timeoutId = 0;
+            var button = document.getElementById('eye');
+            var box = document.getElementById('otp');
+            $button.mousedown(function() {
+            timeoutId = setTimeout(function(){
+            showPass('text');
+                }, 100);
+            }).bind('mouseup', function() {
+            clearTimeout(timeoutId);
+                showPass('password');
+            });
+
+            function showPass(val){
+                $box.prop('type', val);
+            }
+        </script>
+        <script>
+            window.location.hash = window.location.pathname;
+            GetURLParameter('usn');
+
+            function GetURLParameter(sParam) {
+                var sPageURL = window.location.hash.substring(1);
+
+                console.log(sPageURL);
+
+                var sURLVariables = sPageURL.split('/');
+                for (var i = 0; i < sURLVariables.length; i++) {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam) {
+                        document.getElementById('usn').value = sParameterName[1].toUpperCase();
+                        return sParameterName[1];
+                    }
+                }
+            }
+        </script>
+        <script>
+            $(document).ready(function(){
+                $("#otp").keyup(function(){
+                    $("#otp").val($("#otp").val().toUpperCase());
+                });
+            });
+        </script>
+        <div class="send-button wthree agileits">
+            <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Submit">
+            <a onclick="goHome();" class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Resend OTP</a>
         </div>
     </form>
 </div>
@@ -154,6 +213,11 @@ body {
             <h5><strong><center><span style="color:white;">A product by</span><a style="color:#ffc05b;" href="https://infoniumlabs.site" target="blank"> DevX<img id="logo" src="{% static 'img/logo2.png' %}" style="width:50px; vertical-align: middle; margin-top: -5px;"></a></center></strong></h5>
         </div>
     </footer>
+<div id="loader" class="pageload-overlay" data-opening="M20,15 50,30 50,30 30,30 Z;M0,0 80,0 50,30 20,45 Z;M0,0 80,0 60,45 0,60 Z;M0,0 80,0 80,60 0,60 Z" data-closing="M0,0 80,0 60,45 0,60 Z;M0,0 80,0 50,30 20,45 Z;M20,15 50,30 50,30 30,30 Z;M30,30 50,30 50,30 30,30 Z">
+    <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 80 60" preserveAspectRatio="none">
+        <path d="M30,30 50,30 50,30 30,30 Z"/>
+    </svg>
+</div>
 <script>
     $(document).ready(function(){
         $("#usn").keyup(function(){
@@ -347,4 +411,34 @@ body {
     }
     
 })();
-</script>
+    </script>
+    <script>
+            (function() {
+                var pageWrap = document.getElementById( 'pagewrap' ),
+                    pages = [].slice.call( pageWrap.querySelectorAll( 'div.container' ) ),
+                    currentPage = 0,
+                    triggerLoading = [].slice.call( pageWrap.querySelectorAll( 'a.pageload-link' ) ),
+                    loader = new SVGLoader( document.getElementById( 'loader' ), { speedIn : 100 } );
+
+                function init() {
+                    triggerLoading.forEach( function( trigger ) {
+                        trigger.addEventListener( 'click', function( ev ) {
+                            ev.preventDefault();
+                            loader.show();
+                            // after some time hide loader
+                            setTimeout( function() {
+                                loader.hide();
+
+                                classie.removeClass( pages[ currentPage ], 'show' );
+                                // update..
+                                currentPage = currentPage ? 0 : 1;
+                                classie.addClass( pages[ currentPage ], 'show' );
+
+                            }, 2000 );
+                        } );
+                    } );    
+                }
+
+                init();
+            })();
+        </script>

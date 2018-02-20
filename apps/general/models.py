@@ -84,7 +84,7 @@ class Teaches(models.Model):
 	teacher = models.ForeignKey('user')
 	subject = models.ForeignKey('subject')
 
-	sem = models.CharField("Student's Semester", max_length=50)
+	sem = models.ForeignKey("general.semester")
 	sec = models.CharField("Student's Section", max_length=50)
 	department = models.ForeignKey('department', verbose_name="Student's department")
 
