@@ -75,6 +75,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'bfs_project.wsgi.application'
 
 
+LOGIN_REDIRECT_URL = '/main'
+
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 

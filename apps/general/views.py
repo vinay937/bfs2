@@ -91,7 +91,7 @@ class HomeView(FormView):
 					'Feedback OTP',
 					'Hi,' + qs.first_name + '\n\n' +'Your OTP for feedback is:' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedback@bmsit.in>',
-					['aayush@bmsit.in',],
+					[qs.email],
 					)
 		email.send()
 		print('OR: ' + qs.password)
