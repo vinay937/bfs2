@@ -157,5 +157,15 @@ CHATTERBOT = {
     'training_data': [
          'chatterbot.corpus.english.greetings',
          'chatterbot.corpus.english.conversations',
+         'chatterbot.corpus.english.ai',
+         'chatterbot.corpus.english.humour',
+         'chatterbot.corpus.english.trivia',
+         'chatterbot.corpus.english.history',
+         'chatterbot.corpus.english.science',
+         'chatterbot.corpus.english.movies',
+         'chatterbot.corpus.english.psychology',
+         'chatterbot.corpus.english.emotion',
+         'chatterbot.corpus.english.botprofile',
+         'chatterbot.corpus.english.computers',
     ]
 }
