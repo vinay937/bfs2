@@ -28,7 +28,7 @@ SECRET_KEY = 'l(p1)k6rv%d=6pv0cyazwli*ps21r4+&4%d+ka57%-z9yx_vkl'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 AUTH_USER_MODEL = 'general.User'
 # Application definition
@@ -165,7 +165,7 @@ CHATTERBOT = {
          'chatterbot.corpus.english.greetings',
          'chatterbot.corpus.english.conversations',
          'chatterbot.corpus.english.ai',
-         'chatterbot.corpus.english.humour',
+         'chatterbot.corpus.english.humor',
          'chatterbot.corpus.english.trivia',
          'chatterbot.corpus.english.history',
          'chatterbot.corpus.english.science',
