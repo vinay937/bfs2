@@ -141,6 +141,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
 STATICFILES_DIRS = [STATIC_DIR, ]
+CORPUS_DIR = os.path.join(BASE_DIR, 'corpus/')
 
 
 #Media files
@@ -158,6 +159,9 @@ CHATTERBOT = {
         },
         {
             'import_path': 'chatterbot.logic.BestMatch'
+        },
+        {
+            'import_path': 'apps.django_chatterbot.logic.profanity_adapter.ProfanityAdapter'
         },
     ],
     'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
@@ -177,3 +181,5 @@ CHATTERBOT = {
          'chatterbot.corpus.english.computers',
     ]
 }
+
+ABUSE_FILE = os.path.join(CORPUS_DIR, 'abuse.txt')
