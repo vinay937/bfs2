@@ -3,6 +3,7 @@ from django.views.generic import View
 from django.http import JsonResponse
 from chatterbot import ChatBot
 from apps.django_chatterbot import settings
+from chatterbot.response_selection import get_random_response
 
 
 class ChatterBotViewMixin(object):
@@ -10,7 +11,9 @@ class ChatterBotViewMixin(object):
     Subclass this mixin for access to the 'chatterbot' attribute.
     """
 
-    chatterbot = ChatBot(**settings.CHATTERBOT)
+    chatterbot = ChatBot(**settings.CHATTERBOT, 
+        response_selection_method=get_random_response,
+        read_only=True)
 
     def validate(self, data):
         """
