@@ -162,6 +162,7 @@ CHATTERBOT = {
     ],
     'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
     'training_data': [
+         'corpus.compliments',
          'chatterbot.corpus.english.greetings',
          'chatterbot.corpus.english.conversations',
          'chatterbot.corpus.english.ai',

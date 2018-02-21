@@ -572,7 +572,7 @@ li {
                 contentType: 'application/json'
             });
             $submit.done(function(statement) {
-                $('ul').append(`<li><div class="direct-chat-text">{0}</div></li>`.format(statement.text));
+                $('ul').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text));
                 // Clear the input field
                 $('#status_message').val('');
                 // Scroll to the bottom of the chat interface
