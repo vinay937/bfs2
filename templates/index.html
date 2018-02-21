@@ -20,9 +20,18 @@ limitations under the License.
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 <style>
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent; /* make scrollbar transparent */
+}
 /* Header */
 input:focus {
+    outline:none;
+}
+button:focus {
     outline:none;
 }
 ::placeholder { /* Most modern browsers support this now. */
@@ -38,7 +47,7 @@ body{
 }
 
 body {
-    background-image: url('../static/img/sky.jpg');
+    background-image: url('{%static 'img/sky.jpg' %}');
 }
 
 .main-title {
@@ -69,49 +78,6 @@ body {
 li {
     list-style-type: none;
 }
-#earth {
-  position: relative;
-  width: 300px;
-  height: 300px;
-  margin: 3em auto;
-  background: url(../static/img/earthmap.jpg) 0 0 repeat;
-  border-radius: 50%;
-  border:1px solid #9ecaed;
-  background-size: 630px;
-  animation: rotate 8s linear infinite;
-  transition: transform 200ms linear;
-  transform-style: preserve-3d;
-  box-shadow: inset 20px 0 80px 6px rgba(0, 0, 0, 1);
-  color: #000;
-  box-shadow: 0 0 30px 3px #9ecaed;
-}
-
-#earth:after {
-  content: "";
-  position: absolute;
-  top: 0%;
-  left: 0%;
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  box-shadow: -80px 15px 80px 10px rgba(0,0,0,.9) inset;
-}
-
-#earth:before {
-  content: "";
-  position: absolute;
-  border-radius: 50%;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  opacity: 0.2;
-  background: radial-gradient(circle at 100px 100px, #fff, #000);
-}
-@keyframes rotate {
-  0% {background-position: 0 0;}
-  100% {background-position: 630px 0;}
-}
 .signin {
     background-color:rgba(229,229,229,0) !important;
     color:#e5e5e5;
@@ -132,127 +98,116 @@ li {
     color:white;
 } 
 .popup-box {
-       background-color: #ffffff;
-        border: 1px solid #b0b0b0;
-        bottom: 0%;
-        margin-right:-3.2%;
-        display: none;
-        height: 415px;
-        position: fixed;
-        right: 70px;
-        width: 300px;
-        font-family: 'Open Sans', sans-serif;
-    }
-    .round.hollow {
-        margin: 40px 0 0;
-    }
-    .round.hollow a {
-        padding: 10px 21px;
-        text-decoration: none;
-        background-color: #fff;
-        clear: both;
-        color: #7b7b7b;
-        display: inline-table;
-        font-size: 21px;
-        padding: 7px 10px;
-        width: 100%;
-        font-family: 'Open Sans', sans-serif;
-    }
-    .round.hollow a:hover {
-       background-color: #fff;
-        clear: both;
-        color: #7b7b7b;
-        display: inline-table;
-        font-size: 21px;
-        padding: 7px 10px;
-        width: 100%;
-        font-family: 'Open Sans', sans-serif;
-    }
-    .round.hollow img {
-        border: 1px solid #7b7b7b;
-        border-radius: 50%;
-        width: 44px;
-    }
-    #qnimate {
-        transition:height 0.5s ease;
-    }
-    .popup-box-on {
-        display: block !important;
-    }
-    .popup-box .popup-head {
-        background-color: #fff;
-        clear: both;
-        color: #7b7b7b;
-        display: inline-table;
-        font-size: 21px;
-        padding: 7px 10px;
-        width: 100%;
-        font-family: 'Open Sans', sans-serif;
-    }
-    .bg_none i {
-        border: 1px solid #ff6701;
-        border-radius: 25px;
-        color: #ff6701;
-        font-size: 17px;
-        height: 33px;
-        line-height: 30px;
-        width: 33px;
-    }
-    .bg_none:hover i {
-        border: 1px solid #000;
-        border-radius: 25px;
-        color: #000;
-        font-size: 17px;
-        height: 33px;
-        line-height: 30px;
-        width: 33px;
-    }
-    .bg_none {
-        background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
-        border: medium none;
-    }
-    
-    .popup-box .popup-messages {
-        background: #3f9684 none repeat scroll 0 0;
-        height: 275px;
-        overflow: auto;
-    }
-    .popup-head-right .btn-group {
-        display: inline-flex;
-        margin: 0 8px 0 0;
-        vertical-align: top !important;
-    }
-    .chat-header-button {
-        background: transparent none repeat scroll 0 0;
-        border: 1px solid #636364;
-        border-radius: 50%;
-        font-size: 14px;
-        height: 30px;
-        width: 30px;
-    }
-    
-    .direct-chat-text {
-        background: #d2d6de none repeat scroll 0 0;
-        border: 1px solid #d2d6de;
-        border-radius: 5px;
-        color: #444;
-        margin: 5px 0 0 50px;
-        padding: 5px 10px;
-        position: relative;
-    } 
-    .left{
-        background: #d2d6de none repeat scroll 0 0;
-        border: 1px solid #d2d6de;
-        border-radius: 5px;
-        color: #444;
-        margin: 5px 100px 5px 5px;
-        padding: 5px 10px;
-        position: relative; 
-    }
+    background-color: #ffffff;
+    bottom: 0%;
+    margin-right:-3.2%;
+    display: none;
+    height: 385px;
+    position: fixed;
+    right: 70px;
+    width: 300px;
+    font-family: 'Open Sans', sans-serif;
+}
+.round.hollow {
+    margin: 40px 0 0;
+}
+.round.hollow a {
+    text-decoration: none;
+    background-color: #fff;
+    clear: both;
+    color: #7b7b7b;
+    display: inline-table;
+    font-size: 20px;
+    padding: 10px 10px;
+    width: 110%;
+    font-family: 'Open Sans', sans-serif;
+    margin-left:-10%;
+}
+#qnimate {
+    transition:height 0.5s ease;
+}
+.popup-box-on {
+    display: block !important;
+}
+.popup-box .popup-head {
+    background-color: #fff;
+    clear: both;
+    color: #7b7b7b;
+    display: inline-table;
+    font-size: 20px;
+    padding: 7px 10px;
+    width: 100%;
+    font-family: 'Open Sans', sans-serif;
+}
+.bg_none i {
+    border: 1px solid #4ca64c;
+    border-radius: 25px;
+    color: #4ca64c;
+    font-size: 17px;
+    height: 33px;
+    line-height: 30px;
+    width: 33px;
+}
+.bg_none:hover i {
+    border: 1px solid #000;
+    border-radius: 25px;
+    color: #000;
+    font-size: 17px;
+    height: 33px;
+    line-height: 30px;
+    width: 33px;
+}
+.bg_none {
+    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border: medium none;
+}
+
+.popup-box .popup-messages {
+    background-image: url('{% static 'img/chat_bg1.jpg' %}');
+    border:none;
+    height: 275px;
+    overflow: auto;
+}
+.popup-head-right .btn-group {
+    display: inline-flex;
+    margin: 0 8px 0 0;
+    vertical-align: top !important;
+}
+.chat-header-button {
+    background: transparent none repeat scroll 0 0;
+    border: 1px solid #636364;
+    border-radius: 50%;
+    font-size: 14px;
+    height: 30px;
+    width: 30px;
+}
+
+.direct-chat-text {
+    background: #4ca64c none repeat scroll 0 0;
+    border: 1px solid #4ca64c;
+    border-radius: 5px;
+    color: #fff;
+    margin: 5px 10px 0 50px;
+    padding: 5px 10px;
+    position: relative;
+} 
+.left{
+    background: #d2d6de none repeat scroll 0 0;
+    border: 1px solid #d2d6de;
+    border-radius: 5px;
+    color: #444;
+    margin: 5px 100px 5px -28px;
+    padding: 5px 10px;
+    position: relative; 
+}
+.send_btn {
+    margin-top: -12%;
+}
 </style>
 </head>
 <div style="position:relative;" id="large-header">
-<h1 style="z-index:100;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#4ca64c;" class="thin">360</span></h1>
+    <canvas style="position:absolute;z-index:-1000;" id="demo-canvas"></canvas>
+<h1 style="z-index:1000;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#4ca64c;" class="thin">360</span></h1>
 <div class="col-md-4 aitsloginwthree w3layouts agileits" style="margin-top:15%;left:33%;padding-top:10%;padding-bottom:1%;background-color: rgba(250,250,250, 0.3);z-index:1000;border-radius:5%;">
     <div style="left:0;top:3%;position: absolute;" class="col-md-4">
     <img style="padding:10%;" width="100" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png">
@@ -263,54 +218,33 @@ li {
     <form style="margin-left:3%;margin-top:3%;" action="#" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
         <input style="color:white;background:none;border:none;border-bottom:1px solid #e5e5e5;margin-bottom:2%;width:93%;font-size:120%;" type="text" name="usn1" id="usn" placeholder="Enter Username/USN">
         <div style="margin-top:2%;" class="send-button wthree agileits">
-            <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
+            <input type="submit"  data-toggle="tooltip" data-placement="top" title="Clear" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
             <a class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Need Help?</a>
         </div>
     </form>
 </div>
 <div style="z-index:100;" class="popup-box chat-popup" id="qnimate">
-              <div class="popup-head">
-                      <div class="popup-head-right pull-right">
-                        <div class="btn-group">
-                          <button class="chat-header-button" data-toggle="dropdown" type="button" aria-expanded="false">
-                           <i class="glyphicon glyphicon-cog"></i> </button>
-                          <ul role="menu" class="dropdown-menu pull-right">
-                            <li><a href="#">Media</a></li>
-                            <li><a href="#">Block</a></li>
-                            <li><a href="#">Clear Chat</a></li>
-                            <li><a href="#">Email Chat</a></li>
-                          </ul>
-                        </div>
-                        
-                        <button data-widget="remove" id="removeClass" class="chat-header-button pull-right" type="button"><i class="glyphicon glyphicon-off"></i></button>
-                      </div>
-              </div>
+    <div class="popup-head">
+        <div class="popup-head-left pull-left">Feedback Assistance</div>
+        <div class="popup-head-right pull-right">
+            <div class="btn-group">
+                <button id="clear" class="chat-header-button" title="Clear chat">
+                    <i class="fa fa-eraser"></i> </button>
+                    </div>
+                <button title="Close" data-widget="remove" id="removeClass" class="chat-header-button pull-right" type="button"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
             <div class="popup-messages">
                 <div class="direct-chat-msg">
-                <ul>
-                    <li>
-                        <div class="direct-chat-text">
-                            Hey bro, how’s everything going ?
-                        </div>
-                    </li>
-                    <li>
-                        <div class="direct-chat-text">
-                            Hey bro, how’s everything going ?
-                        </div>
-                    </li>
-                     <li>
-                        <div class="left">
-                            Hey bro, how’s everything going ?
-                        </div>
-                    </li>
+                <ul class="messages">
                 </ul>
                   <!-- /.direct-chat-text -->
                 </div>
             </div>
             <div class="popup-messages-footer">
-                <input style="z-index:100;" id="status_message" placeholder="Type a message..." name="message">
+                <input style="border-radius:10px;border:1px solid #4ca64c;margin-left:2%;padding:2%;z-index:100;width:80%;margin-top: 5%;" id="status_message" placeholder="Type a message..." name="message">
                 <div class="btn-footer">
-                    <button class="bg_none pull-right"><i class="glyphicon glyphicon-thumbs-up"></i></button>
+                    <button class="bg_none pull-right send_btn"><i class="fa fa-paper-plane"></i></button>
                 </div>
             </div>
     </div>
@@ -320,11 +254,8 @@ li {
         <h5><strong><center style="margin-top:5%;float:left;"><span style="color:white;">A product by</span><a style="color:#ffc05b;" href="https://infoniumlabs.site" target="blank"> DevX<img id="logo" src="https://bmsit.ac.in/devx.png" style="width:50px; vertical-align: middle;"></a></center></strong></h5>
     </div>
     <div style="width:20%;float:right;" class="col-md-6 container text-center">
-        <div class="row">
-            <div class="round hollow text-center">
-                <img style="position:absolute;left:0;" src="http://bootsnipp.com/img/avatars/bcf1c0d13e5500875fdd5a7e8ad9752ee16e7462.jpg" alt="iamgurdeeposahan">
-                <a href="#" id="addClass"> CHAT WITH US </a>
-            </div>
+        <div class="round hollow text-center">
+            <a href="#" id="addClass"> CHAT WITH US </a>
         </div>
     </div>  
 </footer>
@@ -561,8 +492,11 @@ li {
     $(function() {
         $('#status_message').keypress(function(e) {
             if(e.which == 13) {
+                $('.popup-messages').animate({
+                    scrollTop: $(".popup-messages-footer").offset().top
+                }, 100);
                 var message = $('#status_message').val();
-                $('ul').append(`<li><div class="direct-chat-text">{0}</div></li>`.format(message));
+                $('.messages').append(`<li><div class="direct-chat-text">{0}</div></li>`.format(message));
                 $('#status_message').val('');
                 var csrfmiddlewaretoken = $('input[name=csrfmiddlewaretoken]').val();
             var $submit = $.ajax({
@@ -572,7 +506,10 @@ li {
                 contentType: 'application/json'
             });
             $submit.done(function(statement) {
-                $('ul').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text));
+                $('.popup-messages').animate({
+                    scrollTop: $(".popup-messages-footer").offset().top
+                }, 100);
+                $('.messages').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text));
                 // Clear the input field
                 $('#status_message').val('');
                 // Scroll to the bottom of the chat interface
@@ -580,5 +517,37 @@ li {
             });
             }
         });
+    })
+    $(function() {
+        $('.send_btn').click(function() {
+            $('.popup-messages').animate({
+                scrollTop: $(".popup-messages-footer").offset().top
+            }, 100);
+            var message = $('#status_message').val();
+            $('ul').append(`<li><div class="direct-chat-text">{0}</div></li>`.format(message));
+            $('#status_message').val('');
+            var csrfmiddlewaretoken = $('input[name=csrfmiddlewaretoken]').val();
+            var $submit = $.ajax({
+              type: 'POST',
+              url: chatterbotUrl,
+              data: JSON.stringify({'text':message}),
+                contentType: 'application/json'
+            });
+            $submit.done(function(statement) {
+                $('.popup-messages').animate({
+                    scrollTop: $(".popup-messages-footer").offset().top
+                }, 100);
+                $('ul').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text));
+                // Clear the input field
+                $('#status_message').val('');
+                // Scroll to the bottom of the chat interface
+                //$chatlog[0].scrollTop = $chatlog[0].scrollHeight;
+            });
+        });
+    })
+    $(function() {
+        $('#clear').click(function() {
+            $('.messages').empty();
+        })
     })
 </script>
