@@ -151,7 +151,11 @@ MEDIA_ROOT = MEDIA_DIR
 CHATTERBOT = {
     'name': 'DevX Bot',
     'logic_adapters': [
-        'chatterbot.logic.BestMatch'
+        {
+            'import_path': 'chatterbot.logic.LowConfidenceAdapter',
+            'threshold': 0.65,
+            'default_response': 'I am sorry, but I do not understand.'
+        }
     ],
     'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
     'training_data': [
