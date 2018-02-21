@@ -2,7 +2,7 @@ import json
 from django.views.generic import View
 from django.http import JsonResponse
 from chatterbot import ChatBot
-from chatterbot.ext.django_chatterbot import settings
+from apps.django_chatterbot import settings
 
 
 class ChatterBotViewMixin(object):
@@ -76,6 +76,7 @@ class ChatterBotView(ChatterBotViewMixin, View):
         conversation = self.get_conversation(request)
 
         response = self.chatterbot.get_response(input_data, conversation.id)
+        print(response)
         response_data = response.serialize()
 
         return JsonResponse(response_data, status=200)

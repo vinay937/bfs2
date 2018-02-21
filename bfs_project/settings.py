@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.general',
     'apps.feedback',
-    'chatterbot.ext.django_chatterbot',
+    'apps.django_chatterbot',
 ]
 
 MIDDLEWARE = [
@@ -155,7 +155,10 @@ CHATTERBOT = {
             'import_path': 'chatterbot.logic.LowConfidenceAdapter',
             'threshold': 0.65,
             'default_response': 'I am sorry, but I do not understand.'
-        }
+        },
+        {
+            'import_path': 'chatterbot.logic.BestMatch'
+        },
     ],
     'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
     'training_data': [
