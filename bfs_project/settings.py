@@ -163,13 +163,18 @@ CHATTERBOT = {
         {
             'import_path': 'apps.django_chatterbot.logic.profanity_adapter.ProfanityAdapter'
         },
+        {
+            'import_path': 'apps.django_chatterbot.logic.user_adapter.UserAdapter'
+        },
     ],
     'trainer': 'chatterbot.trainers.ChatterBotCorpusTrainer',
     'training_data': [
+         'corpus.feedback',
+         'corpus.ai',
          'corpus.compliments',
+         'corpus.botprofile',
          'chatterbot.corpus.english.greetings',
          'chatterbot.corpus.english.conversations',
-         'chatterbot.corpus.english.ai',
          'chatterbot.corpus.english.humor',
          'chatterbot.corpus.english.trivia',
          'chatterbot.corpus.english.history',
@@ -177,7 +182,6 @@ CHATTERBOT = {
          'chatterbot.corpus.english.movies',
          'chatterbot.corpus.english.psychology',
          'chatterbot.corpus.english.emotion',
-         'chatterbot.corpus.english.botprofile',
          'chatterbot.corpus.english.computers',
     ]
 }

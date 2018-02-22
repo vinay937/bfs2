@@ -22,6 +22,7 @@ limitations under the License.
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 <style>
 ::-webkit-scrollbar {
     width: 0px;
@@ -249,6 +250,18 @@ li {
             </div>
     </div>
 </div>
+<div class="modal fade" id="cbModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <div class="modal-body">
+    <iframe src="https://goo.gl/forms/tSlNVC31lu8pQ5013" frameborder="0" onmousewheel="" width="100%" height="1072" style="background: transparent;"></iframe>
+    </div>
+    </div>
+    </div>
+    </div>
 <footer style="position:fixed;bottom:0;" class="col-md-12 page-footer fixed-bottom center-on-small-only footer-main">
     <div class="col-md-6 container-fluid">
         <h5><strong><center style="margin-top:5%;float:left;"><span style="color:white;">A product by</span><a style="color:#ffc05b;" href="https://infoniumlabs.site" target="blank"> DevX<img id="logo" src="https://bmsit.ac.in/devx.png" style="width:50px; vertical-align: middle;"></a></center></strong></h5>
@@ -458,6 +471,7 @@ li {
         $("#addClass").click(function () {
             $('.text-center').css('display', 'none');
             $('#qnimate').addClass('popup-box-on');
+            $('#status_message').focus();
         });
         $("#removeClass").click(function () {
         $('#qnimate').removeClass('popup-box-on');
@@ -483,11 +497,16 @@ li {
         }
       });
     String.prototype.format = function() {
-      a = this;
-      for (k in arguments) {
-        a = a.replace("{" + k + "}", arguments[k])
-      }
-      return a
+        a = this;
+        for (k in arguments) {
+            a = a.replace("{" + k + "}", arguments[k])
+        }
+        return a
+    }
+    String.prototype.newLine = function() {
+        a = this;
+        a = a.replace(new RegExp('\r?\n','g'), '<br />');
+        return a
     }
     $(function() {
         $('#status_message').keypress(function(e) {
@@ -509,8 +528,8 @@ li {
                 $('.popup-messages').animate({
                     scrollTop: $(".popup-messages-footer").offset().top
                 }, 100);
-                $('.messages').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text));
-                // Clear the input field
+                $('.messages').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text).newLine());
+                
                 $('#status_message').val('');
                 // Scroll to the bottom of the chat interface
                 //$chatlog[0].scrollTop = $chatlog[0].scrollHeight;
@@ -537,7 +556,7 @@ li {
                 $('.popup-messages').animate({
                     scrollTop: $(".popup-messages-footer").offset().top
                 }, 100);
-                $('ul').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text));
+                $('ul').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text).newLine());
                 // Clear the input field
                 $('#status_message').val('');
                 // Scroll to the bottom of the chat interface
