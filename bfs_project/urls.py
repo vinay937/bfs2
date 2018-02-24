@@ -27,7 +27,7 @@ urlpatterns = [
     url(r'^', include('apps.general.urls')),
     url(r'^$', HomeView.as_view()),
     url(
-        r'^chatterbot/',
+        r'^devbot/',
         include('apps.django_chatterbot.urls',
         namespace='chatterbot')
     ),

@@ -525,14 +525,14 @@ li {
                 contentType: 'application/json'
             });
             $submit.done(function(statement) {
-                $('.popup-messages').animate({
-                    scrollTop: $(".popup-messages-footer").offset().top
-                }, 100);
+                // $('.popup-messages').animate({
+                //     scrollTop: $(".popup-messages-footer").offset().top
+                // }, 100);
                 $('.messages').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text).newLine());
                 
                 $('#status_message').val('');
                 // Scroll to the bottom of the chat interface
-                //$chatlog[0].scrollTop = $chatlog[0].scrollHeight;
+                $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
             });
             }
         });
