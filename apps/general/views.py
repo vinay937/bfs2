@@ -94,7 +94,7 @@ class HomeView(FormView):
 					'Feedback Support <feedback@bmsit.in>',
 					['aayush@bmsit.in',],
 					)
-		email.send()
+		#email.send()
 		print('OR: ' + qs.password)
 
 	def is_admin(self, user):
@@ -224,8 +224,12 @@ class MainView(TemplateView):
 		faculties = get_user_model().objects.filter(department=self.user.department,
 			user_type__in=self.user_types).exclude(pk=self.user.pk, user_type__in=[hod,])
 
-		# print(faculties)
-		self.request.session['recipients'] = self.serialize_obj(faculties)
+		recipient_list = []
+		for i in faculties:
+			recipient_list.append(i.username)
+		self.request.session['recipients'] = recipient_list
+		print(self.request.session['recipients'])
+
 		self.request.session['count'] = faculties.count()
 
 		# remove the form as it is already counted
@@ -239,8 +243,12 @@ class MainView(TemplateView):
 		"""
 		faculty = UserType.objects.get(name="Faculty")
 		hods = get_user_model().objects.filter(user_type__in=self.user_types).exclude(pk=self.user.pk)
-		
-		self.request.session['recipients'] = self.serialize_obj(hods)
+		print(hods)
+		recipient_list = []
+		for i in hods:
+			recipient_list.append(i.username)
+		self.request.session['recipients'] = recipient_list
+		print(self.request.session['recipients'])
 		self.request.session['count'] = hods.count()
 		# print(hods)
 		# remove the form as it is already counted
@@ -271,8 +279,8 @@ class MainView(TemplateView):
 
 		for form in self.forms:
 			self.request.session['count'] += 1
-		context['form'] = self.serialize_obj(self.forms)
-		print(context['form'])		
+		self.request.session['form'] = self.serialize_obj(self.forms)
+		print(self.request.session['form'])		
 		return context
 
 	def get(self, request, *args, **kwargs):

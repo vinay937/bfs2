@@ -43,13 +43,13 @@ class Question(models.Model):
 	text = models.TextField("Question")
 
 	def __str__(self):
-		return self.question
+		return self.text
 
 
 class Answer(models.Model):
 	'''
 	Answers: If the student is giving the feedback for a teacher, it gets stored for the teacher,
-	wchich holds the details from the table - teaches. So, we can obtain all details such as Sem, Sec 
+	which holds the details from the table - teaches. So, we can obtain all details such as Sem, Sec 
 	from it while generation of reports.
 
 	If the feedback is to anyone else, it will get stored to the User. 

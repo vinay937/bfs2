@@ -1,5 +1,6 @@
 from django import forms
 from .models import Answer
+from django.forms import modelformset_factory
 
 class HorizontalRadioSelect(forms.RadioSelect):
 
@@ -17,3 +18,6 @@ class FeedbackAnswerForm(forms.ModelForm):
 	class Meta:
 		model = Answer
 		fields = ('answer',)
+
+
+AnswerFormSet = modelformset_factory(Answer, form=FeedbackAnswerForm)
