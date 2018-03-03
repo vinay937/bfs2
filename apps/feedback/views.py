@@ -23,7 +23,7 @@ from .forms import FeedbackAnswerForm
 
 from apps.general.models import UserType
 
-
+import json
 import random
 from decimal import Decimal
 
@@ -35,7 +35,7 @@ class FeedbackView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(FeedbackView, self).get_context_data(**kwargs)
-		recipients = self.request.session['recipients']
+		recipients = json.loads(self.request.session['recipients'])
 		count = self.request.session['count']
 		iterable_forms = []#self.request.session['form']
 
@@ -51,8 +51,9 @@ class FeedbackView(FormView):
 					context['formset'] = formset
 					form_zip = zip(formset, feedback_form.question.all())
 					context['forms'] = form_zip
-					context['recipients_name'] = recipients[-1]
-					print(recipients.get('first_name'))
+					context['recipients_name'] = recipients['fields']['first_name']
+					print(recipients)
+					# print(recipients.get('first_name'))
 			if iterable_forms:
 				feedback_form = iterable_forms[-1]
 				question_count = feedback_form.question.all().count()
@@ -68,7 +69,7 @@ class FeedbackView(FormView):
 	def post(self, request, *args, **kwargs):
 		recipients = self.request.session['recipients']
 		count = self.request.session['count']
-		iterable_forms = self.request.session['form']
+		print(form_zip)
 		if formset.is_valid():
 			if count:
 				if recipients:

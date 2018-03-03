@@ -1,7 +1,7 @@
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <style>
     /*!
  * Start Bootstrap - Simple Sidebar HTML Template (http://startbootstrap.com)
@@ -167,7 +167,7 @@
                     <br>
                 </li>
                 <li class="sidebar-brand">
-                    <a href="#" class="navbar-brand">Welcome, {{ recipients_name }}</a>
+                    <a href="#" class="navbar-brand">Welcome, User</a>
                 </li>
                 <li>
                     <a href="#"> Subject list</a>
@@ -202,16 +202,8 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                      <br><br><br>
-                      <form method="post" action=".">{% csrf_token %}
-					    {{ formset.management_form }}
-					    <table>
-					        {% for form in formset %}
-					        {{ form }}
-					        {% endfor %}
-					    </table>
-					    <input type="submit">
-					</form>
+                      <br>
+                      <h1>Your Title</h1>
                     </div>
                 </div>
                 <div class="row">

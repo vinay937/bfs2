@@ -272,7 +272,7 @@ class MainView(TemplateView):
 		for form in self.forms:
 			self.request.session['count'] += 1
 		context['form'] = self.serialize_obj(self.forms)
-		print(context['forms'])		
+		print(context['form'])		
 		return context
 
 	def get(self, request, *args, **kwargs):
