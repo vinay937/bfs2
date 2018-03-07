@@ -3748,6 +3748,11 @@ Copyright (c) 2015 Daniel Eden
 }
 </style>
 </head>
+{% for message in messages %}
+    <div class="alert">
+        <strong>{{ message }}</strong>
+    </div>
+{% endfor %}
 <h1 style="z-index:100;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#4ca64c;" class="thin">360</span></h1>
 <div class="container">
   <div class="top">
