@@ -41,7 +41,6 @@ button:focus {
 body{
     position: relative;
     width: 100%;
-    background: #333;
     overflow: hidden;
     background-size: cover;
     background-position: center center;
@@ -191,7 +190,6 @@ li {
     margin-top: -12%;
 }
    body {
-    background-color: #00ccc7;
     background-size: cover;
     font-size: 16px;
     font-family: 'Lato', sans-serif;
@@ -253,7 +251,6 @@ p.small {
     margin: 0 auto;
     position: relative;
     top: 150px;
-    margin-left:40%;
     padding-bottom: 30px;
     border-radius: 5px;
     box-shadow: 0 5px 50px rgba(0,0,0,0.4);
@@ -311,7 +308,22 @@ p.small {
     opacity: 0.7;
     transition: 0.5s;
 }
+.login-box input.help {
+    margin-top: 0px;
+    border: 0;
+    color: white;
+    padding: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background-color: #665851;
+    cursor:pointer;
+    outline: none;
+}
 
+.login-box input.help:hover {
+    opacity: 0.7;
+    transition: 0.5s;
+}
 .login-box button:hover {
     opacity: 0.7;
     transition: 0.5s;
@@ -3605,6 +3617,11 @@ Copyright (c) 2015 Daniel Eden
   -webkit-animation-name: slideOutUp;
   animation-name: slideOutUp;
 }
+@media(max-width:771px) {
+    .main-title {
+        margin-top:5%;
+    }
+}
 </style>
 </head>
 {% for message in messages %}
@@ -3613,10 +3630,7 @@ Copyright (c) 2015 Daniel Eden
     </div>
 {% endfor %}
 <h1 style="z-index:1000;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#004c4a;" class="thin">360</span></h1>
-<div class="container">
-  <div class="top">
-            <h1 id="title" class="hidden"><span id="logo">Daily <span>UI</span></span></h1>
-        </div>
+<div style="width:100%;" class="container">
         <div class="login-box animated fadeInUp">
             <div class="box-header">
                 <h2>Log In</h2>
@@ -3631,7 +3645,7 @@ Copyright (c) 2015 Daniel Eden
             <input type="password" id="password"> -->
             <br/>
             <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
-            <a class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Need Help?</a>
+            <input type="button" class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal" value="Need Help?">
         </form>
         </div>
 </div>
@@ -3826,3 +3840,37 @@ document.getElementById('toggleProfile').addEventListener('click', function () {
         })
     })
 </script>
+<script>
+    var backgrounds = [
+  {  color: '#EC407A',
+  },
+  {  color: '#EF5350',
+  },
+  {  color: '#AB47BC',
+  },
+  {  color: '#5C6BC0',
+  },
+  {  color: '#26C6DA',
+  },
+  {  color: '#26A69A',
+  },
+  {  color: '#FFA726',
+  },
+  {  color: '#78909C',
+  },
+       ]; 
+
+/**
+ * Returns a random integer between min and max
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+       $(document).ready(function(){
+         var bgNumber = getRandomInt(0, backgrounds.length-1);
+         
+         $('body').css('background-color', backgrounds[bgNumber].color);
+       });
+  </script>
