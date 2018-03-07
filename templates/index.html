@@ -238,8 +238,29 @@ p.small {
     font-size: 0.8em;
     margin: 20px 0 0;
 }
-
-
+#feedback {
+    vertical-align:11px;
+}
+.thin {
+    font-size:2em;
+    color:#004c4a;
+}
+@media(min-width:700px) {
+    .login-box {
+        margin-top:10% !important;
+    }
+}
+@media(min-width:400px) {
+    .login-box {
+        margin-top:30% !important;
+    }
+    #feedback {
+        font-size:2em;
+    }
+    .thin {
+        font-size:3em;
+    }
+}
 /* Layout */
 .container {
     margin: 0;
@@ -3619,7 +3640,7 @@ Copyright (c) 2015 Daniel Eden
 }
 @media(max-width:771px) {
     .main-title {
-        margin-top:5%;
+        margin-top:10%;
     }
 }
 </style>
@@ -3629,7 +3650,7 @@ Copyright (c) 2015 Daniel Eden
         <strong>{{ message }}</strong>
     </div>
 {% endfor %}
-<h1 style="z-index:1000;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#004c4a;" class="thin">360</span></h1>
+<h1 style="z-index:1000;" class="main-title"><span id="feedback">Feedback</span> <span class="thin">360</span></h1>
 <div style="width:100%;" class="container">
         <div class="login-box animated fadeInUp">
             <div class="box-header">
@@ -3842,21 +3863,21 @@ document.getElementById('toggleProfile').addEventListener('click', function () {
 </script>
 <script>
     var backgrounds = [
-  {  color: '#EC407A',
+  {  color: '#F44336',
   },
-  {  color: '#EF5350',
+  {  color: '#E91E63',
   },
-  {  color: '#AB47BC',
+  {  color: '#9C27B0',
   },
-  {  color: '#5C6BC0',
+  {  color: '#673AB7',
   },
-  {  color: '#26C6DA',
+  {  color: '#3F51B5',
   },
-  {  color: '#26A69A',
+  {  color: '#009688',
   },
-  {  color: '#FFA726',
+  {  color: '#FF9800',
   },
-  {  color: '#78909C',
+  {  color: '#607D8B',
   },
        ]; 
 

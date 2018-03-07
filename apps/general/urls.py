@@ -13,5 +13,7 @@ urlpatterns = [
     url(r'^login/', login, {'template_name': 'login.html','authentication_form': forms.LoginForm}, name='login'),
     url(r'^logout/$', logout, {'next_page': '/exit'}, name='logout'),
     url(r'^new/', TemplateView.as_view(template_name='feedback/new_form.html')),
+    url(r'^exit/', views.exit_view),
+    url(r'^done', views.done_view),
 
 ]

@@ -163,10 +163,10 @@ def done_view(request):
 	'''
 	Gets the rating after completion of feedback and redirects to home page.
 	'''
-	rating = request.GET.get("rating")
-	if str(rating) == 'None':
-		rating = 5
-	starts = Rating.objects.create(star=rating)
+	# rating = request.GET.get("rating")
+	# if str(rating) == 'None':
+	# 	rating = 5
+	# starts = Rating.objects.create(star=rating)
 	return redirect('/')
 
 
