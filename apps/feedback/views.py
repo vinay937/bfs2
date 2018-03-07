@@ -42,11 +42,13 @@ class FeedbackView(FormView):
 	def get_context_data(self, **kwargs):
 		context = super(FeedbackView, self).get_context_data(**kwargs)
 
-		recipients = self.request.session['recipients']
-		recipients = self.get_list(get_user_model(), recipients)
+		recipients = self.request.session.get('recipients')
+		if recipients:
+			recipients = self.get_list(get_user_model(), recipients)
 
 		post_recipients = self.request.session.get('post_recipients')
-		post_recipients = self.get_list(get_user_model(), post_recipients)
+		if post_recipients:
+			post_recipients = self.get_list(get_user_model(), post_recipients)
 
 		
 		context['recipients'] = recipients

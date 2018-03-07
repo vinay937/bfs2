@@ -181,6 +181,7 @@ h3{
                  <li class="sidebar-brand">
                     <a href="#" class="navbar-brand">Welcome, {{ recipient_name }} {{ form_recipient_name}}</a>
                 </li>
+                {% if recipients %}
                 <div class="dropdown">
                     <button style="background-color:black;color:#999;" class="btn dropdown-toggle" type="button" data-toggle="dropdown">Peers
                     <span class="caret"></span></button>
@@ -192,6 +193,7 @@ h3{
                         {% endfor %}
                     </ul>
                 </div>
+                {% endif %}
                 {% for fr in form_recipients %}
                 <li>
                     <a href="#">{{ fr }}</a>

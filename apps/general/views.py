@@ -266,6 +266,7 @@ class MainView(TemplateView):
 		context = super(MainView, self).get_context_data(**kwargs)
 		self.user = self.request.user
 		self.user_types = self.user.user_type.all()
+		self.request.session['count'] = 0
 		
 
 		# if the user is hod as well as faculty, faculties mandatory forms shouldn't 
