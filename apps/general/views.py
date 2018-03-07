@@ -18,6 +18,7 @@ from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 from django.core import serializers
+from django.forms.models import model_to_dict
 
 import json
 import csv
@@ -92,7 +93,7 @@ class HomeView(FormView):
 					'Feedback OTP',
 					'Hi,' + qs.first_name + '\n\n' +'Your OTP for feedback is:' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedback@bmsit.in>',
-					['aayush@bmsit.in',],
+					['agrawala.1697@gmail.com',],
 					)
 		#email.send()
 		print('OR: ' + qs.password)
@@ -222,13 +223,15 @@ class MainView(TemplateView):
 		hod = UserType.objects.get(name="Hod")
 
 		faculties = get_user_model().objects.filter(department=self.user.department,
-			user_type__in=self.user_types).exclude(pk=self.user.pk, user_type__in=[hod,])
+			user_type__in=self.user_types).exclude(pk=self.user.pk)
 
 		recipient_list = []
 		for i in faculties:
-			recipient_list.append(i.username)
+			recipient_list.append(i.pk)
 		self.request.session['recipients'] = recipient_list
-		print(self.request.session['recipients'])
+
+		#This is used in post and will be removed on by one
+		self.request.session['post_recipients'] = recipient_list
 
 		self.request.session['count'] = faculties.count()
 
@@ -246,9 +249,12 @@ class MainView(TemplateView):
 		print(hods)
 		recipient_list = []
 		for i in hods:
-			recipient_list.append(i.username)
+			recipient_list.append(i.pk)
 		self.request.session['recipients'] = recipient_list
-		print(self.request.session['recipients'])
+
+		#This is used in post and will be removed on by one
+		self.request.session['post_recipients'] = recipient_list
+
 		self.request.session['count'] = hods.count()
 		# print(hods)
 		# remove the form as it is already counted
@@ -279,8 +285,19 @@ class MainView(TemplateView):
 
 		for form in self.forms:
 			self.request.session['count'] += 1
-		self.request.session['form'] = self.serialize_obj(self.forms)
-		print(self.request.session['form'])		
+
+		form_list = list()
+		for f in self.forms:
+			form_list.append(f.pk)
+		self.request.session['form'] = form_list
+
+		# they are the remaining recipients of the iterable forms
+		form_recipients = list()
+		for f in self.forms:
+			form_recipients.append(f.recipient.name)
+
+		self.request.session['form_recipients'] = form_recipients
+
 		return context
 
 	def get(self, request, *args, **kwargs):

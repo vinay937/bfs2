@@ -126,6 +126,18 @@
         margin-right: 0;
     }
 }
+form li {
+	list-style-type: none !important;
+	display: inline-block !important;
+    margin-left:2%;
+}
+h3{
+    font-size: 1.5em;
+}
+.active {
+    background-color:#999 !important;
+    color:white;
+}
 </style>
 </head>
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -144,7 +156,7 @@
                 <!-- <li><a href="#"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> Home</a></li>
 				<li><a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Messages </a></li>
              	<li><a href="#"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Help</a></li> -->
-                <li><a href="#"> Subject Name</a></li>
+                <!-- <li><a href="#"> Subject Name</a></li> -->
             </ul>
             <!-- <form class="navbar-form navbar-right" action="#" method="GET">
            		<div class="input-group">
@@ -166,12 +178,25 @@
               	<li class="sidebar-brand">
                     <br>
                 </li>
-                <li class="sidebar-brand">
-                    <a href="#" class="navbar-brand">Welcome, {{ recipients_name }}</a>
+                 <li class="sidebar-brand">
+                    <a href="#" class="navbar-brand">Welcome, {{ recipient_name }} {{ form_recipient_name}}</a>
                 </li>
+                <div class="dropdown">
+                    <button style="background-color:black;color:#999;" class="btn dropdown-toggle" type="button" data-toggle="dropdown">Peers
+                    <span class="caret"></span></button>
+                    <ul style="position:relative;background-color:black;" class="dropdown-menu">
+                        {% for rn in recipients %}
+                        <li style="margin-left:-5%;">
+                            <a href="#">{{ rn.first_name }}</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% for fr in form_recipients %}
                 <li>
-                    <a href="#"> Subject list</a>
+                    <a href="#">{{ fr }}</a>
                 </li>
+                {% endfor %}
                 <!-- <li>
                     <a href="#"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search</a>
                 </li>                
@@ -203,20 +228,17 @@
                 <div class="row">
                     <div class="col-lg-12">
                       <br><br><br>
-                      <form method="post" action=".">{% csrf_token %}
-					    {{ formset.management_form }}
-					    <table>
-					        {% for form in formset %}
-					        {{ form }}
-					        {% endfor %}
-					    </table>
-					    <input type="submit">
-					</form>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-lg-12">
-						Your Content
+                      <p><form style="width:100%;" method="post" action=".">{% csrf_token %}
+                        {{ formset.management_form }}
+					    {% for form, que in form_zip %}
+                        <br>
+                        <li style="margin-left:5%;"><h3>{{ que.text }} :</h3></li>
+                        <br><br>
+                        {{ form }}
+                        <br>
+                        {% endfor %}
+					</form></p>
+					<button type="submit" id="submit" style="background-color: black;color:white;border:1px solid black;" class="btn btn-lg">Submit</button>
                     </div>
                 </div>
             </div>
@@ -224,7 +246,18 @@
         <!-- /#page-content-wrapper -->
     </div>
 </div>
-<!-- /#wrapper -->
+<!-- <script>
+    $(document).on('submit', 'form', function() {
+        
+    });
+</script> -->
+<script>
+    $('.sidebar-nav ul li').first().addClass('active').attr('id', 'first');
+    $('#submit').click(function() {
+        $('form').submit();
+        $('#first').next().addClass('active').siblings().removeClass('active');
+    })
+</script>
 <script>
     $("#menu-toggle").click(function(e) {
         e.preventDefault();

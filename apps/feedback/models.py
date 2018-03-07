@@ -60,6 +60,7 @@ class Answer(models.Model):
 	ANSWER_CHOICES = [('Excellent','Excellent'), ('Good','Good'), ('Satisfactory','Satisfactory'), ('Poor', 'Poor'), ('Very Poor', 'Very Poor')]
 	value = models.CharField(max_length=50, choices=ANSWER_CHOICES)
 	
+	form = models.ForeignKey('feedbackform', null=True)
 	recipient = models.ForeignKey(get_user_model(), null=True)
 
 	def __str__(self):
