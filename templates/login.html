@@ -4053,6 +4053,24 @@ Copyright (c) 2015 Daniel Eden
   },
        ]; 
 
+    var colors = [
+  {  color: '#880E4F',
+  },
+  {  color: '#4A148C',
+  },
+  {  color: '#1A237E',
+  },
+  {  color: '#311B92',
+  },
+  {  color: '#01579B',
+  },
+  {  color: '#006064',
+  },
+  {  color: '#1B5E20',
+  },
+  {  color: '#3E2723',
+  },
+    ]
 /**
  * Returns a random integer between min and max
  * Using Math.round() will give you a non-uniform distribution!
@@ -4063,7 +4081,8 @@ function getRandomInt (min, max) {
 
        $(document).ready(function(){
          var bgNumber = getRandomInt(0, backgrounds.length-1);
-         
+         var headerColor = getRandomInt(0, colors.length-1);
          $('body').css('background-color', backgrounds[bgNumber].color);
+         $('.box-header').css('background-color', colors[headerColor].color);
        });
   </script>
