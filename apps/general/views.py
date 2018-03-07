@@ -95,7 +95,7 @@ class HomeView(FormView):
 					'Feedback Support <feedback@bmsit.in>',
 					['agrawala.1697@gmail.com',],
 					)
-		#email.send()
+		email.send()
 		print('OR: ' + qs.password)
 
 	def is_admin(self, user):
