@@ -4,4 +4,10 @@ from .models import *
 
 admin.site.register(FeedbackForm)
 admin.site.register(Question)
-admin.site.register(Answer)
+
+@admin.register(Answer)
+class AnswerAdmin(admin.ModelAdmin):
+
+	fieldsets = (
+		(None, {'fields': ('question', 'teacher', 'form', 'recipient')}),
+	)
