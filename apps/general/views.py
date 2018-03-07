@@ -274,7 +274,7 @@ class MainView(TemplateView):
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 			self._faculty_mandatory()
 
-		if self.user.is_hod():
+		elif self.user.is_hod():
 			# faculty mandatory forms are not required, so removed them
 			faculty = UserType.objects.get(name="Faculty")
 
@@ -282,6 +282,9 @@ class MainView(TemplateView):
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 			
 			self._hod_mandatory()
+
+		else:
+			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 
 		for form in self.forms:
 			self.request.session['count'] += 1
