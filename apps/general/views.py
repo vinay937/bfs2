@@ -93,7 +93,7 @@ class HomeView(FormView):
 					'Feedback OTP',
 					'Hi,' + qs.first_name + '\n\n' +'Your OTP for feedback is:' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedback@bmsit.in>',
-					['bhargavsagiraju@gmail.com',],
+					[qs.email,],
 					)
 		email.send()
 		print('OR: ' + qs.password)
@@ -111,7 +111,6 @@ class HomeView(FormView):
 
 	def post(self, request, *args, **kwargs):
 		random_otp = r''.join(random.choice('01234ABCD') for i in range(8))
-		print(random_otp)
 		try:
 			otp_page = 'login.html'
 			usn = request.POST.get("usn1")

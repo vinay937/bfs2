@@ -193,7 +193,7 @@ li {
   background: #FFFFFF;
   max-width: 350px;
   margin: 0 auto 100px;
-  padding: 45px;
+  padding: 35px;
   text-align: center;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
 }
@@ -208,11 +208,10 @@ li {
   box-sizing: border-box;
   font-size: 14px;
 }
-.form button {
+.signin {
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   outline: 0;
-  background: #4CAF50;
   width: 100%;
   border: 0;
   padding: 15px;
@@ -221,9 +220,24 @@ li {
   -webkit-transition: all 0.3 ease;
   transition: all 0.3 ease;
   cursor: pointer;
+  border-radius: 0%;
 }
-.form button:hover,.form button:active,.form button:focus {
-  background: #43A047;
+.signin:hover {
+  color:black;
+}
+.form a {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition: all 0.3 ease;
+  transition: all 0.3 ease;
+  cursor: pointer;
+  border-radius:0%;
 }
 .form .message {
   margin: 15px 0 0;
@@ -279,28 +293,42 @@ body {
   .main-title {
     margin-top:7% !important;
   }
-  .form {
-    margin-top:30% !important;
+  #thick {
+    font-size:0.7em !important;
+    vertical-align:4px !important;
   }
+  .thin {
+    font-size:1em !important;
+  }
+  .form {
+    margin-top:25% !important;
+  }
+}
+.alert {
+    padding: 10px;
+    background-color: #68061e;
+    color: white;
+    text-align: center;
 }
 </style>
 </head>
-<!-- {% for message in messages %}
+{% for message in messages %}
     <div class="alert">
         <strong>{{ message }}</strong>
     </div>
-{% endfor %} -->
-<h1 style="margin-top:5%;z-index:100;" class="main-title"><span style="vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#004c4a;" class="thin">360</span></h1>
+{% endfor %}
+<center><h1 style="z-index:100;" class="main-title"><span id="thick" style="font-size:1em;vertical-align:11px;">Feedback</span> <span style="font-size:2em;color:#004c4a;" class="thin">360</span></h1></center>
 <div class="login-page">
-  <div style="margin-top:30%;" class="form">
+  <div style="margin-top:25%;" class="form">
     <img style="margin-top:-5%;margin-bottom:5%;" width="50" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png">
     <form class="login-form" action="#" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
       <!-- <input id="usn" name="usn1" type="text" placeholder="Username/USN"/> -->
       <!-- <input type="password" placeholder="password"/> -->
       <p style="color:black;" id="usn1">{{ form.username }}</p>
             <p style="color:black;">{{ form.password }}</p>
-            <p style="z-index:100;"><i id="eye" class="fa fa-eye" aria-hidden="true"></i></p>
-      <button value="login" name="myButton">login</button>
+            <p style="z-index:100;"><i onclick="myFunction()" id="eye" class="fa fa-eye" aria-hidden="true"></i></p>
+      <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Sign In">
+      <a style="margin-top:1%;width:100%;" class="btn" data-toggle="modal" data-target="#cbModal">Need Help?</a>
     </form>
   </div>
 </div>
@@ -330,23 +358,18 @@ body {
         </form>
         </div>
 </div> -->
-        <script>
-            var timeoutId = 0;
-            var button = document.getElementById('eye');
-            var box = document.getElementById('otp');
-            $button.mousedown(function() {
-            timeoutId = setTimeout(function(){
-            showPass('text');
-                }, 100);
-            }).bind('mouseup', function() {
-            clearTimeout(timeoutId);
-                showPass('password');
-            });
-
-            function showPass(val){
-                $box.prop('type', val);
-            }
-        </script>
+<script>
+function myFunction() {
+    var x = document.getElementById("otp");
+    if (x.type === "password") {
+        x.type = "text";
+        $('#eye').addClass('fa-eye-slash');
+    } else {
+        x.type = "password";
+        $('#eye').removeClass('fa-eye-slash');
+    }
+}
+</script>
         <script>
             window.location.hash = window.location.pathname;
             GetURLParameter('usn');
@@ -595,25 +618,6 @@ body {
   {  color: '#607D8B',
   },
        ]; 
-
-    var colors = [
-  {  color: '#880E4F',
-  },
-  {  color: '#4A148C',
-  },
-  {  color: '#1A237E',
-  },
-  {  color: '#311B92',
-  },
-  {  color: '#01579B',
-  },
-  {  color: '#006064',
-  },
-  {  color: '#1B5E20',
-  },
-  {  color: '#3E2723',
-  },
-    ]
 /**
  * Returns a random integer between min and max
  * Using Math.round() will give you a non-uniform distribution!
@@ -624,8 +628,8 @@ function getRandomInt (min, max) {
 
        $(document).ready(function(){
          var bgNumber = getRandomInt(0, backgrounds.length-1);
-         var headerColor = getRandomInt(0, colors.length-1);
          $('body').css('background-color', backgrounds[bgNumber].color);
-         $('.box-header').css('background-color', colors[headerColor].color);
+         $('.signin').css('background-color', backgrounds[bgNumber].color);
+         $('form a').css('background-color', backgrounds[bgNumber].color);
        });
   </script>
