@@ -12,16 +12,13 @@ limitations under the License.
 -->
 {% load static %}
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/EasePack.min.js"></script>
-    <script src="https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/rAF.js"></script>
-    <script src="https://www.marcoguglie.it/Codepen/AnimatedHeaderBg/demo-1/js/TweenLite.min.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
     <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
 <style>
 ::-webkit-scrollbar {
@@ -185,7 +182,6 @@ li {
 .send_btn {
     margin-top: -12%;
 }
-
 .login-page {
   width: 360px;
   padding: 8% 0 0;
@@ -195,7 +191,7 @@ li {
   position: relative;
   z-index: 1;
   background: #FFFFFF;
-  max-width: 360px;
+  max-width: 350px;
   margin: 0 auto 100px;
   padding: 45px;
   text-align: center;
@@ -278,6 +274,14 @@ body {
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
+}
+@media(max-width:776px) {
+  .main-title {
+    margin-top:10% !important;
+  }
+  .form {
+    margin-top:40% !important;
+  }
 }
 </style>
 </head>
