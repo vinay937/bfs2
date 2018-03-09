@@ -93,7 +93,7 @@ class HomeView(FormView):
 					'Feedback OTP',
 					'Hi,' + qs.first_name + '\n\n' +'Your OTP for feedback is:' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedback@bmsit.in>',
-					[qs.email,],
+					['amoghsk279@gmail.com',],
 					)
 		email.send()
 		print('OR: ' + qs.password)
@@ -133,7 +133,7 @@ class HomeView(FormView):
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "OTP " + random_otp + " sent to "+qs.phone+" and "+qs.email)
+						messages.error(request, "OTP sent to "+qs.phone+" and "+qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only phone exists    

@@ -520,15 +520,13 @@ document.getElementById('toggleProfile').addEventListener('click', function () {
 </script>
 <script>
     var backgrounds = [
-  {  color: '#F44336',
+  {  color: '#F44336', button: '#FFFF00',
   },
-  {  color: '#E91E63',
-  },
-  {  color: '#9C27B0',
+  {  color: '#9C27B0', button: '#00E676',
   },
   {  color: '#673AB7',
   },
-  {  color: '#3F51B5',
+  {  color: '#3F51B5', button: '#F50057', 
   },
   {  color: '#009688',
   },
@@ -548,7 +546,8 @@ function getRandomInt (min, max) {
        $(document).ready(function(){
          var bgNumber = getRandomInt(0, backgrounds.length-1);
          $('body').css('background-color', backgrounds[bgNumber].color);
-         $('.signin').css('background-color', backgrounds[bgNumber].color);
+         $('.signin').css('background-color', backgrounds[bgNumber].button);
          $('form a').css('background-color', backgrounds[bgNumber].color);
+         $('.thin').css('color', backgrounds[bgNumber].button);
        });
   </script>
