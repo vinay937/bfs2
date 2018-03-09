@@ -306,7 +306,6 @@ body {
 }
 .alert {
     padding: 10px;
-    background-color: #68061e;
     color: white;
     text-align: center;
 }
@@ -601,21 +600,19 @@ function myFunction() {
 </script>
 <script>
     var backgrounds = [
-  {  color: '#F44336',
+  {  color: '#F44336', button: '#FFC107', alert: '#B71C1C',
   },
-  {  color: '#E91E63',
+  {  color: '#9C27B0', button: '#00E676', alert: '#4A148C',
+  }, 
+  {  color: '#673AB7', button: '#F50057', alert: '#673AB7',
   },
-  {  color: '#9C27B0',
+  {  color: '#3F51B5', button: '#F50057', alert: '#1A237E',
   },
-  {  color: '#673AB7',
+  {  color: '#009688', button: '#FF5252', alert: '#004D40',
   },
-  {  color: '#3F51B5',
+  {  color: '#FF9800', button: '#757575', alert: '#E65100',
   },
-  {  color: '#009688',
-  },
-  {  color: '#FF9800',
-  },
-  {  color: '#607D8B',
+  {  color: '#795548', button: '#C0CA33', alert: '#3E2723',
   },
        ]; 
 /**
@@ -629,7 +626,9 @@ function getRandomInt (min, max) {
        $(document).ready(function(){
          var bgNumber = getRandomInt(0, backgrounds.length-1);
          $('body').css('background-color', backgrounds[bgNumber].color);
-         $('.signin').css('background-color', backgrounds[bgNumber].color);
+         $('.signin').css('background-color', backgrounds[bgNumber].button);
          $('form a').css('background-color', backgrounds[bgNumber].color);
+         $('.thin').css('color', backgrounds[bgNumber].button);
+         $('.alert').css('background-color', backgrounds[bgNumber].alert);
        });
   </script>
