@@ -47,12 +47,11 @@ class UserAdapter(BestMatch):
 			if len(user) > 1:
 				txt = ''
 				for u in user:
-					print(u)
 					txt += 'Name : ' + u.first_name + '<br>' + 'Username : ' + u.username + '<br>'
 				response = Statement('More than one results obtained: <br>' + txt)
 				confidence = 2
 			else:
-				response = Statement('You are {} <br> Your username to log in is {}.'.format(user.first_name, user.username))
+				response = Statement('You are {} <br> Your username to log in is {}.'.format(user[0].first_name, user[0].username))
 				confidence = 2
 		else:
 			response = Statement('A man has no name')
