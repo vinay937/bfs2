@@ -171,7 +171,7 @@ h3{
                     <ul style="position:relative;background-color:black;" class="dropdown-menu">
                         {% for rn in recipients %}
                         <li {% if rn.first_name == recipient_name %} class="active" {% endif %} id="recipient_list" value="{{rn.first_name}}" style="margin-left:-5%;">
-                            <a href="#">{{ rn.first_name }}</a>
+                            <a style="cursor:not-allowed;" class="disabled">{{ rn.first_name }}</a>
                         </li>
                         {% endfor %}
                     </ul>

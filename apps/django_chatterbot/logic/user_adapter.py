@@ -36,9 +36,24 @@ class UserAdapter(BestMatch):
 				user = get_user_model().objects.get(email=statement.text)
 			except get_user_model().DoesNotExist:
 				user = None
+		else:
+			try:
+				user = get_user_model().objects.filter(first_name__icontains=statement.text)
+				print(user)
+			except get_user_model().DoesNotExist:
+				user = None
 		
 		if user:
-			response = Statement('You are {} <br> Your username to log in is {}.'.format(user.first_name, user.username))
+			if len(user) > 1:
+				txt = ''
+				for u in user:
+					print(u)
+					txt += 'Name : ' + u.first_name + '<br>' + 'Username : ' + u.username + '<br>'
+				response = Statement('More than one results obtained: <br>' + txt)
+				confidence = 2
+			else:
+				response = Statement('You are {} <br> Your username to log in is {}.'.format(user.first_name, user.username))
+				confidence = 2
 		else:
 			response = Statement('A man has no name')
 
