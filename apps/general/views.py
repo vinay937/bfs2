@@ -42,6 +42,13 @@ from django.core.mail import send_mail, EmailMessage
 from .models import *
 from django.db.models import Avg
 
+
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+import smtplib
+
+import psycopg2
+
 # Create your views here.
 
 def handler404(request):
@@ -118,7 +125,7 @@ class HomeView(FormView):
 			otp_page = otp_page + '/usn/' + usn
 			qs = get_user_model().objects.get(username=usn)
 			#Checks if user is admin and redirects directly
-			self.is_admin(qs) 
+			self.is_admin(qs)
 
 			# Checks if done=False
 			if not qs.done :
@@ -127,7 +134,7 @@ class HomeView(FormView):
 					# Checks if both email and phone doesn't exist
 					if not qs.email and not qs.phone:
 						messages.error(request, "Contact details incomplete. Contact coordinator")
-					
+
 					# Checks if both email and phone exist
 					elif qs.email and qs.phone:
 						self.phone_otp(random_otp, qs.phone, usn)
@@ -136,14 +143,14 @@ class HomeView(FormView):
 						messages.error(request, "OTP sent to "+qs.phone+" and "+qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
-					# Checks if only phone exists    
+					# Checks if only phone exists
 					elif qs.phone and not qs.email:
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.password_update(random_otp, usn)
 						messages.error(request, "Email not found, OTP sent to "+qs.phone)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
-					# Checks if only email exists    
+					# Checks if only email exists
 					elif qs.email and not qs.phone:
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
@@ -156,7 +163,7 @@ class HomeView(FormView):
 		except User.DoesNotExist:
 			messages.error(request, "Invalid USN")
 		return render(request, self.template_name)
-		
+
 
 def done_view(request):
 	'''
@@ -193,18 +200,18 @@ def get_rating_view(request):
 class MainView(TemplateView):
 	'''
 	Checks for the type of user and renders the count and users of their mandatory
-	forms. 
+	forms.
 	All the other individual forms are generated subsequently
 
 	Passing the following to the variabes to the session
-	`faclties` - if the user is a faculty, a list of all the faculties of 
-		same department except the the user is stored 
+	`faclties` - if the user is a faculty, a list of all the faculties of
+		same department except the the user is stored
 	`hods` - if the user is hod, a list all the hods from different departments
 		 are stored
 	`count` - it is the total no of forms that the user needs to give feedback for.
 		ie, for a faculty no. of collegues + no of individual forms
 
-	TODO:// 
+	TODO://
 		1 - Move this to general `views.py` . Doesn't belong here
 		2 - Add student check
 	'''
@@ -214,7 +221,7 @@ class MainView(TemplateView):
 
 	def _faculty_mandatory(self):
 		"""
-		This is a compulsory form for the faculty where they give the 
+		This is a compulsory form for the faculty where they give the
 		feedack to he other faculties
 		"""
 
@@ -236,7 +243,7 @@ class MainView(TemplateView):
 
 		# remove the form as it is already counted
 		self.forms = self.forms.exclude(code="FF")
-		
+
 		return
 
 	def _hod_mandatory(self):
@@ -258,7 +265,7 @@ class MainView(TemplateView):
 		# print(hods)
 		# remove the form as it is already counted
 		self.forms = self.forms.exclude(code="HH")
-		
+
 		return
 
 	def get_context_data(self, **kwargs):
@@ -266,9 +273,9 @@ class MainView(TemplateView):
 		self.user = self.request.user
 		self.user_types = self.user.user_type.all()
 		self.request.session['count'] = 0
-		
 
-		# if the user is hod as well as faculty, faculties mandatory forms shouldn't 
+
+		# if the user is hod as well as faculty, faculties mandatory forms shouldn't
 		# be displayed
 		if self.user.is_faculty() and not self.user.is_hod():
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
@@ -280,7 +287,7 @@ class MainView(TemplateView):
 
 			self.user_types = self.user_types.exclude(name="Faculty")
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
-			
+
 			self._hod_mandatory()
 
 		else:
@@ -314,6 +321,46 @@ class MainView(TemplateView):
 	    return data
 
 
+
+def faculty_remaining(request):
+
+	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5433')
+	cursor = conn.cursor()
+
+	cursor.execute("SELECT department_id, first_name  FROM general_user WHERE done = 'false' GROUP BY department_id, first_name ORDER BY department_id, first_name ")
+	data = cursor.fetchall()
+	count = len(data)
+	str1 = 'Pending: %d/194\nDepartment Name\n' %(count)
+	data = data[:-4]
+
+	for i in data:
+	    str1 += '%s %s\n'%(i[0],i[1].title())
+	print(str1)
+
+
+	print(len(data))
+
+
+	server = smtplib.SMTP('smtp.gmail.com', 587)
+	server.ehlo()
+	server.starttls()
+	server.ehlo()
+	server.login("feedback@bmsit.in", "Feedback@01")
+
+	fromaddr = "feedback@bmsit.in"
+	toaddr = "vishakhay@bmsit.in"
+	msg = MIMEMultipart()
+	msg['From'] = fromaddr
+	msg['To'] = toaddr.strip()
+	msg['Subject'] = "Feedback pending"
+	body = str1
+	msg.attach(MIMEText(body, 'plain'))
+	text = msg.as_string()
+	server.sendmail(fromaddr, toaddr, text)
+	template_name = 'faculty_pending.html'
+	return render(request, template_name)
+
+
 # @login_required(login_url='/signin/')
 # def main_view(request):
 # 	'''
@@ -325,7 +372,7 @@ class MainView(TemplateView):
 # 	# Taking total subject count - IF WORKS, TO BE REMOVED
 # 	# total = Subject.objects.filter(semester=user.semester,
 # 	#                     dno=user.dno).count()
-	
+
 # 	# Getting all the subjects instances
 # 	if user.mtech:
 # 		sub_obj = Subject.objects.filter(semester=user.semester,
@@ -333,15 +380,15 @@ class MainView(TemplateView):
 # 	else:
 # 		sub_obj = Subject.objects.filter(semester=user.semester,
 # 						dno=user.dno, mtech=False)
-	
+
 # 	sub_list = []
 # 	sub_list_name = []
-	
+
 # 	# Getting `sub_code` to get the `*teaches` model
 # 	for i in sub_obj:
 # 		sub_list.append(i.sub_code)
 
-# 	faculty = [] 
+# 	faculty = []
 
 # 	# Getting theory subjects
 # 	for sub in sub_list:
@@ -362,7 +409,7 @@ class MainView(TemplateView):
 # 	no_of_elective = 2
 
 # 	# Fir m
-	
+
 # 	# Only accessed if student has electives
 # 	if user.semester >= eletive_semester and not user.mtech and user.dno.dno is not 8:
 # 		f = [] # Getting elecitves
@@ -430,7 +477,7 @@ class MainView(TemplateView):
 
 # 	faculty_name = []
 # 	faculty_id = []
-	
+
 # 	#getting faculty name
 # 	for a in faculty:
 # 		faculty_name.append(a.fid.fname)
@@ -494,7 +541,7 @@ class MainView(TemplateView):
 # 	Shows the dashboard values
 # 	'''
 # 	template_name = 'dashboard.html'
-	
+
 # 	def get_context_data(self, **kwargs):
 # 		context = super(Dashboard, self).get_context_data(**kwargs)
 # 		total_done = 0
