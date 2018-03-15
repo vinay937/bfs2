@@ -69,6 +69,13 @@ class User(AbstractUser):
 			return True
 		return False
 
+	def is_student(self):
+		student = UserType.objects.get(name="Student")
+		if student in self.user_type.all():
+			return True
+		else:
+			return False
+
 	def get_user_type(self):
 		return self.user_type.all()[0]
 
