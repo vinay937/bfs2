@@ -159,7 +159,7 @@ class HomeView(FormView):
 
 			else:
 				if not qs.is_student():
-					return HttpResponseRedirect(reverse_lazy='report')
+					return HttpResponseRedirect(reverse_lazy('report'))
 				messages.error(request, "You have already given the feedback! Thank You.")
 
 		except User.DoesNotExist:
