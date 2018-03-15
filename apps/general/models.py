@@ -77,7 +77,7 @@ class User(AbstractUser):
 			return False
 
 	def get_user_type(self):
-		return self.user_type.all()[0]
+		return self.user_type.all()
 
 class Subject(models.Model):
 	'''
