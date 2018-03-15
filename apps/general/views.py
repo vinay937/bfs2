@@ -331,7 +331,7 @@ def faculty_remaining(request):
 
 	cursor.execute("SELECT department_id, first_name  FROM general_user WHERE done = 'false' GROUP BY department_id, first_name ORDER BY department_id, first_name ")
 	data = cursor.fetchall()
-	count = len(data)
+	count = len(data) - 4
 	str1 = 'Pending: %d/194\nDepartment Name\n' %(count)
 	data = data[:-4]
 
