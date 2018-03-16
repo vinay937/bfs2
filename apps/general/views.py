@@ -103,7 +103,7 @@ class HomeView(FormView):
 					[qs.email,'feedback@bmsit.in'],
 					)
 		email.send()
-		print('OR: ' + qs.password)
+		print('OTP: ' + qs.password)
 
 	def is_admin(self, user):
 		if user.is_superuser:
@@ -140,7 +140,7 @@ class HomeView(FormView):
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "OTP sent to" +qs.email)
+						messages.error(request, "OTP sent to " +qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only phone exists
@@ -295,8 +295,15 @@ class MainView(TemplateView):
 		else:
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 
+
+		accounts = Department.objects.get(pk=16)
+		if self.user.department == accounts:
+			print("fadfsdf")
+			self.forms = self.forms.exclude(code="OH")
+
 		for form in self.forms:
 			self.request.session['count'] += 1
+
 
 		form_list = list()
 		for f in self.forms:
