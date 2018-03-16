@@ -128,7 +128,7 @@ class HomeView(FormView):
 			self.is_admin(qs)
 
 			# Checks if done=False
-			if not qs.done :
+			if not qs.done or not qs.is_student():
 
 				if qs:
 					# Checks if both email and phone doesn't exist
@@ -158,8 +158,6 @@ class HomeView(FormView):
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 			else:
-				if not qs.is_student():
-					return HttpResponseRedirect(reverse_lazy('report'))
 				messages.error(request, "You have already given the feedback! Thank You.")
 
 		except User.DoesNotExist:
@@ -276,7 +274,6 @@ class MainView(TemplateView):
 		self.user_types = self.user.user_type.all()
 		self.request.session['count'] = 0
 
-
 		# if the user is hod as well as faculty, faculties mandatory forms shouldn't
 		# be displayed
 		if self.user.is_faculty() and not self.user.is_hod():
@@ -321,6 +318,10 @@ class MainView(TemplateView):
 
 	def get(self, request, *args, **kwargs):
 		context = self.get_context_data(**kwargs)
+
+		if not self.user.is_student() and self.user.done:
+			return HttpResponseRedirect(reverse_lazy('report'))
+			
 		return HttpResponseRedirect('/entry')
 
 	def serialize_obj(self, obj):

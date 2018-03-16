@@ -167,6 +167,7 @@ class Report(TemplateView):
 	def get_context_data(self, *args, **kwargs):
 		context = super(Report, self).get_context_data(*args, **kwargs)
 		user_type = self.request.user.get_user_type()
+		print(user_type)
 		forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
 		print(forms)
 		results = dict()
