@@ -26,7 +26,7 @@ class FeedbackForm(models.Model):
 	# The type of the user that will receive feedback through this form
 	recipient = models.ForeignKey('general.UserType', 
 		help_text='Type of user that is receiving the feedback for this form', 
-		related_name='form'
+		related_name='form', null=True
 		)
 
 	active = models.BooleanField(default=True)
