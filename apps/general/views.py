@@ -320,8 +320,8 @@ class MainView(TemplateView):
 		context = self.get_context_data(**kwargs)
 
 		if not self.user.is_student() and self.user.done:
-			return HttpResponseRedirect(reverse_lazy('report'))
-			
+			return HttpResponseRedirect(reverse_lazy('dashboard'))
+
 		return HttpResponseRedirect('/entry')
 
 	def serialize_obj(self, obj):

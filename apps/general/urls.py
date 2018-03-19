@@ -16,5 +16,5 @@ urlpatterns = [
     url(r'^exit/', views.exit_view),
     url(r'^done', views.done_view),
     url(r'^faculty-pending/', views.faculty_remaining),
-    url(r'^dashboard/', views.Dashboard.as_view()),
+    url(r'^dashboard/', views.Dashboard.as_view(), name='dashboard'),
 ]
