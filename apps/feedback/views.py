@@ -50,7 +50,7 @@ class FeedbackView(FormView):
 		if post_recipients:
 			post_recipients = self.get_list(get_user_model(), post_recipients)
 
-		
+
 		context['recipients'] = recipients
 
 		count = self.request.session['count']
@@ -84,7 +84,7 @@ class FeedbackView(FormView):
 			elif iterable_forms:
 				feedback_form = iterable_forms[0]
 				question_count = feedback_form.question.all().count()
-				AnswerFormset = modelformset_factory(Answer, 
+				AnswerFormset = modelformset_factory(Answer,
 					form=FeedbackAnswerForm, extra=question_count)
 				formset = AnswerFormset(queryset=Answer.objects.none())
 				context['formset'] = formset
@@ -126,26 +126,26 @@ class FeedbackView(FormView):
 						question = feedback_form.question.all()
 						for form, que in zip(formset, question):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que, 
+							answer = Answer.objects.create(question=que,
 								value=ans, recipient=recipient, form=feedback_form)
 					elif self.request.user.is_faculty():
 						feedback_form = FeedbackForm.objects.get(code='FF')
 						question = feedback_form.question.all()
 						for form, que in zip(formset, question):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que, 
+							answer = Answer.objects.create(question=que,
 								value=ans, recipient=recipient, form=feedback_form)
 
 					del self.request.session['post_recipients'][0]
 					self.request.session['post_recipients'] = self.request.session['post_recipients']
-					print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients']) )	
+					print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients']) )
 
 				elif iterable_forms:
 					feedback_form = iterable_forms[0]
 					question_count = feedback_form.question.all().count()
 					for form, que in zip(formset, feedback_form.question.all()):
 						ans = form.cleaned_data.get('answer')
-						answer = Answer.objects.create(question=que, 
+						answer = Answer.objects.create(question=que,
 								value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
 
 					# remove the forms once done
@@ -177,6 +177,19 @@ class Report(TemplateView):
 		context['results'] = results
 		return context
 
+def report_scraper(request, username):
+	template_name = "feedback/report.html"
+	user = User.objects.get(username=username)
+	user_type = user.get_user_type()
+	print(user_type)
+	forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
+	print(forms)
+	results = dict()
+	for form in forms:
+		answers = Answer.objects.filter(form=form, recipient=user)
+		results[form] = answers
+	context = {"results" : results}
+	return render(request, template_name, context)
 
 # def feedback(request):
 # 	'''
@@ -204,7 +217,7 @@ class Report(TemplateView):
 # 				for form, que in zip(formset, FeedbackQuestion.objects.filter(que_type='T')):
 # 					ans = form.cleaned_data.get('answer')
 # 					answer = FeedbackAnswer(answer=ans, faculty=teacher, question=que,
-# 						sem_sec=stud_class, 
+# 						sem_sec=stud_class,
 # 						sub=request.session['curr'],
 # 						dno = user.dno,
 # 						)
@@ -774,4 +787,3 @@ class Report(TemplateView):
 # 		context['percent'] = ((146 - count)/146)*100
 # 		context['count'] = count
 # 		return render(request, self.template_name, context)
-
