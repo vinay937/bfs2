@@ -40,7 +40,11 @@ table {
 	width: 100%;
 	height: 80%;
 }
-
+@media print {
+	.pie_chart {
+		page-break-after: always;
+	}
+}
 td, th {
 	border: 1px solid #dddddd;
 	text-align: left;
@@ -66,6 +70,7 @@ table, th, td {
 #myDiv {
 	width: 50%;
 }
+
 </style>
 </head>
 <body>
@@ -133,22 +138,11 @@ table, th, td {
 				  </tr>
 			  </tbody>
 			</table>
-			{% endwith %}
 			<p>Total number of feedbacks received: <span id="total_feedback"></span></p>
+			<div class="pie_chart" id="myDiv-{{main_id}}"></div>	
+			{% endwith %}
 		{% endfor %}
-		<div id="myDiv"></div>	
 	</div>
-	<script>
-	    var data = [{
-		  	values: [{{Excellent}}, {{Good}}, {{Satisfactory}}, {{Poor}}, {{Very_Poor}}],
-		  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
-		  	type: 'pie'
-
-		}];
-		
-
-		Plotly.newPlot('myDiv', data);
-  	</script>
   	<script>
   		var old_main = "";
   		function iterate(className) {
@@ -171,6 +165,18 @@ table, th, td {
 					if(index == 0) {
 						old_main = main_id;
 					}
+					var excellent = $('#excellent-total-' + old_main).html();
+					var good = $('#good-total-' + old_main).html();
+					var satisfactory = $('#average-total-' + old_main).html();
+					var poor = $('#poor-total-' + old_main).html();
+					var very_poor = $('#very_poor-total-' + old_main).html();
+				    var data = [{
+					  	values: [excellent, good, satisfactory, poor, very_poor],
+					  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
+					  	type: 'pie'
+
+					}];
+					Plotly.newPlot('myDiv-' + old_main, data);
 				}
   				if(old_id == "") {
   					old_id = id;
@@ -196,6 +202,18 @@ table, th, td {
   			total = total + i;
 			$('#' + className + '-total-' + old_main).html(total);
 			$('#' + className + '-total-' + old_main).attr('value', total);
+			var excellent = $('#excellent-total-' + old_main).html();
+			var good = $('#good-total-' + old_main).html();
+			var satisfactory = $('#average-total-' + old_main).html();
+			var poor = $('#poor-total-' + old_main).html();
+			var very_poor = $('#very_poor-total-' + old_main).html();
+		    var data = [{
+			  	values: [excellent, good, satisfactory, poor, very_poor],
+			  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
+			  	type: 'pie'
+
+			}];
+			Plotly.newPlot('myDiv-' + old_main, data);
   		}
   		$(function() {
   			iterate('excellent'); //gives value of excellent column-wise
