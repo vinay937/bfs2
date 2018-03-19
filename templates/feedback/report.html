@@ -29,17 +29,6 @@ limitations under the License.
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
-	<script type="text/javascript">
-		$("#btnPrint").live("click", function () {
-			var divContents = $("#dvContainer").html();
-			var printWindow = window.open('', '', 'height=400,width=800');
-			printWindow.document.write('</head><body >');
-			printWindow.document.write(divContents);
-			printWindow.document.write('</body></html>');
-			printWindow.document.close();
-			printWindow.print();
-		});
-	</script>
 	<style>
 	body {
 		font-family: 'Roboto', sans-serif;
@@ -86,13 +75,11 @@ table, th, td {
 		<br><br>
 		<p style="float: right;" class="pull-right col-md-4">Powered by DevX</p>
 		<center><font color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
-		<b><center><p><font size="3" face="arial">Student's First Feedback on Faculty Members`(Even Semester 2017-18)</font></p></b>
-		  	
+		<b><center><p><font size="3" face="arial">Student's First Feedback on Faculty Members(Even Semester 2017-18)</font></p></b>
+		  	<p><strong><font size="2"><span class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
+			<p><font size="2"><span class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
 		  {% for form, answers in results.items %}
 		  {% with forloop.counter as main_id %}
-			  	<p><strong><font size="2">FACULTY NAME : {{answers.first.recipient.first_name}} </font></strong></p>
-		  
-			<p><font size="2">DEPARTMENT : {{answers.first.recipient.department}} </font></p>
 			<h1>{{form.title}}</h1>
 			</center>
 			<table>
@@ -238,7 +225,7 @@ table, th, td {
 	  					i++;
 					});
 					var total_per = 100 * (num / (den*5.0)); //total calculation
-					$(this).append('<td>' + total_per.toFixed(2) + '</td>') //appends the total
+					$(this).append('<td class="total">' + total_per.toFixed(2) + '</td>') //appends the total
   				}
   				x++;
   			})
