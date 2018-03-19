@@ -152,7 +152,7 @@ table, th, td {
 			</table>
 			{% endwith %}
 			<p>Total number of feedbacks received: <span id="total_feedback"></span></p>
-	{% endfor %}
+		{% endfor %}
 		<div id="myDiv"></div>	
 	</div>
 	<script>
@@ -167,51 +167,70 @@ table, th, td {
 		Plotly.newPlot('myDiv', data);
   	</script>
   	<script>
+  		var old_main = "";
   		function iterate(className) {
   			var old_id = "";
   			var total = 0;
   			var tds = document.querySelectorAll('tbody tr .' + className), i=0, j;
-  			$('.' + className).each(function() {
+  			$('.' + className).each(function(index, value) {
   				main_id = $(this).attr('id').split('_')[1];
   				id = $(this).attr('id').split('_')[2];
-  				alert('main : ' +  main_id + 'id : ' + id);
+  				if(old_main == "") {
+					old_main = main_id;
+				}
+				if(main_id != old_main) {
+					$('#' + className + '-' + old_main + '-' + old_id).html(i);
+		  			$('#' + className + '-' + old_main + '-' + old_id).attr('value', i);
+		  			total = total + i;
+					$('#' + className + '-total-' + old_main).html(total);
+					$('#' + className + '-total-' + old_main).attr('value', total);
+					total = 0;
+					if(index == 0) {
+						old_main = main_id;
+					}
+				}
   				if(old_id == "") {
   					old_id = id;
-  					console.log('old' + old_id)	
   				}
 				if(id == old_id) {
 					i++;
-					console.log('id' + id)
 				}
 				else {
 					$('#' + className + '-' + main_id + '-' + old_id).html(i);
 					$('#' + className + '-' + main_id + '-' + old_id).attr('value', parseFloat(i));
-					total = total + i;
-					i=1;
+					if(main_id == old_main) {
+						total = total + i;
+					}
+					else {
+						old_main = main_id;	
+					}
+					i = 1;
 					old_id = id;
 				}
-  			}) 
+  			})
   			$('#' + className + '-' + main_id + '-' + id).html(i);
   			$('#' + className + '-' + main_id + '-' + id).attr('value', i);
   			total = total + i;
-  			$('#' + className + '-total-' + main_id).html(total);
-  			$('#' + className + '-total-' + main_id).attr('value', total);
+			$('#' + className + '-total-' + old_main).html(total);
+			$('#' + className + '-total-' + old_main).attr('value', total);
   		}
   		$(function() {
-  			iterate('excellent');
+  			iterate('excellent'); //gives value of excellent column-wise
   			iterate('good');
   			iterate('average');
   			iterate('poor');
   			iterate('very_poor');
   			var x=0;
   			$('tr').each(function() {
-  				if (x > 0) {
+  				// iterates through each question
+  				if (x > 0) { 
   					var i=0;
 	  				j=5.0;
 	  				num = 0;
 	  				den = 0;
 	  				$(this).find('td').each (function() {
-	  					if(i > 0 && i < 6){
+	  					if(i > 0 && i < 6){ //to skip the question <td>
+	  						// iterates through each answer
 	  						value = parseFloat(($(this).attr('value')));
 	  						if(isNaN(value)){ /* this is the main part */
 	  							value = 0.0;
@@ -222,8 +241,8 @@ table, th, td {
 	  					}
 	  					i++;
 					});
-					var total_per = 100 * (num / (den*5.0));
-					$(this).append('<td>' + total_per.toFixed(2) + '</td>')
+					var total_per = 100 * (num / (den*5.0)); //total calculation
+					$(this).append('<td>' + total_per.toFixed(2) + '</td>') //appends the total
   				}
   				x++;
   			})
