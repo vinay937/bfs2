@@ -103,7 +103,7 @@ class HomeView(FormView):
 					[qs.email,'feedback@bmsit.in'],
 					)
 		email.send()
-		print('OTP: ' + qs.random_otp)
+		print('OTP: ' + random_otp)
 
 	def is_admin(self, user):
 		if user.is_superuser:
