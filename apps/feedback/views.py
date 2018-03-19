@@ -188,7 +188,7 @@ def report_scraper(request, username):
 	for form in forms:
 		answers = Answer.objects.filter(form=form, recipient=user)
 		results[form] = answers
-	context = {"results" : results}
+	context = {"results" : results, "user" : user}
 	return render(request, template_name, context)
 
 # def feedback(request):
