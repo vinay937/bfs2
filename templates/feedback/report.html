@@ -76,16 +76,16 @@ table, th, td {
 <body>
 	<!--Sample: http://localhost:8000/report/F_CS_15/5A/T-->
 		<div id="dvContainer" class="col-md-12">
-		<img class="col-md-4" id="resize" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"/>
+		<center><img class="col-md-4" id="resize" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"/>
 		<br><br>
-		<p style="float: right;" class="pull-right col-md-4">Powered by DevX</p>
-		<center><font color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
+		<div style="float:right;"" class="col-md-2"><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
+		<font color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
 		<b><center><p><font size="3" face="arial">Student's First Feedback on Faculty Members(Even Semester 2017-18)</font></p></b>
 		  	<p><strong><font size="2"><span class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
 			<p><font size="2"><span class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
 		  {% for form, answers in results.items %}
 		  {% with forloop.counter as main_id %}
-			<h1>{{form.title}}</h1>
+			<h1 style="text-align: left;">{{form.title}}</h1>
 			</center>
 			<table>
 				<tr>
@@ -96,7 +96,6 @@ table, th, td {
 					<th>Poor</th>
 					<th>Very poor</th>
 					<th>Total %</th>
-					<!--th>Score%</th-->
 			  	</tr>
 			  	<tbody>
 			  		{% for que in form.question.all %}
@@ -129,22 +128,23 @@ table, th, td {
 				  </tr>
 			  	{% endfor %}
 			  	<tr>
-			  	<td>Total</td>
+			  		<td>Total</td>
 			  		<td id="excellent-total-{{main_id}}">0</td>
 				  	<td id="good-total-{{main_id}}">0</td>
 				  	<td id="average-total-{{main_id}}">0</td>
 				  	<td id="poor-total-{{main_id}}">0</td>
 				  	<td id="very_poor-total-{{main_id}}">0</td>
-				  </tr>
+			  	</tr>
 			  </tbody>
 			</table>
-			<p>Total number of feedbacks received: <span id="total_feedback"></span></p>
 			<div class="pie_chart" id="myDiv-{{main_id}}"></div>	
 			{% endwith %}
 		{% endfor %}
+		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>
 	</div>
   	<script>
   		var old_main = "";
+  		total_feedback = 0;
   		function iterate(className) {
   			var old_id = "";
   			var total = 0;
@@ -249,6 +249,14 @@ table, th, td {
   			})
   		})
   	</script>
+  	<script>
+  		$(function() {
+  			$('.total').each(function() {
+  				if(isNaN($(this).html())) {
+  					$(this).hide();
+  				}
+  			})
+  		})
+  	</script>
 </body>
-
 </html>
