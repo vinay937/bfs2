@@ -179,7 +179,7 @@ class Report(TemplateView):
 
 def report_scraper(request, username):
 	template_name = "feedback/report.html"
-	user = User.objects.get(username=username)
+	user = get_user_model().objects.get(username=username)
 	user_type = user.get_user_type()
 	print(user_type)
 	forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
