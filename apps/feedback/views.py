@@ -214,7 +214,8 @@ def consolidated(request, username):
 		# print(form.title)
 		total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
 		# print(total)
-		total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department)
+		if ConsolidatedReport.objects.filter(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department).exists():
+			total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department)
 		
 	context = {"results" : results, "user" : user}
 	return render(request, template_name, context)

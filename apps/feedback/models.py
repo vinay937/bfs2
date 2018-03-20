@@ -73,4 +73,4 @@ class ConsolidatedReport(models.Model):
 	name = models.CharField("Name of faculty",max_length=100)
 	form_name = models.CharField("Name of the form",max_length=100)
 	total = models.CharField("Total value they got", max_length=10)
-	department = models.CharField("Department", max_length=30)
+	department = models.CharField("Department Code", max_length=30,null=True, blank=True)
