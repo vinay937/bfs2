@@ -177,7 +177,7 @@ class Report(TemplateView):
 		context['results'] = results
 		return context
 
-def report_scraper(request, username):
+def consolidated(request, username):
 	template_name = "feedback/report.html"
 	user = get_user_model().objects.get(username=username)
 	user_type = user.get_user_type()
@@ -214,9 +214,15 @@ def report_scraper(request, username):
 		# print(form.title)
 		total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
 		# print(total)
-		total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2))
+		total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department)
 		
 	context = {"results" : results, "user" : user}
+	return render(request, template_name, context)
+
+def view_consolidated(request):
+	template_name = "consolidated_report.html"
+	report = ConsolidatedReport.objects.all()
+	context = {"report": report}
 	return render(request, template_name, context)
 
 # def feedback(request):
