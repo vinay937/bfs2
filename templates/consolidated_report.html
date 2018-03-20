@@ -98,7 +98,7 @@ table, th, td {
     	<b>
     		<center>
     		<p>
-    			<font size="3" face="arial">Student's Second Feedback on Faculty Members (Odd Semester 2017-18)</font>
+    			<font size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font>
     		</p>
     	</b>
     </center>
@@ -133,5 +133,22 @@ table, th, td {
 </div>
 <div class="col-md-12 text-center" style="padding-bottom: 7%; font-size: 125%; border-radius:0;">
 </div>
+    <script>
+        var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+
+if(dd<10) {
+    dd = '0'+dd
+} 
+
+if(mm<10) {
+    mm = '0'+mm
+} 
+
+today = dd + '/' + mm + '/' + yyyy;
+$('#time').html(today);
+    </script>
 </body>
 </html>
