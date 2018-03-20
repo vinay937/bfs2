@@ -3508,7 +3508,18 @@ Copyright (c) 2015 Daniel Eden
                     <a href="/report">
                         <i class="fa fa-file-text-o" aria-hidden="true"></i>
                         <p>Report</p>
+
                     </a>
+                </li>
+                <li>
+                    {% for i in type %}
+                        {% if i.name == 'Principal' %}
+                        <a href="/view-consolidated-report">
+                            <i class="fa fa-binoculars" aria-hidden="true"></i>
+                            <p>Consolidated Report</p>
+                        </a>
+                        {% endif %}
+                    {% endfor %}
                 </li>
                 <li>
                     <a href="/report-not-viewed">
@@ -3531,25 +3542,6 @@ Copyright (c) 2015 Daniel Eden
             </ul>
     	</div>
     </div>
-    <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-    
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Modal Header</h4>
-        </div>
-        <div class="modal-body">
-          <p>Some text in the modal.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      
-    </div>
-  </div>
     <div class="main-panel">
         <nav class="navbar navbar-default navbar-fixed">
             <div class="container-fluid">

@@ -102,23 +102,27 @@ table, th, td {
     		</p>
     	</b>
     </center>
-    <table>
-    <tr>
-        <th>Name</th>
-        <th>Department</th>
-        <th>Form</th>
-        <th>Total %</th>
-    </tr>
-    {% for rep in report %}
-    <tr>
-        <td>{{rep.department}}</td>
-        <td><center>{{rep.name}}</center></td>
-        <td><center>{{rep.form_name}}</center></td>
-        <td><center>{{rep.total}}</center></td>
-    </tr>
-    {% endfor %}                
+    {% for i in type %}
+        {% if i.name == 'Principal' %}
+            <table>
+            <tr>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Form</th>
+                <th>Total %</th>
+            </tr>
+            {% for rep in report %}
+            <tr>
+                <td>{{rep.department}}</td>
+                <td><center>{{rep.name}}</center></td>
+                <td><center>{{rep.form_name}}</center></td>
+                <td><center>{{rep.total}}</center></td>
+            </tr>
+            {% endfor %}                
 
-</table>
+            </table>
+        {% endif %}
+    {% endfor %}
 
 <p class="text-center" style="font-size: 150%">To save as PDF, press <b>control+P and choose the option to save as PDF</b> in Chrome browser only.</p>
 <div class="col-md-6 text-center pull-right" style="padding: 3%;"> 
@@ -128,9 +132,6 @@ table, th, td {
     <a id="singlebutton" name="singlebutton" style="font-size: 125%; padding:2%; border-radius:0;" href="https://goo.gl/forms/sMvlrh6OgQjW26T33" target="_blank"class="btn btn-success">Help</a> 
 </div>
 <div class="col-md-12 text-center" style="padding-bottom: 7%; font-size: 125%; border-radius:0;">
-{% if principal %}
-<a class="btn btn-danger text-center" style="padding: 2%; font-size: 130%;" href='/less-than-60-principal/'>View Feedback Reports Less Than 60%</a>
-{% endif %}
 </div>
 </body>
 </html>

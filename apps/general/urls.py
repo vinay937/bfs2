@@ -16,6 +16,6 @@ urlpatterns = [
     url(r'^exit/', views.exit_view),
     url(r'^done', views.done_view),
     url(r'^faculty-pending/', views.faculty_remaining),
-    url(r'^dashboard/', views.Dashboard.as_view(), name='dashboard'),
+    url(r'^dashboard/', views.Dashboard, name='dashboard'),
     #url(r'^consolidated/', views.consolidated.as_view(), name='feedback/consolidated_report'),
 ]

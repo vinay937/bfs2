@@ -546,11 +546,15 @@ def faculty_remaining(request):
 # 	return response
 
 
-class Dashboard(TemplateView):
+def Dashboard(request):
 	'''
 	Shows the dashboard values
 	'''
 	template_name = 'dashboard.html'
+	user = request.user
+	user_type = user.get_user_type()
+	context = { "type": user_type}
+	return render(request, template_name, context)
 
 # 	def get_context_data(self, **kwargs):
 # 		context = super(Dashboard, self).get_context_data(**kwargs)
