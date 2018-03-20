@@ -80,7 +80,7 @@ table, th, td {
 		<br><br>
 		<div style="float:right;"" class="col-md-2"><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
 		<font color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
-		<b><center><p><font size="3" face="arial">Student's First Feedback on Faculty Members(Even Semester 2017-18)</font></p></b>
+		<b><center><p><font size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
 		  	<p><strong><font size="2"><span class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
 			<p><font size="2"><span class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
 		  {% for form, answers in results.items %}
@@ -229,6 +229,7 @@ table, th, td {
 	  				j=5.0;
 	  				num = 0;
 	  				den = 0;
+	  				z = 1;
 	  				$(this).find('td').each (function() {
 	  					if(i > 0 && i < 6){ //to skip the question <td>
 	  						// iterates through each answer
@@ -243,10 +244,10 @@ table, th, td {
 	  					i++;
 					});
 					var total_per = 100 * (num / (den*5.0)); //total calculation
-					$(this).append('<td class="total">' + total_per.toFixed(2) + '</td>') //appends the total
+					$(this).append('<td class="total">' + total_per.toFixed(2) + '</td>'); //appends the total
   				}
   				x++;
-  			})
+  			})	
   		})
   	</script>
   	<script>
@@ -257,6 +258,23 @@ table, th, td {
   				}
   			})
   		})
+  	</script>
+  	<script>
+  		var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+
+if(dd<10) {
+    dd = '0'+dd
+} 
+
+if(mm<10) {
+    mm = '0'+mm
+} 
+
+today = dd + '/' + mm + '/' + yyyy;
+$('#time').html(today);
   	</script>
 </body>
 </html>

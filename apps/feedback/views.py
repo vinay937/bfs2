@@ -18,7 +18,7 @@ from django.views.generic import TemplateView, FormView
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 
-from .models import Answer, FeedbackForm
+from .models import Answer, FeedbackForm, ConsolidatedReport
 from .forms import FeedbackAnswerForm, AnswerFormSet
 
 from apps.general.models import UserType
@@ -188,6 +188,34 @@ def report_scraper(request, username):
 	for form in forms:
 		answers = Answer.objects.filter(form=form, recipient=user)
 		results[form] = answers
+	excellent = 0
+	good = 0
+	satisfactory = 0
+	poor = 0
+	very_poor = 0
+	for form, answers in results.items():
+		for que in form.question.all():
+			for answer in answers:
+				if answer.value == 'Excellent' and answer.question == que:
+					excellent+=1
+				if answer.value == 'Good' and answer.question == que:
+					good+=1
+				if answer.value == 'Satisfactory' and answer.question == que:
+					satisfactory+=1
+				if answer.value == 'Poor' and answer.question == que:
+					poor+=1
+				if answer.value == 'Very Poor' and answer.question == que:
+					very_poor+=1
+		# print(excellent)
+		# print(good)
+		# print(satisfactory)
+		# print(poor)
+		# print(very_poor)
+		# print(form.title)
+		total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
+		# print(total)
+		total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2))
+		
 	context = {"results" : results, "user" : user}
 	return render(request, template_name, context)
 
