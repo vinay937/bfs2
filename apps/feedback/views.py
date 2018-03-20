@@ -227,7 +227,7 @@ def view_consolidated(request):
 	template_name = "consolidated_report.html"
 	user = request.user
 	user_type = user.get_user_type()
-	report = ConsolidatedReport.objects.all()
+	report = ConsolidatedReport.objects.all().order_by('department')
 	context = {"report": report, "type": user_type}
 	return render(request, template_name, context)
 
