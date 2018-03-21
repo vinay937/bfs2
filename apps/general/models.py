@@ -32,7 +32,7 @@ class UserType(models.Model):
 
 class User(AbstractUser):
 	'''
-	User: Holds details about the user. By default the user is a Student. 
+	User: Holds details about the user. By default the user is a Student.
 	The user's designation will be checked in the below checkboxes.
 	If the user is a HOD and also teaches, both faculty and HOD will be True.
 	We are considering the Institution as a user.
@@ -52,7 +52,7 @@ class User(AbstractUser):
 	user_type = models.ManyToManyField('UserType')
 
 
-	# If a user abonds the feedback, partially done becomes true then 
+	# If a user abonds the feedback, partially done becomes true then
 	# the user is restricted from giving feedback.
 	partially_done = models.BooleanField(default=False)
 	done = models.BooleanField(default=False)
@@ -88,6 +88,7 @@ class Subject(models.Model):
 
 	theory = models.BooleanField(default=True)
 	elective = models.BooleanField(default=False)
+	project = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.name
@@ -96,7 +97,7 @@ class Teaches(models.Model):
 	'''
 	Teaches: Holds details about the subject that the teacher teaches.
 	It links the Subject and the Teacher with the sem, sec and department that they are teaching.
-	We are storing sem, sec, deaprtment of the student to get the name of the teacher by matching the 
+	We are storing sem, sec, deaprtment of the student to get the name of the teacher by matching the
 	details with the user table.
 
 	Note: Even if one student studies an elective in another department under the other department teacher,
@@ -114,6 +115,3 @@ class Teaches(models.Model):
 
 	def __str__(self):
 		return self.teacher.first_name + ' -> '  + self.subject.name
-
-
-
