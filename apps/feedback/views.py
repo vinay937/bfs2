@@ -256,23 +256,18 @@ def consolidated(request, username):
 		# print(poor)
 		# print(very_poor)
 		# print(form.title)
-		try:
-			total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
-		except ArithmeticError:
-			pass
+		total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
 		# print(total)
 		if not ConsolidatedReport.objects.filter(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department).exists():
 			total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department)
-		
+
 	context = {"results" : results, "user" : user}
 	return render(request, template_name, context)
 
 def view_consolidated(request):
 	template_name = "consolidated_report.html"
-	user = request.user
-	user_type = user.get_user_type()
-	report = ConsolidatedReport.objects.all().order_by('department')
-	context = {"report": report, "type": user_type}
+	report = ConsolidatedReport.objects.all()
+	context = {"report": report}
 	return render(request, template_name, context)
 
 # def feedback(request):
