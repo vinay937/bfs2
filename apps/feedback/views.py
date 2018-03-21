@@ -21,7 +21,7 @@ from django.contrib.auth import get_user_model
 from .models import Answer, FeedbackForm, ConsolidatedReport
 from .forms import FeedbackAnswerForm, AnswerFormSet
 
-from apps.general.models import UserType
+from apps.general.models import UserType, Teaches
 
 import json
 import random
@@ -41,8 +41,9 @@ class FeedbackView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(FeedbackView, self).get_context_data(**kwargs)
-
+		
 		recipients = self.request.session.get('recipients')
+
 		if recipients:
 			recipients = self.get_list(get_user_model(), recipients)
 
@@ -50,6 +51,35 @@ class FeedbackView(FormView):
 		if post_recipients:
 			post_recipients = self.get_list(get_user_model(), post_recipients)
 
+
+		if self.request.user.is_student():
+			recipients = self.request.session.get('recipients_theory')
+			recipients = self.get_list(Teaches, recipients)
+			post_recipients = self.request.session.get('post_recipients_theory')
+			post_recipients = self.get_list(Teaches, post_recipients)
+			
+			print('post recipients')
+			print(post_recipients)
+			context['recipients_theory'] = recipients
+			context['post_recipients_theory'] = post_recipients
+			context['recipients'] = recipients
+			count = self.request.session['theory_count']
+			context['form_recipients'] = self.request.session.get('form_recipients')
+			print(self.request.session.get('form_recipients'))
+
+			if count:
+				if post_recipients:
+					recipients_name = get_user_model().objects.get(username=post_recipients[0].teacher.username)
+					if self.request.user.is_student():
+						feedback_form = FeedbackForm.objects.get(code='ST')
+						question_count = feedback_form.question.all().count()
+						AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
+						formset = AnswerFormset(queryset=Answer.objects.none())
+						context['formset'] = formset
+						form_zip = zip(formset, feedback_form.question.all())
+						context['form_zip'] = form_zip
+						context['recipient_name'] = recipients_name
+			return context
 
 		context['recipients'] = recipients
 
@@ -84,7 +114,7 @@ class FeedbackView(FormView):
 			elif iterable_forms:
 				feedback_form = iterable_forms[0]
 				question_count = feedback_form.question.all().count()
-				AnswerFormset = modelformset_factory(Answer,
+				AnswerFormset = modelformset_factory(Answer, 
 					form=FeedbackAnswerForm, extra=question_count)
 				formset = AnswerFormset(queryset=Answer.objects.none())
 				context['formset'] = formset
@@ -111,7 +141,10 @@ class FeedbackView(FormView):
 
 		recipients = self.request.session.get('post_recipients')
 		if recipients:
-			recipients = self.get_list(get_user_model(), recipients)
+			if self.request.user.is_student():
+				recipients = self.get_list(Teaches.teacher, recipients)
+			else:
+				recipients = self.get_list(get_user_model(), recipients)
 
 		iterable_forms = self.request.session.get('form')
 		if iterable_forms:
@@ -120,32 +153,42 @@ class FeedbackView(FormView):
 		if formset_valid:
 			if count:
 				if recipients:
-					recipient = get_user_model().objects.get(pk=recipients[0].pk)
+					if self.request.user.is_student():
+						recipient = get_user_model().objects.get(pk=Teaches.teacher.pk)
+					else:
+						recipient = get_user_model().objects.get(pk=recipients[0].pk)
+					if self.request.user.is_student():
+						feedback_form = FeedbackForm.objects.get(code='ST')
+						question = feedback_form.question.all()
+						for form, que in zip(formset, question):
+							ans = form.cleaned_data.get('answer')
+							answer = Answer.objects.create(question=que, 
+								value=ans, recipient=recipient, form=feedback_form)
 					if self.request.user.is_hod():
 						feedback_form = FeedbackForm.objects.get(code='HH')
 						question = feedback_form.question.all()
 						for form, que in zip(formset, question):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que,
+							answer = Answer.objects.create(question=que, 
 								value=ans, recipient=recipient, form=feedback_form)
 					elif self.request.user.is_faculty():
 						feedback_form = FeedbackForm.objects.get(code='FF')
 						question = feedback_form.question.all()
 						for form, que in zip(formset, question):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que,
+							answer = Answer.objects.create(question=que, 
 								value=ans, recipient=recipient, form=feedback_form)
 
 					del self.request.session['post_recipients'][0]
 					self.request.session['post_recipients'] = self.request.session['post_recipients']
-					print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients']) )
+					print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients']) )	
 
 				elif iterable_forms:
 					feedback_form = iterable_forms[0]
 					question_count = feedback_form.question.all().count()
 					for form, que in zip(formset, feedback_form.question.all()):
 						ans = form.cleaned_data.get('answer')
-						answer = Answer.objects.create(question=que,
+						answer = Answer.objects.create(question=que, 
 								value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
 
 					# remove the forms once done
@@ -160,6 +203,7 @@ class FeedbackView(FormView):
 			self.request.user.done = True
 			self.request.user.save()
 			return HttpResponseRedirect(reverse_lazy('logout'))
+
 
 class Report(TemplateView):
 	template_name = "feedback/report.html"

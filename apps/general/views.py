@@ -218,6 +218,74 @@ class MainView(TemplateView):
 	template_name = ""
 	user_type = None
 
+	def _student_theory(self):
+		print("knskdnskdnksndkndnskdnksndksndsdsnd")
+		subject_list = []
+		theory_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
+			department=self.user.department, subject__theory=True, subject__elective=False)
+		print(theory_subject)
+		for i in theory_subject:
+			subject_list.append(i.pk)
+
+		elective_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
+			department=self.user.department, subject__theory=True, subject__elective=True)
+		print(elective_subject)
+		for i in elective_subject:
+			subject_list.append(i.pk)
+
+		self.request.session['recipients_theory'] = subject_list
+
+		#This is used in post and will be removed on by one
+		self.request.session['post_recipients_theory'] = subject_list
+
+		self.request.session['theory_count'] = theory_subject.count() + elective_subject.count()
+
+		# remove the form as it is already counted
+		self.forms = self.forms.exclude(code="ST")
+
+		return
+
+	def _student_labs(self):
+
+		subject_list = []
+		lab_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
+			department=self.user.department, subject__theory=False)
+		print(lab_subject)
+		for i in lab_subject:
+			subject_list.append(i.pk)
+
+		self.request.session['recipients_labs'] = subject_list
+
+		#This is used in post and will be removed on by one
+		self.request.session['post_recipients_labs'] = subject_list
+
+		self.request.session['labs_count'] = lab_subject.count()
+
+		# remove the form as it is already counted
+		self.forms = self.forms.exclude(code="SL")
+
+		return
+
+	def _student_project(self):
+
+		subject_list = []
+		project_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
+			department=self.user.department, subject__project=True)
+		print(project_subject)
+		for i in project_subject:
+			subject_list.append(i.pk)
+
+		self.request.session['recipients_project'] = subject_list
+
+		#This is used in post and will be removed on by one
+		self.request.session['post_recipients_project'] = subject_list
+
+		self.request.session['project_count'] = project_subject.count()
+
+		# remove the form as it is already counted
+		self.forms = self.forms.exclude(code="SP")
+
+		return
 
 	def _faculty_mandatory(self):
 		"""
@@ -274,6 +342,11 @@ class MainView(TemplateView):
 		self.user_types = self.user.user_type.all()
 		self.request.session['count'] = 0
 
+		if self.user.is_student():
+			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+			self._student_theory()
+			self._student_labs()
+			self._student_project()
 		# if the user is hod as well as faculty, faculties mandatory forms shouldn't
 		# be displayed
 		if self.user.is_faculty() and not self.user.is_hod():
