@@ -78,7 +78,7 @@ table, th, td {
 		<div id="dvContainer" class="col-md-12">
 		<center><img class="col-md-4" id="resize" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"/>
 		<br><br>
-		<div style="float:right;"" class="col-md-2"><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
+		<div style="float:right;"" class="col-md-2"><a href="/logout" class="btn btn-primary">Logout</a><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
 		<font style="margin-left:5%;" color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
 		<b><center><p><font style="margin-left:15%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
 		  	<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
@@ -139,7 +139,7 @@ table, th, td {
 			  	</tr>
 			  </tbody>
 			</table>
-			<div class="pie_chart" id="myDiv-{{main_id}}"></div>	
+			<div class="pie_chart" id="myDiv-{{main_id}}"></div>
 			{% endwith %}
 			{% endif %}
 		{% endfor %}
@@ -197,7 +197,7 @@ table, th, td {
 			  	</tr>
 			  </tbody>
 			</table>
-			<div class="pie_chart" id="myDiv-{{main_id}}"></div>	
+			<div class="pie_chart" id="myDiv-{{main_id}}"></div>
 			{% endwith %}
 		{% endfor %}
 		{% endif %}
@@ -252,7 +252,7 @@ table, th, td {
 						total = total + i;
 					}
 					else {
-						old_main = main_id;	
+						old_main = main_id;
 					}
 					i = 1;
 					old_id = id;
@@ -285,7 +285,7 @@ table, th, td {
   			var x=0;
   			$('tr').each(function() {
   				// iterates through each question
-  				if (x > 0) { 
+  				if (x > 0) {
   					var i=0;
 	  				j=5.0;
 	  				num = 0;
@@ -300,7 +300,7 @@ table, th, td {
 	  						}
 	  						num = num + (value * j);
 	  						den = den + value;
-	  						j--;	
+	  						j--;
 	  					}
 	  					i++;
 					});
@@ -308,7 +308,7 @@ table, th, td {
 					$(this).append('<td class="total">' + total_per.toFixed(2) + '</td>'); //appends the total
   				}
   				x++;
-  			})	
+  			})
   		})
   	</script>
   	<script>
@@ -328,11 +328,11 @@ var yyyy = today.getFullYear();
 
 if(dd<10) {
     dd = '0'+dd
-} 
+}
 
 if(mm<10) {
     mm = '0'+mm
-} 
+}
 
 today = dd + '/' + mm + '/' + yyyy;
 $('#time').html(today);
