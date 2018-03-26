@@ -27,8 +27,13 @@ class UserAdmin(DjangoUserAdmin):
 	search_fields = ('email', 'first_name', 'last_name')
 	ordering = ('username',)
 
+class TeachesAdmin(admin.ModelAdmin):
+	search_fields = ('teacher__first_name', 'subject__name')
+
 admin.site.register(Subject)
 admin.site.register(Department)
-admin.site.register(Teaches)
+admin.site.register(Teaches, TeachesAdmin)
 admin.site.register(Semester)
 admin.site.register(UserType)
+
+

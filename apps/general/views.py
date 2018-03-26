@@ -102,7 +102,7 @@ class HomeView(FormView):
 					'Feedback Support <feedback@bmsit.in>',
 					[qs.email,'feedback@bmsit.in'],
 					)
-		email.send()
+		#email.send()
 		print('OTP: ' + random_otp)
 
 	def is_admin(self, user):
@@ -147,7 +147,7 @@ class HomeView(FormView):
 					elif qs.phone and not qs.email:
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.password_update(random_otp, usn)
-						messages.error(request, "Email not found, OTP sent to "+qs.phone)
+						messages.error(request, "Email not found, OTP: "+ str(random_otp) + " sent to "+qs.phone)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only email exists
