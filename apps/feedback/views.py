@@ -211,11 +211,11 @@ class FeedbackView(FormView):
 			print('|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|Project Recipients|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|')
 			print("Project Recipients: " + str(project_recipients))
 			if theory_recipients:
-				theory_recipients = self.get_list(get_user_model(), theory_recipients)
+				theory_recipients = self.get_list(Teaches, theory_recipients)
 			if lab_recipients:
-				lab_recipients = self.get_list(get_user_model(), lab_recipients)
+				lab_recipients = self.get_list(Teaches, lab_recipients)
 			if project_recipients:
-				project_recipients = self.get_list(get_user_model(), project_recipients)
+				project_recipients = self.get_list(Teaches, project_recipients)
 			iterable_forms = self.request.session.get('form')
 			if iterable_forms:
 				iterable_forms = self.get_list(FeedbackForm, iterable_forms)
