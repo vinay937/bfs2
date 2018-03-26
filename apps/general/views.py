@@ -406,7 +406,7 @@ class MainView(TemplateView):
 		form_recipients = list()
 		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|5|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 		for f in self.forms:
-			form_recipients.append(f.recipient)
+			form_recipients.append(f.recipient.name)
 
 		self.request.session['form_recipients'] = form_recipients
 
