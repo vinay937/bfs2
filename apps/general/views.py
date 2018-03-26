@@ -140,7 +140,7 @@ class HomeView(FormView):
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "OTP sent to " +qs.email)
+						messages.error(request, "OTP: "+ str(random_otp) + " sent to " +qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only phone exists
@@ -154,7 +154,7 @@ class HomeView(FormView):
 					elif qs.email and not qs.phone:
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "Phone number not found, OTP sent to "+qs.email)
+						messages.error(request, "Phone number not found, OTP: "+ str(random_otp) + " sent to "+qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 			else:
