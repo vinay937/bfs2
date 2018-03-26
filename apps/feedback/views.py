@@ -36,6 +36,7 @@ class FeedbackView(FormView):
 	def get_list(self, model, g_list):
 		c_list = list()
 		for pk in g_list:
+			print(model)
 			c_list.append(model.objects.get(pk=pk))
 		return c_list
 
@@ -52,24 +53,47 @@ class FeedbackView(FormView):
 			post_recipients = self.get_list(get_user_model(), post_recipients)
 
 
+		# Student Form
 		if self.request.user.is_student():
+			self.template_name = "feedback/student_entry.html"
 			recipients = self.request.session.get('recipients_theory')
 			recipients = self.get_list(Teaches, recipients)
-			post_recipients = self.request.session.get('post_recipients_theory')
-			post_recipients = self.get_list(Teaches, post_recipients)
+			lab_recipients = self.request.session.get('recipients_labs')
+			lab_recipients = self.get_list(Teaches, lab_recipients)
+			project_recipients = self.request.session.get('recipients_project')
+			project_recipients = self.get_list(Teaches, project_recipients)
+			print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|6|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			print(lab_recipients)
+
+			theory_post_recipients = self.request.session.get('post_recipients_theory')
+			theory_post_recipients = self.get_list(Teaches, theory_post_recipients)
+			lab_post_recipients = self.request.session.get('post_recipients_labs')
+			lab_post_recipients = self.get_list(Teaches, lab_post_recipients)
+			project_post_recipients = self.request.session.get('post_recipients_project')
+			project_post_recipients = self.get_list(Teaches, project_post_recipients)
 			
-			print('post recipients')
-			print(post_recipients)
 			context['recipients_theory'] = recipients
-			context['post_recipients_theory'] = post_recipients
-			context['recipients'] = recipients
-			count = self.request.session['theory_count']
+			context['recipients_labs'] = lab_recipients
+			context['recipients_project'] = project_recipients
+			iterable_forms = self.request.session['form']
+			iterable_forms = self.get_list(FeedbackForm, iterable_forms)
+
+			theory_count = self.request.session['theory_count']
+			lab_count = self.request.session['labs_count']
+			project_count = self.request.session['project_count']
+			print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|theory_count|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			print(theory_count)
+			print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|lab_count|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			print(lab_count)
+			print(lab_recipients)
+			print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|project_count|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			print(project_count)
 			context['form_recipients'] = self.request.session.get('form_recipients')
 			print(self.request.session.get('form_recipients'))
 
-			if count:
-				if post_recipients:
-					recipients_name = get_user_model().objects.get(username=post_recipients[0].teacher.username)
+			if theory_count:
+				if theory_post_recipients:
+					recipients_name = get_user_model().objects.get(username=theory_post_recipients[0].teacher.username)
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='ST')
 						question_count = feedback_form.question.all().count()
@@ -79,8 +103,48 @@ class FeedbackView(FormView):
 						form_zip = zip(formset, feedback_form.question.all())
 						context['form_zip'] = form_zip
 						context['recipient_name'] = recipients_name
+						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|7|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			elif lab_count:
+				if lab_post_recipients:
+					recipients_name = get_user_model().objects.get(username=lab_post_recipients[0].teacher.username)
+					if self.request.user.is_student():
+						feedback_form = FeedbackForm.objects.get(code='SL')
+						question_count = feedback_form.question.all().count()
+						AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
+						formset = AnswerFormset(queryset=Answer.objects.none())
+						context['formset'] = formset
+						form_zip = zip(formset, feedback_form.question.all())
+						context['form_zip'] = form_zip
+						context['recipient_name'] = recipients_name
+						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|8|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			elif project_count:
+				if project_post_recipients:
+					recipients_name = get_user_model().objects.get(username=project_post_recipients[0].teacher.username)
+					if self.request.user.is_student():
+						feedback_form = FeedbackForm.objects.get(code='SP')
+						question_count = feedback_form.question.all().count()
+						AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
+						formset = AnswerFormset(queryset=Answer.objects.none())
+						context['formset'] = formset
+						form_zip = zip(formset, feedback_form.question.all())
+						context['form_zip'] = form_zip
+						context['recipient_name'] = recipients_name
+						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|9|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")	
+			elif iterable_forms:
+				feedback_form = iterable_forms[0]
+				question_count = feedback_form.question.all().count()
+				AnswerFormset = modelformset_factory(Answer, 
+					form=FeedbackAnswerForm, extra=question_count)
+				formset = AnswerFormset(queryset=Answer.objects.none())
+				context['formset'] = formset
+				form_zip = zip(formset, feedback_form.question.all())
+				context['form_zip'] = form_zip
+				print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|form_zip|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+				print(form_zip)
+				context['form_recipient_name'] = feedback_form.recipient.name
 			return context
 
+		# Faculty feedback
 		context['recipients'] = recipients
 
 		count = self.request.session['count']
@@ -136,15 +200,95 @@ class FeedbackView(FormView):
 		formset = AnswerFormset(request.POST)
 		form_valid = form.is_valid()
 		formset_valid = formset.is_valid()
+		if self.request.user.is_student():
+			theory_count = self.request.session['theory_count']
+			lab_count = self.request.session['labs_count']
+			project_count = self.request.session['project_count']
+			count = self.request.session['count']
+			theory_recipients = self.request.session.get('post_recipients_theory')
+			lab_recipients = self.request.session.get('post_recipients_labs')
+			project_recipients = self.request.session.get('post_recipients_project')
+			print('|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|Project Recipients|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|')
+			print("Project Recipients: " + str(project_recipients))
+			if theory_recipients:
+				theory_recipients = self.get_list(get_user_model(), theory_recipients)
+			if lab_recipients:
+				lab_recipients = self.get_list(get_user_model(), lab_recipients)
+			if project_recipients:
+				project_recipients = self.get_list(get_user_model(), project_recipients)
+			iterable_forms = self.request.session.get('form')
+			if iterable_forms:
+				iterable_forms = self.get_list(FeedbackForm, iterable_forms)
+			if formset_valid:
+				if count:
+					if theory_count:
+						if theory_recipients:
+							teaches = Teaches.objects.get(pk=theory_recipients[0].pk)
+							feedback_form = FeedbackForm.objects.get(code='ST')
+							question = feedback_form.question.all()
+							for form, que in zip(formset, question):
+								ans = form.cleaned_data.get('answer')
+								answer = Answer.objects.create(question=que,
+										value=ans, teacher=teaches, form=feedback_form)
+							del self.request.session['post_recipients_theory'][0]
+							self.request.session['post_recipients_theory'] = self.request.session['post_recipients_theory']
+							print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients_theory']) )
+							self.request.session['theory_count'] -= 1
+					elif lab_count:
+						print("LAB COUNT" + str(lab_count))
+						if lab_recipients:
+							print("LAB recipients" + str(lab_recipients))
+							teaches = Teaches.objects.get(pk=lab_recipients[0].pk)
+							feedback_form = FeedbackForm.objects.get(code='SL')
+							question = feedback_form.question.all()
+							for form, que in zip(formset, question):
+								ans = form.cleaned_data.get('answer')
+								answer = Answer.objects.create(question=que,
+										value=ans, teacher=teaches, form=feedback_form)
+							del self.request.session['post_recipients_labs'][0]
+							self.request.session['post_recipients_labs'] = self.request.session['post_recipients_labs']
+							print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients_labs']) )
+							self.request.session['labs_count'] -= 1
+					elif project_count:
+						print("LAB COUNT" + str(project_count))
+						if project_recipients:
+							print("LAB recipients" + str(project_recipients))
+							teaches = Teaches.objects.get(pk=project_recipients[0].pk)
+							feedback_form = FeedbackForm.objects.get(code='SP')
+							question = feedback_form.question.all()
+							for form, que in zip(formset, question):
+								ans = form.cleaned_data.get('answer')
+								answer = Answer.objects.create(question=que,
+										value=ans, teacher=teaches, form=feedback_form)
+							del self.request.session['post_recipients_project'][0]
+							self.request.session['post_recipients_project'] = self.request.session['post_recipients_project']
+							print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients_project']) )
+							self.request.session['project_count'] -= 1
+					elif iterable_forms:
+						feedback_form = iterable_forms[0]
+						question_count = feedback_form.question.all().count()
+						for form, que in zip(formset, feedback_form.question.all()):
+							ans = form.cleaned_data.get('answer')
+							answer = Answer.objects.create(question=que,
+									value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
+						# remove the forms once done
+						del self.request.session['form'][0]
+						self.request.session['form'] = self.request.session['form']
+					self.request.session['count'] -= 1
+
+			if request.session['count']:
+				return HttpResponseRedirect(reverse_lazy('feedback_form'))
+			else:
+				self.request.user.done = True
+				self.request.user.save()
+				return HttpResponseRedirect(reverse_lazy('logout'))
+
 
 		count = self.request.session['count']
 
 		recipients = self.request.session.get('post_recipients')
 		if recipients:
-			if self.request.user.is_student():
-				recipients = self.get_list(Teaches.teacher, recipients)
-			else:
-				recipients = self.get_list(get_user_model(), recipients)
+			recipients = self.get_list(get_user_model(), recipients)
 
 		iterable_forms = self.request.session.get('form')
 		if iterable_forms:
@@ -153,42 +297,32 @@ class FeedbackView(FormView):
 		if formset_valid:
 			if count:
 				if recipients:
-					if self.request.user.is_student():
-						recipient = get_user_model().objects.get(pk=Teaches.teacher.pk)
-					else:
-						recipient = get_user_model().objects.get(pk=recipients[0].pk)
-					if self.request.user.is_student():
-						feedback_form = FeedbackForm.objects.get(code='ST')
-						question = feedback_form.question.all()
-						for form, que in zip(formset, question):
-							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que, 
-								value=ans, recipient=recipient, form=feedback_form)
+					recipient = get_user_model().objects.get(pk=recipients[0].pk)
 					if self.request.user.is_hod():
 						feedback_form = FeedbackForm.objects.get(code='HH')
 						question = feedback_form.question.all()
 						for form, que in zip(formset, question):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que, 
+							answer = Answer.objects.create(question=que,
 								value=ans, recipient=recipient, form=feedback_form)
 					elif self.request.user.is_faculty():
 						feedback_form = FeedbackForm.objects.get(code='FF')
 						question = feedback_form.question.all()
 						for form, que in zip(formset, question):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que, 
+							answer = Answer.objects.create(question=que,
 								value=ans, recipient=recipient, form=feedback_form)
 
 					del self.request.session['post_recipients'][0]
 					self.request.session['post_recipients'] = self.request.session['post_recipients']
-					print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients']) )	
+					print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients']) )
 
 				elif iterable_forms:
 					feedback_form = iterable_forms[0]
 					question_count = feedback_form.question.all().count()
 					for form, que in zip(formset, feedback_form.question.all()):
 						ans = form.cleaned_data.get('answer')
-						answer = Answer.objects.create(question=que, 
+						answer = Answer.objects.create(question=que,
 								value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
 
 					# remove the forms once done

@@ -112,6 +112,7 @@ class Teaches(models.Model):
 
 	batch = models.CharField("Student's Batch", max_length=50, null=True, blank=True)
 	sub_batch = models.CharField("Student's sub batch", max_length=50, null=True, blank=True)
+	ug = models.BooleanField(default=False)
 
 	def __str__(self):
 		return self.teacher.first_name + ' -> '  + self.subject.name

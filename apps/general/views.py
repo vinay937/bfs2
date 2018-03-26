@@ -219,19 +219,24 @@ class MainView(TemplateView):
 	user_type = None
 
 	def _student_theory(self):
-		print("knskdnskdnksndkndnskdnksndksndsdsnd")
 		subject_list = []
 		theory_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=True, subject__elective=False)
+			department=self.user.department, subject__theory=True, subject__elective=False, ug=self.user.ug)
 		print(theory_subject)
 		for i in theory_subject:
 			subject_list.append(i.pk)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|subject_list 1|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(subject_list)
 
 		elective_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=True, subject__elective=True)
+			department=self.user.department, subject__theory=True, subject__elective=True, ug=self.user.ug, subject__in=self.user.elective.all())
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|UG|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(self.user.ug)
 		print(elective_subject)
 		for i in elective_subject:
 			subject_list.append(i.pk)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|subject_list 2|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(subject_list)
 
 		self.request.session['recipients_theory'] = subject_list
 
@@ -249,10 +254,12 @@ class MainView(TemplateView):
 
 		subject_list = []
 		lab_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=False)
+			department=self.user.department, subject__theory=False,subject__project=False, sub_batch=self.user.sub_batch, batch=self.user.batch, ug=self.user.ug)
 		print(lab_subject)
 		for i in lab_subject:
 			subject_list.append(i.pk)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|3|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(subject_list)
 
 		self.request.session['recipients_labs'] = subject_list
 
@@ -269,11 +276,20 @@ class MainView(TemplateView):
 	def _student_project(self):
 
 		subject_list = []
-		project_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__project=True)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|semester|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(self.user.sem)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|section|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(self.user.sec)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|department|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(self.user.department)
+		project_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec, batch = self.user.batch, 
+			department=self.user.department, subject__project=True, subject__theory=False, subject__elective=False, ug=self.user.ug)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|project_subject|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 		print(project_subject)
 		for i in project_subject:
 			subject_list.append(i.pk)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|count|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+		print(len(subject_list))
 
 		self.request.session['recipients_project'] = subject_list
 
@@ -349,7 +365,7 @@ class MainView(TemplateView):
 			self._student_project()
 		# if the user is hod as well as faculty, faculties mandatory forms shouldn't
 		# be displayed
-		if self.user.is_faculty() and not self.user.is_hod():
+		elif self.user.is_faculty() and not self.user.is_hod():
 			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
 			self._faculty_mandatory()
 
@@ -371,8 +387,14 @@ class MainView(TemplateView):
 			print("fadfsdf")
 			self.forms = self.forms.exclude(code="OH")
 
+		if self.request.user.is_student():
+			self.request.session['count'] = (self.request.session['theory_count'] + self.request.session['labs_count'] + self.request.session['project_count'])
+			print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|_count_|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
+			print(self.request.session['count'])
+
 		for form in self.forms:
 			self.request.session['count'] += 1
+		print(self.request.session['count'])
 
 
 		form_list = list()
@@ -382,8 +404,9 @@ class MainView(TemplateView):
 
 		# they are the remaining recipients of the iterable forms
 		form_recipients = list()
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|5|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 		for f in self.forms:
-			form_recipients.append(f.recipient.name)
+			form_recipients.append(f.recipient)
 
 		self.request.session['form_recipients'] = form_recipients
 
