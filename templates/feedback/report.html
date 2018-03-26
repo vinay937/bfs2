@@ -1,0 +1,332 @@
+<!--
+Copyright 2017 Infonium Labs
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+{% load static %}
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  	<script src="https://cdnjs.cloudflare.com/ajax/libs/numeric/1.2.6/numeric.min.js"></script>
+	<title>Feedback Report | {{user.first_name}} </title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+	<style>
+	body {
+		font-family: 'Roboto', sans-serif;
+		width: 100%;
+	}
+table {
+	font-family: arial, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
+	height: 80%;
+}
+@media print {
+	.pie_chart {
+		page-break-after: always;
+	}
+}
+td, th {
+	border: 1px solid #dddddd;
+	text-align: left;
+	padding: 8px;
+	height: 20%;
+}
+tr:nth-child(odd) {
+	background-color: #cedffc;
+}
+th {
+	background-color: #0843a8;
+	color: #fff;
+	text-align: center;
+}
+table, th, td {
+	border: 2px solid black;
+	border-collapse: collapse
+}
+#resize {
+	width:10%;
+	height: auto;
+}
+#myDiv {
+	width: 50%;
+}
+</style>
+</head>
+<body>
+	<!--Sample: http://localhost:8000/report/F_CS_15/5A/T-->
+		<div id="dvContainer" class="col-md-12">
+		<center><img class="col-md-4" id="resize" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"/>
+		<br><br>
+		<div style="float:right;" class="col-md-2"><a href="/logout" class="btn btn-primary">Logout</a><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
+		<font style="margin-left:5%;" color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
+		<b><center><p><font style="margin-left:15%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
+		  	<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
+			<p><font size="2"><span class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
+			{% if user.first_name == 'Mr.P.Ganesh' %}
+			{% for form, answers in results.items %}
+			{% if forloop.first %}
+		  	{% with forloop.counter as main_id %}
+			<center><h1>{{form.title}}</h1></center>
+			</center>
+			<table>
+				<tr>
+					<th>Competency</th>
+					<th>Excellent</th>
+					<th>Good</th>
+					<th>Average</th>
+					<th>Poor</th>
+					<th>Very poor</th>
+					<th>Total %</th>
+			  	</tr>
+			  	<tbody>
+			  		{% for que in form.question.all %}
+			  	<tr>
+			  		{% with forloop.counter as id %}
+		  		<td>{{que | title }</td>
+				  	{% for answer in answers %}
+					  	{% if answer.value == 'Excellent' and answer.question == que %}
+					  	<div style="display:none;" class="excellent" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Good' and answer.question == que %}
+					  	<div style="display:none;" class="good" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Satisfactory' and answer.question == que %}
+					  	<div style="display:none;" class="average" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Poor' and answer.question == que %}
+					  	<div style="display:none;" class="poor" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Very Poor' and answer.question == que %}
+					  	<div style="display:none;" class="very_poor" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+				  	{% endfor %}
+				  	<td id="excellent-{{main_id}}-{{id}}">0</td>
+				  	<td id="good-{{main_id}}-{{id}}">0</td>
+				  	<td id="average-{{main_id}}-{{id}}">0</td>
+				  	<td id="poor-{{main_id}}-{{id}}">0</td>
+				  	<td id="very_poor-{{main_id}}-{{id}}">0</td>
+				  	{% endwith %}
+				  </tr>
+			  	{% endfor %}
+			  	<tr>
+			  		<td>Total</td>
+			  		<td id="excellent-total-{{main_id}}">0</td>
+				  	<td id="good-total-{{main_id}}">0</td>
+				  	<td id="average-total-{{main_id}}">0</td>
+				  	<td id="poor-total-{{main_id}}">0</td>
+				  	<td id="very_poor-total-{{main_id}}">0</td>
+			  	</tr>
+			  </tbody>
+			</table>
+			<div class="pie_chart" id="myDiv-{{main_id}}"></div>
+			{% endwith %}
+			{% endif %}
+		{% endfor %}
+			{% else %}
+		  {% for form, answers in results.items %}
+		  {% with forloop.counter as main_id %}
+			<center><h1>{{form.title}}</h1></center>
+			<table>
+				<tr>
+					<th>Competency</th>
+					<th>Excellent</th>
+					<th>Good</th>
+					<th>Average</th>
+					<th>Poor</th>
+					<th>Very poor</th>
+					<th>Total %</th>
+			  	</tr>
+			  	<tbody>
+			  		{% for que in form.question.all %}
+			  	<tr>
+			  		{% with forloop.counter as id %}
+		  		<td>{{que}}</td>
+				  	{% for answer in answers %}
+					  	{% if answer.value == 'Excellent' and answer.question == que %}
+					  	<div style="display:none;" class="excellent" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Good' and answer.question == que %}
+					  	<div style="display:none;" class="good" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Satisfactory' and answer.question == que %}
+					  	<div style="display:none;" class="average" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Poor' and answer.question == que %}
+					  	<div style="display:none;" class="poor" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+					  	{% if answer.value == 'Very Poor' and answer.question == que %}
+					  	<div style="display:none;" class="very_poor" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
+					  	{% endif %}
+				  	{% endfor %}
+				  	<td id="excellent-{{main_id}}-{{id}}">0</td>
+				  	<td id="good-{{main_id}}-{{id}}">0</td>
+				  	<td id="average-{{main_id}}-{{id}}">0</td>
+				  	<td id="poor-{{main_id}}-{{id}}">0</td>
+				  	<td id="very_poor-{{main_id}}-{{id}}">0</td>
+				  	{% endwith %}
+				  </tr>
+			  	{% endfor %}
+			  	<tr>
+			  		<td>Total</td>
+			  		<td id="excellent-total-{{main_id}}">0</td>
+				  	<td id="good-total-{{main_id}}">0</td>
+				  	<td id="average-total-{{main_id}}">0</td>
+				  	<td id="poor-total-{{main_id}}">0</td>
+				  	<td id="very_poor-total-{{main_id}}">0</td>
+			  	</tr>
+			  </tbody>
+			</table>
+			<div class="pie_chart" id="myDiv-{{main_id}}"></div>
+			{% endwith %}
+		{% endfor %}
+		{% endif %}
+		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>
+	</div>
+  	<script>
+  		var old_main = "";
+  		total_feedback = 0;
+  		function iterate(className) {
+  			var old_id = "";
+  			var total = 0;
+  			var tds = document.querySelectorAll('tbody tr .' + className), i=0, j;
+  			$('.' + className).each(function(index, value) {
+  				main_id = $(this).attr('id').split('_')[1];
+  				id = $(this).attr('id').split('_')[2];
+  				if(old_main == "") {
+					old_main = main_id;
+				}
+				if(main_id != old_main) {
+					$('#' + className + '-' + old_main + '-' + old_id).html(i);
+		  			$('#' + className + '-' + old_main + '-' + old_id).attr('value', i);
+		  			total = total + i;
+					$('#' + className + '-total-' + old_main).html(total);
+					$('#' + className + '-total-' + old_main).attr('value', total);
+					total = 0;
+					if(index == 0) {
+						old_main = main_id;
+					}
+					var excellent = $('#excellent-total-' + old_main).html();
+					var good = $('#good-total-' + old_main).html();
+					var satisfactory = $('#average-total-' + old_main).html();
+					var poor = $('#poor-total-' + old_main).html();
+					var very_poor = $('#very_poor-total-' + old_main).html();
+				    var data = [{
+					  	values: [excellent, good, satisfactory, poor, very_poor],
+					  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
+					  	type: 'pie'
+					}];
+					Plotly.newPlot('myDiv-' + old_main, data);
+				}
+  				if(old_id == "") {
+  					old_id = id;
+  				}
+				if(id == old_id) {
+					i++;
+				}
+				else {
+					$('#' + className + '-' + main_id + '-' + old_id).html(i);
+					$('#' + className + '-' + main_id + '-' + old_id).attr('value', parseFloat(i));
+					if(main_id == old_main) {
+						total = total + i;
+					}
+					else {
+						old_main = main_id;
+					}
+					i = 1;
+					old_id = id;
+				}
+  			})
+  			$('#' + className + '-' + main_id + '-' + id).html(i);
+  			$('#' + className + '-' + main_id + '-' + id).attr('value', i);
+  			total = total + i;
+			$('#' + className + '-total-' + old_main).html(total);
+			$('#' + className + '-total-' + old_main).attr('value', total);
+			var excellent = $('#excellent-total-' + old_main).html();
+			var good = $('#good-total-' + old_main).html();
+			var satisfactory = $('#average-total-' + old_main).html();
+			var poor = $('#poor-total-' + old_main).html();
+			var very_poor = $('#very_poor-total-' + old_main).html();
+		    var data = [{
+			  	values: [excellent, good, satisfactory, poor, very_poor],
+			  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
+			  	type: 'pie'
+			}];
+			Plotly.newPlot('myDiv-' + old_main, data);
+  		}
+  		$(function() {
+  			iterate('excellent'); //gives value of excellent column-wise
+  			iterate('good');
+  			iterate('average');
+  			iterate('poor');
+  			iterate('very_poor');
+  			var x=0;
+  			$('tr').each(function() {
+  				// iterates through each question
+  				if (x > 0) {
+  					var i=0;
+	  				j=5.0;
+	  				num = 0;
+	  				den = 0;
+	  				z = 1;
+	  				$(this).find('td').each (function() {
+	  					if(i > 0 && i < 6){ //to skip the question <td>
+	  						// iterates through each answer
+	  						value = parseFloat(($(this).attr('value')));
+	  						if(isNaN(value)){ /* this is the main part */
+	  							value = 0.0;
+	  						}
+	  						num = num + (value * j);
+	  						den = den + value;
+	  						j--;
+	  					}
+	  					i++;
+					});
+					var total_per = 100 * (num / (den*5.0)); //total calculation
+					$(this).append('<td class="total">' + total_per.toFixed(2) + '</td>'); //appends the total
+  				}
+  				x++;
+  			})
+  		})
+  	</script>
+  	<script>
+  		$(function() {
+  			$('.total').each(function() {
+  				if(isNaN($(this).html())) {
+  					$(this).hide();
+  				}
+  			})
+  		})
+  	</script>
+  	<script>
+  		var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+if(dd<10) {
+    dd = '0'+dd
+}
+if(mm<10) {
+    mm = '0'+mm
+}
+today = dd + '/' + mm + '/' + yyyy;
+$('#time').html(today);
+  	</script>
+</body>
+</html>
