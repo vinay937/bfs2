@@ -11,3 +11,10 @@ class AnswerAdmin(admin.ModelAdmin):
 	fieldsets = (
 		(None, {'fields': ('question', 'teacher', 'form', 'recipient')}),
 	)
+
+@admin.register(StudentAnswer)
+class StudentAnswerAdmin(admin.ModelAdmin):
+
+	fieldsets = (
+		(None, {'fields': ('question', 'teacher', 'form', 'recipient')}),
+	)

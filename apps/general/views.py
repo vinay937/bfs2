@@ -49,6 +49,9 @@ import smtplib
 
 import psycopg2
 
+import urllib.parse as ap
+import urllib.request
+
 # Create your views here.
 
 def handler404(request):
@@ -79,9 +82,9 @@ class HomeView(FormView):
 		Sends OTP to phone
 		'''
 		phone1 = phone
-		message = 'Please login with the OTP for USN:' + usn
-		params = { 'to' : phone1, 'message' : message }
-		baseUrl = 'https://alerts.sinfini.com/api/v3/index.php?method=sms&api_key=A5e952e0b7bec625b9885a52c4499bb55&format=json&sender=BMSITM&' + ap.urlencode(params)
+		message = 'Please login with the OTP: '+random_otp+' for USN:' + usn
+		params = { 'number' : phone1, 'text' : message }
+		baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
 		urllib.request.urlopen(baseUrl).read(1000)
 
 	def password_update(self, random_otp, usn):
@@ -137,10 +140,10 @@ class HomeView(FormView):
 
 					# Checks if both email and phone exist
 					elif qs.email and qs.phone:
-						self.phone_otp(random_otp, qs.phone, usn)
+						self.phone_otp(random_otp, qs.phone, qs.username)
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "OTP  sent to "+qs.email)
+						messages.error(request, "OTP  sent to "+qs.phone+" and "+qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only phone exists
@@ -221,7 +224,8 @@ class MainView(TemplateView):
 	def _student_theory(self):
 		subject_list = []
 		theory_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=True, subject__elective=False, ug=self.user.ug)
+			department=self.user.department, subject__theory=True, subject__elective=False, subject__project=False, ug=self.user.ug)
+		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|theory_subjects|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 		print(theory_subject)
 		for i in theory_subject:
 			subject_list.append(i.pk)
