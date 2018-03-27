@@ -140,7 +140,7 @@ class HomeView(FormView):
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "OTP  +qs.email)
+						messages.error(request, "OTP  sent to "+qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only phone exists
