@@ -18,8 +18,8 @@ from django.views.generic import TemplateView, FormView
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 
-from .models import Answer, FeedbackForm, ConsolidatedReport
-from .forms import FeedbackAnswerForm, AnswerFormSet
+from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer
+from .forms import FeedbackAnswerForm, AnswerFormSet, StudentFeedbackAnswerForm
 
 from apps.general.models import UserType, Teaches
 
@@ -42,7 +42,7 @@ class FeedbackView(FormView):
 
 	def get_context_data(self, **kwargs):
 		context = super(FeedbackView, self).get_context_data(**kwargs)
-		
+
 		recipients = self.request.session.get('recipients')
 
 		if recipients:
@@ -55,6 +55,7 @@ class FeedbackView(FormView):
 
 		# Student Form
 		if self.request.user.is_student():
+			self.form_class = StudentFeedbackAnswerForm
 			self.template_name = "feedback/student_entry.html"
 			recipients = self.request.session.get('recipients_theory')
 			recipients = self.get_list(Teaches, recipients)
@@ -71,7 +72,7 @@ class FeedbackView(FormView):
 			lab_post_recipients = self.get_list(Teaches, lab_post_recipients)
 			project_post_recipients = self.request.session.get('post_recipients_project')
 			project_post_recipients = self.get_list(Teaches, project_post_recipients)
-			
+
 			context['recipients_theory'] = recipients
 			context['recipients_labs'] = lab_recipients
 			context['recipients_project'] = project_recipients
@@ -97,8 +98,8 @@ class FeedbackView(FormView):
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='ST')
 						question_count = feedback_form.question.all().count()
-						AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
-						formset = AnswerFormset(queryset=Answer.objects.none())
+						StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count)
+						formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
 						context['formset'] = formset
 						form_zip = zip(formset, feedback_form.question.all())
 						context['form_zip'] = form_zip
@@ -110,8 +111,8 @@ class FeedbackView(FormView):
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='SL')
 						question_count = feedback_form.question.all().count()
-						AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
-						formset = AnswerFormset(queryset=Answer.objects.none())
+						StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count)
+						formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
 						context['formset'] = formset
 						form_zip = zip(formset, feedback_form.question.all())
 						context['form_zip'] = form_zip
@@ -123,19 +124,19 @@ class FeedbackView(FormView):
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='SP')
 						question_count = feedback_form.question.all().count()
-						AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
-						formset = AnswerFormset(queryset=Answer.objects.none())
+						StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count)
+						formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
 						context['formset'] = formset
 						form_zip = zip(formset, feedback_form.question.all())
 						context['form_zip'] = form_zip
 						context['recipient_name'] = recipients_name
-						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|9|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")	
+						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|9|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 			elif iterable_forms:
 				feedback_form = iterable_forms[0]
 				question_count = feedback_form.question.all().count()
-				AnswerFormset = modelformset_factory(Answer, 
-					form=FeedbackAnswerForm, extra=question_count)
-				formset = AnswerFormset(queryset=Answer.objects.none())
+				StudentAnswerFormset = modelformset_factory(StudentAnswer,
+					form=StudentFeedbackAnswerForm, extra=question_count)
+				formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
 				context['formset'] = formset
 				form_zip = zip(formset, feedback_form.question.all())
 				context['form_zip'] = form_zip
@@ -178,7 +179,7 @@ class FeedbackView(FormView):
 			elif iterable_forms:
 				feedback_form = iterable_forms[0]
 				question_count = feedback_form.question.all().count()
-				AnswerFormset = modelformset_factory(Answer, 
+				AnswerFormset = modelformset_factory(Answer,
 					form=FeedbackAnswerForm, extra=question_count)
 				formset = AnswerFormset(queryset=Answer.objects.none())
 				context['formset'] = formset
@@ -201,6 +202,10 @@ class FeedbackView(FormView):
 		form_valid = form.is_valid()
 		formset_valid = formset.is_valid()
 		if self.request.user.is_student():
+			StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm)
+			formset = StudentAnswerFormset(request.POST)
+			form_valid = form.is_valid()
+			formset_valid = formset.is_valid()
 			theory_count = self.request.session['theory_count']
 			lab_count = self.request.session['labs_count']
 			project_count = self.request.session['project_count']
@@ -228,7 +233,7 @@ class FeedbackView(FormView):
 							question = feedback_form.question.all()
 							for form, que in zip(formset, question):
 								ans = form.cleaned_data.get('answer')
-								answer = Answer.objects.create(question=que,
+								answer = StudentAnswer.objects.create(question=que,
 										value=ans, teacher=teaches, form=feedback_form)
 							del self.request.session['post_recipients_theory'][0]
 							self.request.session['post_recipients_theory'] = self.request.session['post_recipients_theory']
@@ -243,11 +248,12 @@ class FeedbackView(FormView):
 							question = feedback_form.question.all()
 							for form, que in zip(formset, question):
 								ans = form.cleaned_data.get('answer')
-								answer = Answer.objects.create(question=que,
+								answer = StudentAnswer.objects.create(question=que,
 										value=ans, teacher=teaches, form=feedback_form)
+							print('|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|post_recipients_labs|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|')
+							print(self.request.session['post_recipients_labs'])
 							del self.request.session['post_recipients_labs'][0]
 							self.request.session['post_recipients_labs'] = self.request.session['post_recipients_labs']
-							print('#@##@#@#@#@#@#@#@#' + str(self.request.session['post_recipients_labs']) )
 							self.request.session['labs_count'] -= 1
 					elif project_count:
 						print("LAB COUNT" + str(project_count))
@@ -258,7 +264,7 @@ class FeedbackView(FormView):
 							question = feedback_form.question.all()
 							for form, que in zip(formset, question):
 								ans = form.cleaned_data.get('answer')
-								answer = Answer.objects.create(question=que,
+								answer = StudentAnswer.objects.create(question=que,
 										value=ans, teacher=teaches, form=feedback_form)
 							del self.request.session['post_recipients_project'][0]
 							self.request.session['post_recipients_project'] = self.request.session['post_recipients_project']
@@ -269,7 +275,7 @@ class FeedbackView(FormView):
 						question_count = feedback_form.question.all().count()
 						for form, que in zip(formset, feedback_form.question.all()):
 							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que,
+							answer = StudentAnswer.objects.create(question=que,
 									value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
 						# remove the forms once done
 						del self.request.session['form'][0]

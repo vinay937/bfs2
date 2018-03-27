@@ -39,7 +39,7 @@
 }
 
 #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
+    width: 350px !important;
 }
 
 #page-content-wrapper {
@@ -59,7 +59,7 @@
     top: 0;
     margin: 0;
     padding: 0;
-    width: 250px;
+    width: 350px;
     list-style: none;
 }
 
@@ -110,7 +110,7 @@
     }
 
     #sidebar-wrapper {
-        width: 250px;
+        width: 350px !important;
     }
 
     #wrapper.toggled #sidebar-wrapper {
@@ -163,7 +163,7 @@ h3{
                     <br>
                 </li>
                  <li style="margin-top:10%;" class="sidebar-brand">
-                    <a href="#" class="navbar-brand">Welcome,<br> {{user.first_name}}</a>
+                    <a href="#" class="navbar-brand">Welcome, {{user.first_name}}</a>
                 </li>
                 {% if recipients_theory %}
                     {% for rn in recipients_theory %}
@@ -191,11 +191,11 @@ h3{
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    
+
                     <div class="col-lg-12">
                       <br><br><br>
                       <marquee style="background-color: #283593; color: white;" direction = "right">This Feedback Process Is Completely Anonymous.</marquee>
-                      <p><form style="width:100%;" method="post" action="." onsubmit="return checkForm(this);">
+                      <p><form style="padding-left:10%;width:100%;" method="post" action="." onsubmit="return checkForm(this);">
                         {% csrf_token %}
                         {{ formset.management_form }}
 					    {% for form, que in form_zip %}

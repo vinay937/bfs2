@@ -66,6 +66,27 @@ class Answer(models.Model):
 	def __str__(self):
 		return self.question.text
 
+class StudentAnswer(models.Model):
+	'''
+	Answers: If the student is giving the feedback for a teacher, it gets stored for the teacher,
+	which holds the details from the table - teaches. So, we can obtain all details such as Sem, Sec
+	from it while generation of reports.
+
+	If the feedback is to anyone else, it will get stored to the User.
+	'''
+	question = models.ForeignKey('question')
+	teacher = models.ForeignKey('general.teaches', null=True)
+
+	ANSWER_CHOICES = [('Excellent','Excellent'), ('Good','Good'), ('Satisfactory','Satisfactory'), ('Poor', 'Poor'), ('Very Poor', 'Very Poor')]
+	value = models.CharField(max_length=60, choices=ANSWER_CHOICES)
+
+	form = models.ForeignKey('feedbackform', null=True)
+	recipient = models.ForeignKey(get_user_model(), null=True)
+
+	def __str__(self):
+		return self.question.text
+
+
 class ConsolidatedReport(models.Model):
 	'''
 	The consolidated report is stored in this table.
@@ -74,3 +95,6 @@ class ConsolidatedReport(models.Model):
 	form_name = models.CharField("Name of the form",max_length=100)
 	total = models.CharField("Total value they got", max_length=10)
 	department = models.CharField("Department Code", max_length=30,null=True, blank=True)
+
+	def __str__(self):
+		return self.name

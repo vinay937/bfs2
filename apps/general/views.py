@@ -282,7 +282,7 @@ class MainView(TemplateView):
 		print(self.user.sec)
 		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|department|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 		print(self.user.department)
-		project_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec, batch = self.user.batch, 
+		project_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec, batch = self.user.batch,
 			department=self.user.department, subject__project=True, subject__theory=False, subject__elective=False, ug=self.user.ug)
 		print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|project_subject|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 		print(project_subject)

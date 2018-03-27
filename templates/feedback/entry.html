@@ -39,14 +39,13 @@
 }
 
 #wrapper.toggled #sidebar-wrapper {
-    width: 250px;
+    width: 350px !important;
 }
 
 #page-content-wrapper {
     padding: 15px;
     width: 100%;
 }
-
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
     margin-right: -250px;
@@ -110,7 +109,7 @@
     }
 
     #sidebar-wrapper {
-        width: 250px;
+        width: 350px !important;
     }
 
     #wrapper.toggled #sidebar-wrapper {
@@ -163,7 +162,7 @@ h3{
                     <br>
                 </li>
                  <li style="margin-top:10%;" class="sidebar-brand">
-                    <a href="#" class="navbar-brand">Welcome,<br> {{user.first_name}}</a>
+                    <a href="#" class="navbar-brand">Welcome, <br> {{user.first_name}}</a>
                 </li>
                 {% if recipients %}
                     {% for rn in recipients %}
@@ -177,7 +176,7 @@ h3{
         <div id="page-content-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    
+
                     <div class="col-lg-12">
                       <br><br><br>
                       <marquee style="background-color: #283593; color: white;" direction = "right">This Feedback Process Is Completely Anonymous.</marquee>
