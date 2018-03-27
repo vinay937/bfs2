@@ -21,6 +21,10 @@ from django.conf import settings
 from apps.general.views import *
 from apps.feedback.views import *
 
+
+handler404 = 'apps.general.views.page_not_found_view'
+handler500 = 'apps.general.views.internal_server_error_view'
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^', include('apps.feedback.urls')),
