@@ -94,7 +94,7 @@ class FeedbackView(FormView):
 
 			if theory_count:
 				if theory_post_recipients:
-					recipients_name = get_user_model().objects.get(username=theory_post_recipients[0].teacher.username)
+					recipients_name = theory_post_recipients[0]
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='ST')
 						question_count = feedback_form.question.all().count()
@@ -107,7 +107,7 @@ class FeedbackView(FormView):
 						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|7|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 			elif lab_count:
 				if lab_post_recipients:
-					recipients_name = get_user_model().objects.get(username=lab_post_recipients[0].teacher.username)
+					recipients_name = lab_post_recipients[0]
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='SL')
 						question_count = feedback_form.question.all().count()
@@ -120,7 +120,7 @@ class FeedbackView(FormView):
 						print("|_-_-_-_-_-_-_-_-_-_-_-_-_-_-|8|-_-_-_-_-_-_-_-_-_-_-_-_-_-_|")
 			elif project_count:
 				if project_post_recipients:
-					recipients_name = get_user_model().objects.get(username=project_post_recipients[0].teacher.username)
+					recipients_name = project_post_recipients[0]
 					if self.request.user.is_student():
 						feedback_form = FeedbackForm.objects.get(code='SP')
 						question_count = feedback_form.question.all().count()

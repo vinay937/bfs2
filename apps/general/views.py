@@ -79,7 +79,7 @@ class HomeView(FormView):
 		Sends OTP to phone
 		'''
 		phone1 = phone
-		message = 'Please login with the OTP:' + random_otp + ' for USN:  '+ usn
+		message = 'Please login with the OTP for USN:' + usn
 		params = { 'to' : phone1, 'message' : message }
 		baseUrl = 'https://alerts.sinfini.com/api/v3/index.php?method=sms&api_key=A5e952e0b7bec625b9885a52c4499bb55&format=json&sender=BMSITM&' + ap.urlencode(params)
 		urllib.request.urlopen(baseUrl).read(1000)
@@ -102,7 +102,7 @@ class HomeView(FormView):
 					'Feedback Support <feedback@bmsit.in>',
 					[qs.email,'feedback@bmsit.in'],
 					)
-		#email.send()
+		email.send()
 		print('OTP: ' + random_otp)
 
 	def is_admin(self, user):
@@ -140,21 +140,21 @@ class HomeView(FormView):
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "OTP: "+ str(random_otp) + " sent to " +qs.email)
+						messages.error(request, "OTP  +qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only phone exists
 					elif qs.phone and not qs.email:
 						self.phone_otp(random_otp, qs.phone, usn)
 						self.password_update(random_otp, usn)
-						messages.error(request, "Email not found, OTP: "+ str(random_otp) + " sent to "+qs.phone)
+						messages.error(request, "Email not found, OTP sent to "+qs.phone)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 					# Checks if only email exists
 					elif qs.email and not qs.phone:
 						self.email_otp(random_otp, qs)
 						self.password_update(random_otp, usn)
-						messages.error(request, "Phone number not found, OTP: "+ str(random_otp) + " sent to "+qs.email)
+						messages.error(request, "Phone number not found, OTP  sent to "+qs.email)
 						return HttpResponseRedirect("/login/usn=" + usn)
 
 			else:
