@@ -215,6 +215,11 @@ h3{
     </div>
 </div>
 <script>
+    window.onbeforeunload = function() {
+        return "Leaving this page will reset the wizard";
+    };
+</script>
+<script>
     function checkForm(form)
     {
         form.myButton.disabled = true;
@@ -228,14 +233,3 @@ h3{
         e.preventDefault();
     });
 </script>
-<!-- <script>
-    $('#submit').click(function() {
-        $('form').submit();
-    })
-</script> -->
-<script>
-    $("#menu-toggle").click(function(e) {
-        e.preventDefault();
-        $("#wrapper").toggleClass("toggled");
-    });
-    </script>
