@@ -17,8 +17,8 @@ class Semester(models.Model):
 	sem = models.IntegerField(default=1)
 	active = models.BooleanField(default=True)
 
-	def __str__(self):
-		return self.sem
+	# def __str__(self):
+	# 	return self.sem
 
 class UserType(models.Model):
 	'''
@@ -91,7 +91,7 @@ class Subject(models.Model):
 	project = models.BooleanField(default=False)
 
 	def __str__(self):
-		return self.name
+		return str(self.name + '->' + self.code)
 
 class Teaches(models.Model):
 	'''
@@ -108,11 +108,11 @@ class Teaches(models.Model):
 
 	sem = models.ForeignKey("general.semester")
 	sec = models.CharField("Student's Section", max_length=50)
-	department = models.ForeignKey('department', verbose_name="Student's department")
+	department = models.ForeignKey('department')
 
 	batch = models.CharField("Student's Batch", max_length=50, null=True, blank=True)
 	sub_batch = models.CharField("Student's sub batch", max_length=50, null=True, blank=True)
 	ug = models.BooleanField(default=False)
 
 	def __str__(self):
-		return self.teacher.first_name + ' -> '  + self.subject.name
+	 	return self.teacher.first_name + ' -> '  + self.subject.name
