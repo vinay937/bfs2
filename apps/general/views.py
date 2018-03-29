@@ -447,6 +447,22 @@ def faculty_remaining(request):
 	return render(request, template_name)
 
 
+def counter_view(request):
+	'''
+	Displays the total number of students who have given feedback
+	'''
+	total_done = 0
+	student_count = 0
+	count = User.objects.all()
+	for i in count:
+		if i.is_student():
+			student_count += 1
+			if i.done == True: 
+				total_done += 1
+	template_name = 'counter.html'
+	context = {"total" : total_done, "student_count" : student_count}
+	return render(request, template_name, context)
+
 # @login_required(login_url='/signin/')
 # def main_view(request):
 # 	'''

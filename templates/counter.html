@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Total Feedback Completed</title>
+        <link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/css?family=Slabo+27px" rel="stylesheet">
+        <style>
+        a{text-decoration: none;color: #3181CA;}
+        .subtitle{margin: 0;margin-bottom: 20px;}
+        .header{text-align: center;}
+        .title{font-size:50px;color: #0b87c3;margin-bottom: 10px;}
+        .title,.description{}
+        body{background: #eeeeee;color: #333333;font-family: arial;font-size:14px;margin: 0;padding: 0;overflow-x:hidden;}
+        .container{
+  width: 800px;
+  max-width: 95%;
+  margin-top: 150px;
+  margin-right: auto;
+  margin-bottom: 50px;
+  margin-left: auto;
+}
+        .section{background: #ffffff;border: 1px solid #dddddd;margin-top: 20px;margin-bottom: 20px; padding: 20px;}
+        #content,#content2{background:#ddd;height:200px;}
+        .t1{width:100px;height:100px;background:#ef8603;margin:20px;}
+        .highlight{font-weight:bold;}
+        .option-table tr{vertical-align:top;}
+        table.option-table{border-width: 1px;border-spacing: 0px;border-style: outset;border-color: #f7f7f7;border-collapse: separate;background-color: white;}
+        table.option-table th {border-width: 1px;padding: 5px;border-style: inset;border-color: #f7f7f7;background-color: white;}
+        table.option-table td {border-width: 1px;padding: 5px;border-style: inset;border-color: #f7f7f7;background-color: white;}
+        .footer{margin-top: 50px;margin-bottom: 50px;text-align: right;}
+        .share{margin-top: 20px;}
+        .clear{clear: both;}
+        .half-left{float: left;width: 40%;}
+        .half-center{
+        	float: center;width: 50%;
+        	padding-top: 20%;
+        	padding-bottom: 20%
+        }
+        .half-right{float: right;width: 40%;}
+        .numscroller-big-bottom{
+            font-size: 44px;text-align: center;
+        }
+        .numscroller-info-top{
+            font-size: 12px;margin-bottom: 10px;
+        }
+        .num{
+        	font-size: 110px !important;
+        	font-family: 'Slabo 27px', serif;
+        }
+        </style>
+    </head>
+    <body>
+    <div class='container'>
+    <div class='header'>
+        <h1 class='title'>Total Number Of Feedbacks Received</h1>
+    </div>
+    <div class='section'>
+
+        <div class='numscroller-info-top'><center><h3>Updated at: {% now 'r - e' %}</h3></center></div>
+        <div class='numscroller numscroller-big-bottom num' data-slno='1' data-min='1000' data-max='{{total}}' data-delay='10' data-increment="10"></div>
+        <p>Total Students: {{ student_count }}</p>
+    </div>
+    
+    <div class='clear'></div>
+  <div class='clear'></div>
+                <div class='footer'>Copyright 2018 &copy; <a href="http://devxlabs.co" rel="nofollow">Devx Labs</a></div>
+    </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+   <script type="text/javascript">
+               /**
+        * jQuery scroroller Plugin 1.0
+        *
+        * http://www.tinywall.net/
+        * 
+        * Developers: Arun David, Boobalan
+        * Copyright (c) 2014 
+        */
+        (function($){
+            $(window).on("load",function(){
+                $(document).scrollzipInit();
+                $(document).rollerInit();
+            });
+            $(window).on("load scroll resize", function(){
+                $('.numscroller').scrollzip({
+                    showFunction    :   function() {
+                                            numberRoller($(this).attr('data-slno'));
+                                        },
+                    wholeVisible    :     false,
+                });
+            });
+            $.fn.scrollzipInit=function(){
+                $('body').prepend("<div style='position:fixed;top:0px;left:0px;width:0;height:0;' id='scrollzipPoint'></div>" );
+            };
+            $.fn.rollerInit=function(){
+                var i=0;
+                $('.numscroller').each(function() {
+                    i++;
+                   $(this).attr('data-slno',i); 
+                   $(this).addClass("roller-title-number-"+i);
+                });        
+            };
+            $.fn.scrollzip = function(options){
+                var settings = $.extend({
+                    showFunction    : null,
+                    hideFunction    : null,
+                    showShift       : 0,
+                    wholeVisible    : false,
+                    hideShift       : 0,
+                }, options);
+                return this.each(function(i,obj){
+                    $(this).addClass('scrollzip');
+                    if ( $.isFunction( settings.showFunction ) ){
+                        if(
+                            !$(this).hasClass('isShown')&&
+                            ($(window).outerHeight()+$('#scrollzipPoint').offset().top-settings.showShift)>($(this).offset().top+((settings.wholeVisible)?$(this).outerHeight():0))&&
+                            ($('#scrollzipPoint').offset().top+((settings.wholeVisible)?$(this).outerHeight():0))<($(this).outerHeight()+$(this).offset().top-settings.showShift)
+                        ){
+                            $(this).addClass('isShown');
+                            settings.showFunction.call( this );
+                        }
+                    }
+                    if ( $.isFunction( settings.hideFunction ) ){
+                        if(
+                            $(this).hasClass('isShown')&&
+                            (($(window).outerHeight()+$('#scrollzipPoint').offset().top-settings.hideShift)<($(this).offset().top+((settings.wholeVisible)?$(this).outerHeight():0))||
+                            ($('#scrollzipPoint').offset().top+((settings.wholeVisible)?$(this).outerHeight():0))>($(this).outerHeight()+$(this).offset().top-settings.hideShift))
+                        ){
+                            $(this).removeClass('isShown');
+                            settings.hideFunction.call( this );
+                        }
+                    }
+                    return this;
+                });
+            };
+            function numberRoller(slno){
+                    var min=$('.roller-title-number-'+slno).attr('data-min');
+                    var max=$('.roller-title-number-'+slno).attr('data-max');
+                    var timediff=$('.roller-title-number-'+slno).attr('data-delay');
+                    var increment=$('.roller-title-number-'+slno).attr('data-increment');
+                    var numdiff=max-min;
+                    var timeout=(timediff*1000)/numdiff;
+                    //if(numinc<10){
+                        //increment=Math.floor((timediff*1000)/10);
+                    //}//alert(increment);
+                    numberRoll(slno,min,max,increment,timeout);
+                    
+            }
+            function numberRoll(slno,min,max,increment,timeout){//alert(slno+"="+min+"="+max+"="+increment+"="+timeout);
+                if(min<=max){
+                    $('.roller-title-number-'+slno).html(min);
+                    min=parseInt(min)+parseInt(increment);
+                    setTimeout(function(){numberRoll(eval(slno),eval(min),eval(max),eval(increment),eval(timeout))},timeout);
+                }else{
+                    $('.roller-title-number-'+slno).html(max);
+                }
+            }
+        })(jQuery);
+   </script>
+
+   </body>
+
+</html> 
