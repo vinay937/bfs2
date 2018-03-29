@@ -64,9 +64,17 @@ def page_not_found_view(request):
 def internal_server_error_view(request):
 	error_url = request.get_full_path()
 	template_name = '500.html'
+	context = {"error_url": error_url}
+	return render(request, template_name, context)
+
+
+def notifyView(request):
+	error_url = request.GET.get('q', 'directly reached notify')
+	print(error_url)
+	template_name = 'notify.html'
 	context = {}
 	email = EmailMessage(
-					'Feedback Error at ' + str(error_url),
+					'Feedback Error occurred at ' + str(error_url),
 					'Hi Administrator,\nThere is a 500 error reported at "' + str(error_url) + '".\nThis request was made by: ' + str(request.user) +'\nPlease look into it immediately.\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedback@bmsit.in>',
 					['nandkeolyar.aayush@gmail.com', 'amoghsk279@gmail.com'] ,
@@ -104,8 +112,8 @@ class HomeView(FormView):
 		"""
 		email = EmailMessage(
 					'Feedback OTP',
-					'Hi, ' + qs.first_name + '\n\n' +'Your OTP for feedback is:' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
-					'Feedback Support <feedback@bmsit.in>',
+					'Hi, ' + qs.first_name + '\n\n' +'Your OTP for feedback is: ' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
+					'Feedback Support <feedbackotp@bmsit.in>',
 					[qs.email],
 					)
 		email.send()

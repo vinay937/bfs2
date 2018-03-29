@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Feedback Team Notified  | Feedback360</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootflat/2.0.4/css/bootflat.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-social/5.1.1/bootstrap-social.css" rel="stylesheet">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="{% static 'css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'css/bootstrap-social.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Vibur" rel="stylesheet">
+    <script src="https://use.fontawesome.com/63a94500c6.js"></script>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <style>
+        .footer-main{
+                padding-top: 3%;
+                padding-bottom: 2%;
+            }
+            .star-rating {
+  font-family: 'FontAwesome';
+  margin: 50px auto;
+  margin-top: 1%;
+}
+.btn-logout{
+  margin-top: -3%;
+}
+.star-rating > fieldset {
+  border: none;
+  display: inline-block;
+}
+.star-rating > fieldset:not(:checked) > input {
+  position: absolute;
+  top: -9999px;
+  clip: rect(0, 0, 0, 0);
+}
+.star-rating > fieldset:not(:checked) > label {
+  float: right;
+  width: 1em;
+  padding: 0 .05em;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 200%;
+  color: #0355fa;
+}
+.star-rating > fieldset:not(:checked) > label:before {
+  content: '\f006  ';
+}
+.star-rating > fieldset:not(:checked) > label:hover,
+.star-rating > fieldset:not(:checked) > label:hover ~ label {
+  color: #0355fa;
+  text-shadow: 0 0 3px #0355fa;
+}
+.star-rating > fieldset:not(:checked) > label:hover:before,
+.star-rating > fieldset:not(:checked) > label:hover ~ label:before {
+  content: '\f005  ';
+}
+.star-rating > fieldset > input:checked ~ label:before {
+  content: '\f005  ';
+}
+.star-rating > fieldset > label:active {
+  position: relative;
+  top: 2px;
+}
+.con-bg{
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+    background-color:#464646;
+}
+.con-container {
+  display: flex;
+  justify-content: center;
+  width: 70% !important;
+  height: 180px !important;
+  padding-top: 7%;
+}
+@media (max-width: 900px) {
+    .con-container {
+      display: flex;
+      justify-content: center;
+      width: 70% !important;
+      height: 230px !important;
+      padding-top: 12%;
+    }
+}
+@media screen and (max-width: 480px){
+  .star-rating > fieldset:not(:checked) > label {
+  font-size: 120%;
+}
+  .jumbotron {
+    margin-top: 30%;
+  }
+}
+    </style>
+
+</head>
+<body class="con-bg">
+    <div class="container-fluid">
+    <div class="container con-container">
+    <div class="col-md-6 center">
+        <div class="jumbotron">
+            <div class="jumbotron-contents text-center">
+                <h5>The Feedback team has been notified</h5>
+                <p>Thanks!</p>
+                    <p>Developed by DevX</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- jQuery (necessary for Flat UI's JavaScript plugins) 
+    <script src="js/jquery.fs.selecter.min.js"></script>
+    Include all compiled plugins (below), or include individual files as needed 
+    <script src="js/jquery.fs.stepper.min.js"></script>
+    <script src="js/icheck.min.js"></script>-->
+</div>    
+<script>
+    var backgrounds = [
+  {  color: '#F44336',
+  },
+  {  color: '#E91E63',
+  },
+  {  color: '#9C27B0',
+  },
+  {  color: '#673AB7',
+  },
+  {  color: '#3F51B5',
+  },
+  {  color: '#009688',
+  },
+  {  color: '#FF9800',
+  },
+  {  color: '#607D8B',
+  },
+       ]; 
+
+/**
+ * Returns a random integer between min and max
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+       $(document).ready(function(){
+         var bgNumber = getRandomInt(0, backgrounds.length-1);
+         
+         $('body').css('background-color', backgrounds[bgNumber].color);
+       });
+  </script>
+  </body>
+</html>
