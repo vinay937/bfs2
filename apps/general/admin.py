@@ -23,8 +23,8 @@ class UserAdmin(DjangoUserAdmin):
 		}),
 	)
 
-	list_display = ('username', 'first_name', 'last_name')
-	search_fields = ('email', 'first_name', 'last_name', 'username')
+	list_display = ('username', 'first_name', 'last_name', 'phone', 'email')
+	search_fields = ('email', 'first_name', 'last_name', 'username', 'phone')
 	ordering = ('username',)
 
 @admin.register(Teaches)
