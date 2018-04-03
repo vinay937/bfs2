@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'^logout/$', logout, {'next_page': '/exit'}, name='logout'),
     url(r'^new/', TemplateView.as_view(template_name='feedback/new_form.html')),
     url(r'^exit/', views.exit_view),
+    url(r'^done_cron/(?P<dept_name>[\w\-]+)$',views.done_cron),
     url(r'^done', views.done_view),
     url(r'^faculty-pending/', views.faculty_remaining),
     url(r'^dashboard/', views.Dashboard, name='dashboard'),
