@@ -110,6 +110,7 @@ class HomeView(FormView):
 		"""
 		Sends OTP to email
 		"""
+		print(random_otp)
 		email = EmailMessage(
 					'Feedback OTP',
 					'Hi, ' + qs.first_name + '\n\n' +'Your OTP for feedback is: ' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
@@ -625,13 +626,14 @@ def done_cron(request, dept_name):
 	'''
 	Downloads the list of remaing students, department wise in a CSV file
 	'''
-	student_list = User.objects.filter(department__name=dept_name, done=False).order_by('sem')
+	student_list = User.objects.filter(department__name=dept_name, done=False, is_active=True).order_by('sem').order_by('username')
 	response = HttpResponse(content_type='text/csv')
 
 	response['Content-Disposition'] = 'attachment; filename=feedback_pending_' +dept_name +'.csv'
 	writer = csv.writer(response)
 	for student in student_list:
 		writer.writerow([student.username, student.first_name])
+	writer.writerow(['Total Remaining',student_list.count()])
 
 	return response
 
