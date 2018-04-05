@@ -3458,6 +3458,13 @@ body > .navbar-collapse {
     line-height: normal;
     margin: 0;
 }
+
+.second-row { flex-grow: 1; border: none; margin: 0; padding: 0; }
+iframe {
+    display:block;
+    width:100%;
+}
+
 </style>
 </head>
 <body>
@@ -3477,7 +3484,7 @@ body > .navbar-collapse {
                     </a>
                 </li>
                 <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-file-excel-o" aria-hidden="true"></i>
- <p>Feedback Remaining <span class="caret"></span></p></a>
+                    <p>Feedback Remaining <span class="caret"></span></p></a>
                     <ul style="background:#996fd1; margin-left: 11%; margin-top:2%; width:200px;" class="dropdown-menu">
                       <li><a href="/done_cron/CSE"><span>CSE</span></a></li>
                       <li><a href="/done_cron/ISE">ISE</a></li>
@@ -3497,14 +3504,22 @@ body > .navbar-collapse {
                     </a>
                 </li>
                 <li>
-                    {% for i in type %}
-                        {% if i.name == 'Principal' %}
-                        <a href="/view-consolidated-report">
-                            <i class="fa fa-binoculars" aria-hidden="true"></i>
-                            <p>Consolidated Report</p>
-                        </a>
+                        {% if user_type == 'Principal' %}
+                        <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        <p>Consolidated Report<span class="caret"></span></p></a>
+                        <ul style="background:#996fd1; margin-left: 15%; margin-top:2%; width:400px;" class="dropdown-menu">
+                          <li>
+                              <a target="_blank" href="https://cdn.bmsit.ac.in/FirstFeedbackConsolidatedReport_odd sem_2017-18.pdf" download="Odd sem 2017-18 First Feedback Consolidated Report.pdf">17-18 Odd Sem First Report
+                              </a>
+                            </li>
+                           <li>
+                              <a target="_blank" href="https://cdn.bmsit.ac.in/BMSITSecondFeedbackConsolidatedReport_odd%20sem-2017-18.pdf" download="Odd sem 2017-18 Second Feedback Consolidated Report.pdf">17-18 Odd Sem Second Report
+                              </a>
+                            </li>
+
+                        </ul>
+                      </li>
                         {% endif %}
-                    {% endfor %}
                 </li>
                 <li>
                     <a href="/report-not-viewed">
@@ -3548,9 +3563,10 @@ body > .navbar-collapse {
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <!-- <div style="background-color: #996fd1; color: white;" class="card">
+                      
+                        <div style="background-color: #996fd1; color: white;" class="card">
                             <div class="header">
-                                <h4 class="title" style="color:white;">Branchwise Feedbacks Pending</h4>
+                                <h4 class="title" style="color:white;">Branchwise Student Feedbacks Pending</h4>
                             </div>
                             <div class="content">
                                 <div class="section">
@@ -3560,29 +3576,29 @@ body > .navbar-collapse {
                                     <span class="branchwise"> ECE  <strong>{{ ece }}</strong></span>
                                     <span class="branchwise"> EEE  <strong>{{ eee }}</strong></span>
                                     <span class="branchwise"> TCE  <strong>{{ tce }}</strong></span>
-                                    <span class="branchwise"> Mech  <strong>{{ mech }}</strong></span>
-                                    <span class="branchwise"> MCA  <strong>{{ mca }}</strong></span>
+                                    <span class="branchwise"> Mech  <strong>{{ mech }}</strong><!-- </span>
+                                    <span class="branchwise"> MCA  <strong>{{ mca }}</strong></span> -->
                                 </div>
                             </div>
-                        </div> -->
+                        </div> 
                     </div>
                     <div class="col-md-4">
-                       <!--  <div class="card">
+                       <!-- <div class="card">
                             <div class="header">
                                 <h4 class="title">Feedback Statistics</h4>
                             </div>
                             <div class="content">
                                 <div id="myDiv"></div>
                             </div>
-                        </div>
+                        </div> -->
                          <div class="card ">
                             <div class="header">
-                                <h4 class="title">Feedback Rating</h4>
+                                <h4 class="title">Live Feedback Rating</h4>
                             </div>
                             <div class="content">
-                                <h3>{{rating|floatformat:3}}</h3>
+                                <h3>4.992</h3>
                             </div>
-                        </div> -->
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <!-- <div class="card">

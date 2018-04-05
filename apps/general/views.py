@@ -454,7 +454,7 @@ def counter_view(request):
 	'''
 	total_done = 0
 	student_count = 0
-	count = User.objects.all()
+	count = User.objects.all().filter(is_active=True)
 	for i in count:
 		if i.is_student():
 			student_count += 1
@@ -626,7 +626,7 @@ def done_cron(request, dept_name):
 	'''
 	Downloads the list of remaing students, department wise in a CSV file
 	'''
-	student_list = User.objects.filter(department__name=dept_name, done=False, is_active=True).order_by('sem').order_by('username')
+	student_list = User.objects.filter(department__name=dept_name, done=False, is_active=True).order_by('sem')
 	response = HttpResponse(content_type='text/csv')
 
 	response['Content-Disposition'] = 'attachment; filename=feedback_pending_' +dept_name +'.csv'
@@ -645,8 +645,18 @@ def Dashboard(request):
 	template_name = 'dashboard.html'
 	user = request.user
 	user_type = user.get_user_type()
-	context = { "type": user_type}
-	return render(request, template_name)
+	print(user_type[0].name)
+	context = { "user_type": user_type[0].name,
+				"cse" : User.objects.filter(done=False, user_type__name='Student', department__name='CSE').count(),
+				"ece" : User.objects.filter(done=False, user_type__name='Student', department__name='ECE').count(),
+				"mech" : User.objects.filter(done=False, user_type__name='Student', department__name='MECH').count(),
+				"tce" : User.objects.filter(done=False, user_type__name='Student', department__name='TCE').count(),
+				"eee" : User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count(),
+				"civil" : User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count(),
+				"ise" : User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count(),
+
+	}
+	return render(request, template_name, context)
 
 # 	def get_context_data(self, **kwargs):
 # 		context = super(Dashboard, self).get_context_data(**kwargs)
