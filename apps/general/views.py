@@ -652,7 +652,7 @@ def Dashboard(request):
 				"mech" : ((User.objects.filter(done=False, user_type__name='Student', department__name='MECH').count())/(User.objects.filter(user_type__name='Student', department__name='MECH').count()))*100,
 				"tce" : ((User.objects.filter(done=False, user_type__name='Student', department__name='TCE').count())/(User.objects.filter(user_type__name='Student', department__name='TCE').count()))*100,
 				"eee" : ((User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count())/(User.objects.filter(user_type__name='Student', department__name='EEE').count()))*100,
-				"civil" : ((User.objects.filter(done=False, user_type__name='Student', department__name='CIV').count())/(User.objects.filter(user_type__name='Student', department__name='CIV').count()))*100,
+				"civil" : ((User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count())/(User.objects.filter(user_type__name='Student', department__name='CIVIL').count()))*100,
 				"ise" : ((User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count())/(User.objects.filter(user_type__name='Student', department__name='ISE').count()))*100,
 
 	}
