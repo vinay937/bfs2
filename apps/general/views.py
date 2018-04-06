@@ -647,13 +647,13 @@ def Dashboard(request):
 	user_type = user.get_user_type()
 	print(user_type[0].name)
 	context = { "user_type": user_type[0].name,
-				"cse" : float(((User.objects.filter(done=False, user_type__name='Student', department__name='CSE').count())/(User.objects.filter(user_type__name='Student', department__name='CSE').count()))*100),
-				"ece" : float(((User.objects.filter(done=False, user_type__name='Student', department__name='ECE').count())/(User.objects.filter(user_type__name='Student', department__name='ECE').count()))*100),
-				"mech" : float( ((User.objects.filter(done=False, user_type__name='Student', department__name='MECH').count())/(User.objects.filter(user_type__name='Student', department__name='MECH').count()))*100),
-				"tce" : float( ((User.objects.filter(done=False, user_type__name='Student', department__name='TCE').count())/(User.objects.filter(user_type__name='Student', department__name='TCE').count()))*100),
-				"eee" : float( ((User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count())/(User.objects.filter(user_type__name='Student', department__name='EEE').count()))*100),
-				"civil" : float( ((User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count())/(User.objects.filter(user_type__name='Student', department__name='CIVIL').count()))*100),
-				"ise" : float( ((User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count())/(User.objects.filter(user_type__name='Student', department__name='ISE').count()))*100),
+				"cse" : User.objects.filter(done=False, user_type__name='Student', department__name='CSE').count(),
+				"ece" : User.objects.filter(done=False, user_type__name='Student', department__name='ECE').count(),
+				"mech" : User.objects.filter(done=False, user_type__name='Student', department__name='MECH').count(),
+				"tce" : User.objects.filter(done=False, user_type__name='Student', department__name='TCE').count(),
+				"eee" : User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count(),
+				"civil" : User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count(),
+				"ise" : User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count(),
 
 	}
 	return render(request, template_name, context)
