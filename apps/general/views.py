@@ -654,7 +654,13 @@ def Dashboard(request):
 				"eee" : User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count(),
 				"civil" : User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count(),
 				"ise" : User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count(),
-
+				"cse_total" : User.objects.filter( user_type__name='Student', department__name='CSE').count(),
+				"ece_total" : User.objects.filter( user_type__name='Student', department__name='ECE').count(),
+				"mech_total" : User.objects.filter(user_type__name='Student', department__name='MECH').count(),
+				"tce_total" : User.objects.filter(user_type__name='Student', department__name='TCE').count(),
+				"eee_total" : User.objects.filter( user_type__name='Student', department__name='EEE').count(),
+				"civil_total" : User.objects.filter(user_type__name='Student', department__name='CIVIL').count(),
+				"ise_total" : User.objects.filter(user_type__name='Student', department__name='ISE').count(),
 	}
 	return render(request, template_name, context)
 
