@@ -661,7 +661,7 @@ def Dashboard(request):
 				"eee_total" : User.objects.filter( user_type__name='Student', department__name='EEE').count(),
 				"civil_total" : User.objects.filter(user_type__name='Student', department__name='CIVIL').count(),
 				"ise_total" : User.objects.filter(user_type__name='Student', department__name='ISE').count(),
-				"total" : int(cse_total) + int(ece_total) + int(mech_total) + int(tce_total) + int(eee_total) + int(civil_total) + int(ise_total)
+				"total" : int(User.objects.filter( user_type__name='Student', department__name='CSE').count() + int(User.objects.filter( user_type__name='Student', department__name='ECE').count()) + int(User.objects.filter( user_type__name='Student', department__name='MECH').count()) + int(User.objects.filter( user_type__name='Student', department__name='TCE').count()) + int(User.objects.filter( user_type__name='Student', department__name='EEE').count()) + int(User.objects.filter( user_type__name='Student', department__name='CIV').count()) + int(User.objects.filter( user_type__name='Student', department__name='ISE').count())
 	}
 	return render(request, template_name, context)
 
