@@ -378,6 +378,44 @@ def view_consolidated(request):
 	context = {"report": report}
 	return render(request, template_name, context)
 
+def student_report(request, username):
+	template_name = "feedback/student_report.html"
+	user = get_user_model().objects.get(username=username)
+	user_type = user.get_user_type()
+	forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
+	results = dict()
+	for form in forms:
+		answers = StudentAnswer.objects.filter(teacher__teacher__username=user)
+		results[form] = answers
+	excellent = 0
+	good = 0
+	satisfactory = 0
+	poor = 0
+	very_poor = 0
+	for form, answers in results.items():
+		for que in form.question.all():
+			for answer in answers:
+				if answer.value == 'Excellent' and answer.question == que:
+					excellent+=1
+				if answer.value == 'Good' and answer.question == que:
+					good+=1
+				if answer.value == 'Satisfactory' and answer.question == que:
+					satisfactory+=1
+				if answer.value == 'Poor' and answer.question == que:
+					poor+=1
+				if answer.value == 'Very Poor' and answer.question == que:
+					very_poor+=1
+		print(excellent)
+		print(good)
+		print(satisfactory)
+		print(poor)
+		print(very_poor)
+		total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
+		# print(total)
+		
+	context = {"results" : results, "user" : user, "total" : total}
+	return render(request, template_name, context)
+
 # def feedback(request):
 # 	'''
 # 	Displays the main student feedback form
