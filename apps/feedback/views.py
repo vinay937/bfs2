@@ -384,6 +384,7 @@ class Student_Report(TemplateView):
 	def get_context_data(self, username, *args, **kwargs):
 		context = super(Student_Report, self).get_context_data(*args, **kwargs)
 		user = get_user_model().objects.get(username=username)
+		context['user'] = user
 		# user_type = user.get_user_type()
 		forms = FeedbackForm.objects.filter(user_type__name='Student', active=True)
 		print(forms)
