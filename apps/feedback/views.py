@@ -378,6 +378,100 @@ def view_consolidated(request):
 	context = {"report": report}
 	return render(request, template_name, context)
 
+def sconsolidated(request, username):
+	template_name = "feedback/student_report.html"
+	user = get_user_model().objects.get(username=username)
+	user_type = user.get_user_type()
+	# print("|________________________|user|________________________|")
+	# print(user)
+	forms = FeedbackForm.objects.filter(user_type=5, active=True)
+	data = Teaches.objects.filter(teacher__username=user)
+	results = dict()
+
+	for form in forms:
+		answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user)
+		results[form] = answers
+
+	# for i in data:
+	# 	print(i.subject)
+
+	value = list()
+	for i in data:
+		# print("________________________| CLASS: |________________________")
+		# print("Subject",i.subject.name)
+		# print("Section",i.sec)
+		# print("Sem",i.sem.sem)
+		ls = [i.sem.sem,i.sec,i.subject.name]
+		for form, answers in results.items():
+			excellent_total = 0
+			good_total = 0
+			satisfactory_total = 0
+			poor_total = 0
+			very_poor_total = 0
+			l = list()
+			for que in form.question.all():
+				# print("________________________| QUESTION: |________________________")
+				# print(que.text)
+				excellent = 0
+				good = 0
+				satisfactory = 0
+				poor = 0
+				very_poor = 0
+				for j in answers:
+					# print("________________________| SEM: |________________________")
+					# print(i.sem.sem, j.teacher.sem.sem)
+					# print("________________________| SEC: |________________________")
+					# print(i.sec, j.teacher.sec)
+					# print("________________________| DEPARTMENT: |________________________")
+					# print(i.department, j.teacher.department)
+					if j.question == que:
+						if j.value == 'Excellent':
+							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+								excellent += 1
+								excellent_total += 1
+
+						if j.value == 'Good':
+							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+								good += 1
+								good_total += 1
+
+						if j.value == 'Satisfactory':
+							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+								satisfactory += 1
+								satisfactory_total += 1
+
+						if j.value == 'Poor':
+							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+								poor += 1
+								poor_total += 1
+
+						if j.value == 'Very Poor':
+							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+								very_poor += 1
+								very_poor_total += 1
+
+				if excellent or good or satisfactory or poor or very_poor:
+					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
+					l.append([que.text, excellent, good, satisfactory, poor, very_poor, total])
+					# print("________________________| List: |________________________")
+					# for x in l:
+					# 	print(x)
+			if l:
+				grand_total = (((excellent_total * 5) + (good_total * 4) + (satisfactory_total * 3) + (poor_total * 2) + (very_poor_total))/((excellent_total+good_total+satisfactory_total+poor_total+very_poor_total)*5)*100)
+				ls.append(l)
+				ls.append(["Total", excellent_total, good_total, satisfactory_total, poor_total, very_poor_total, grand_total])
+			# print("________________________| LS: |________________________")
+			# for x in ls:
+			# 	print(x)
+		value.append(ls)
+
+	# print("________________________| VALUE: |________________________")
+	# for x in value:
+	# 	print(x)
+
+	context = {"user" : user, "report" : value,}
+	return render(request, template_name, context)
+
 class Student_Report(TemplateView):
 	template_name = "feedback/student_report.html"
 

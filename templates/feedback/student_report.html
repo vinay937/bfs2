@@ -79,194 +79,49 @@ table, th, td {
 		<b><center><p><font style="margin-left:15%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
 		  	<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
 			<p><font size="2"><span class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
+		<!-- Student Report-->
+		<H1>---------------------------------------------- REPORT ----------------------------------------------</H1>
+			{% for i in report %}
+				{% if i.3 %}
+					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">SEMESTER : {{i.0}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">SECTION : {{i.1}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">SUBJECT : {{i.2}} </span></font></strong></p>
+					<table>
+					<tr>
+						<th>Competency</th>
+						<th>Excellent</th>
+						<th>Good</th>
+						<th>Average</th>
+						<th>Poor</th>
+						<th>Very poor</th>
+						<th>Total %</th>
+					</tr>
+					<tbody>
 
-			{% for form, answers in results.items %}
-		  	{% with forloop.counter as main_id %}
-			<center><h1>{{form.title}}</h1></center>
-			</center>
-			<table>
-				<tr>
-					<th>Competency</th>
-					<th>Excellent</th>
-					<th>Good</th>
-					<th>Average</th>
-					<th>Poor</th>
-					<th>Very poor</th>
-					<th>Total %</th>
-			  	</tr>
-			  	<tbody>
-			  		{% for que in form.question.all %}
-			  	<tr>
-			  		{% with forloop.counter as id %}
-		  		<td>{{que.text | title }}</td>
-				  	{% for answer in answers %}
-					  	{% if answer.value == 'Excellent' and answer.question == que %}
-					  	<div style="display:none;" class="excellent" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
-					  	{% endif %}
-					  	{% if answer.value == 'Good' and answer.question == que %}
-					  	<div style="display:none;" class="good" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
-					  	{% endif %}
-					  	{% if answer.value == 'Satisfactory' and answer.question == que %}
-					  	<div style="display:none;" class="average" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
-					  	{% endif %}
-					  	{% if answer.value == 'Poor' and answer.question == que %}
-					  	<div style="display:none;" class="poor" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
-					  	{% endif %}
-					  	{% if answer.value == 'Very Poor' and answer.question == que %}
-					  	<div style="display:none;" class="very_poor" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
-					  	{% endif %}
-				  	{% endfor %}
-				  	<td id="excellent-{{main_id}}-{{id}}">0</td>
-				  	<td id="good-{{main_id}}-{{id}}">0</td>
-				  	<td id="average-{{main_id}}-{{id}}">0</td>
-				  	<td id="poor-{{main_id}}-{{id}}">0</td>
-				  	<td id="very_poor-{{main_id}}-{{id}}">0</td>
-				  	{% endwith %}
-				  </tr>
-			  	{% endfor %}
-			  	<tr>
-			  		<td>Total</td>
-			  		<td id="excellent-total-{{main_id}}">0</td>
-				  	<td id="good-total-{{main_id}}">0</td>
-				  	<td id="average-total-{{main_id}}">0</td>
-				  	<td id="poor-total-{{main_id}}">0</td>
-				  	<td id="very_poor-total-{{main_id}}">0</td>
-			  	</tr>
-			  </tbody>
-			</table>
-			<div class="pie_chart" id="myDiv-{{main_id}}"></div>
-			{% endwith %}
+					<tr>
+					{% for j in i.3 %}
+						<td>{{ j.0 }}</td>
+							<td>{{ j.1 }}</td>
+							<td>{{ j.2 }}</td>
+							<td>{{ j.3 }}</td>
+							<td>{{ j.4 }}</td>
+							<td>{{ j.5 }}</td>
+							<td>{{ j.6|floatformat:-2 }}</td>
+						</tr>
+					{% endfor %}
+					<tr>
+						<td>{{ i.4.0 }}</td>
+						<td>{{ i.4.1 }}</td>
+						<td>{{ i.4.2 }}</td>
+						<td>{{ i.4.3 }}</td>
+						<td>{{ i.4.4 }}</td>
+						<td>{{ i.4.5 }}</td>
+						<td>{{ i.4.6|floatformat:-2 }}</td>
+					</tr>
+				  </tbody>
+				</table>
+			{% endif %}
 		{% endfor %}
 		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>
 	</div>
-  	<script>
-  		var old_main = "";
-  		total_feedback = 0;
-  		function iterate(className) {
-  			var old_id = "";
-  			var total = 0;
-  			var tds = document.querySelectorAll('tbody tr .' + className), i=0, j;
-  			$('.' + className).each(function(index, value) {
-  				main_id = $(this).attr('id').split('_')[1];
-  				id = $(this).attr('id').split('_')[2];
-  				if(old_main == "") {
-					old_main = main_id;
-				}
-				if(main_id != old_main) {
-					$('#' + className + '-' + old_main + '-' + old_id).html(i);
-		  			$('#' + className + '-' + old_main + '-' + old_id).attr('value', i);
-		  			total = total + i;
-					$('#' + className + '-total-' + old_main).html(total);
-					$('#' + className + '-total-' + old_main).attr('value', total);
-					total = 0;
-					if(index == 0) {
-						old_main = main_id;
-					}
-					var excellent = $('#excellent-total-' + old_main).html();
-					var good = $('#good-total-' + old_main).html();
-					var satisfactory = $('#average-total-' + old_main).html();
-					var poor = $('#poor-total-' + old_main).html();
-					var very_poor = $('#very_poor-total-' + old_main).html();
-				    var data = [{
-					  	values: [excellent, good, satisfactory, poor, very_poor],
-					  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
-					  	type: 'pie'
-					}];
-					Plotly.newPlot('myDiv-' + old_main, data);
-				}
-  				if(old_id == "") {
-  					old_id = id;
-  				}
-				if(id == old_id) {
-					i++;
-				}
-				else {
-					$('#' + className + '-' + main_id + '-' + old_id).html(i);
-					$('#' + className + '-' + main_id + '-' + old_id).attr('value', parseFloat(i));
-					if(main_id == old_main) {
-						total = total + i;
-					}
-					else {
-						old_main = main_id;
-					}
-					i = 1;
-					old_id = id;
-				}
-  			})
-  			$('#' + className + '-' + main_id + '-' + id).html(i);
-  			$('#' + className + '-' + main_id + '-' + id).attr('value', i);
-  			total = total + i;
-			$('#' + className + '-total-' + old_main).html(total);
-			$('#' + className + '-total-' + old_main).attr('value', total);
-			var excellent = $('#excellent-total-' + old_main).html();
-			var good = $('#good-total-' + old_main).html();
-			var satisfactory = $('#average-total-' + old_main).html();
-			var poor = $('#poor-total-' + old_main).html();
-			var very_poor = $('#very_poor-total-' + old_main).html();
-		    var data = [{
-			  	values: [excellent, good, satisfactory, poor, very_poor],
-			  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
-			  	type: 'pie'
-			}];
-			Plotly.newPlot('myDiv-' + old_main, data);
-  		}
-  		$(function() {
-  			iterate('excellent'); //gives value of excellent column-wise
-  			iterate('good');
-  			iterate('average');
-  			iterate('poor');
-  			iterate('very_poor');
-  			var x=0;
-  			$('tr').each(function() {
-  				// iterates through each question
-  				if (x > 0) {
-  					var i=0;
-	  				j=5.0;
-	  				num = 0;
-	  				den = 0;
-	  				z = 1;
-	  				$(this).find('td').each (function() {
-	  					if(i > 0 && i < 6){ //to skip the question <td>
-	  						// iterates through each answer
-	  						value = parseFloat(($(this).attr('value')));
-	  						if(isNaN(value)){ /* this is the main part */
-	  							value = 0.0;
-	  						}
-	  						num = num + (value * j);
-	  						den = den + value;
-	  						j--;
-	  					}
-	  					i++;
-					});
-					var total_per = 100 * (num / (den*5.0)); //total calculation
-					$(this).append('<td class="total">' + total_per.toFixed(2) + '</td>'); //appends the total
-  				}
-  				x++;
-  			})
-  		})
-  	</script>
-  	<script>
-  		$(function() {
-  			$('.total').each(function() {
-  				if(isNaN($(this).html())) {
-  					$(this).hide();
-  				}
-  			})
-  		})
-  	</script>
-  	<script>
-  		var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth()+1; //January is 0!
-var yyyy = today.getFullYear();
-if(dd<10) {
-    dd = '0'+dd
-}
-if(mm<10) {
-    mm = '0'+mm
-}
-today = dd + '/' + mm + '/' + yyyy;
-$('#time').html(today);
-  	</script>
-</body>
-</html>
