@@ -411,7 +411,7 @@ def sconsolidated(request, username):
 		# print("Subject",i.subject.name)
 		# print("Section",i.sec)
 		# print("Sem",i.sem.sem)
-		ls = [i.sem.sem,i.sec,i.subject.name]
+		ls = [i.sem.sem,i.sec,i.subject.name,i.ug]
 		for form, answers in results.items():
 			excellent_total = 0
 			good_total = 0
