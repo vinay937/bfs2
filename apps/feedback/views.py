@@ -861,7 +861,7 @@ class select_teacher_hod(FormView):
 		print(user_type[0])
 		if str(user_type[0]).upper() == 'HOD':
 			department = user.department
-			faculty_list = User.objects.filter(department__name=department).exclude(user_type__name='Student', username=username).order_by('first_name')
+			faculty_list = User.objects.filter(department__name=department).exclude(user_type__name='Student').order_by('first_name')
 			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
 			context = {"faculty_list": faculty_list}
 			return render(request, self.template_name, context)
