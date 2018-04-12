@@ -381,8 +381,15 @@ def view_consolidated(request):
 def sconsolidated(request, username):
 	template_name = "feedback/student_report.html"
 	user = get_user_model().objects.get(username=username)
-	user_type = user.get_user_type()
-	if str(username) != str(user.username):
+	loggedin_user = request.user
+	print(loggedin_user)
+	user_type = loggedin_user.get_user_type()
+	department = loggedin_user.department
+	if user_type[0].name == 'AnonymousUser':
+		return HttpResponseRedirect(reverse_lazy('login'))
+	if username != loggedin_user.username and user_type[0].name == 'Faculty':
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	if department.name != user.department.name and user_type[0].name != 'Principal':
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
 	print('Generating Report')
 	# print("|________________________|user|________________________|")

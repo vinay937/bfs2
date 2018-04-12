@@ -3499,7 +3499,14 @@ iframe {
                 <li>
                     <a href="/report">
                         <i class="fa fa-file-text-o" aria-hidden="true"></i>
-                        <p>Report</p>
+                        <p>P2P Report</p>
+
+                    </a>
+                </li>
+                <li>
+                    <a href="/sreports/{{username}}">
+                        <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                        <p>Student Feedback Report</p>
 
                     </a>
                 </li>
@@ -3532,12 +3539,12 @@ iframe {
                             </li>
                         {% endif %}
                 </li>
-                <li>
+<!--                <li>
                     <a href="/report-not-viewed">
                         <i class="fa fa-binoculars" aria-hidden="true"></i>
                         <p>Not Viewed Report</p>
                     </a>
-                </li>
+                </li>-->
                 <li>
                     <a href="https://goo.gl/forms/CWMAGVBbEAwOEABF2" data-toggle="modal" data-target="#myModal">
                         <i class="fa fa-comment" aria-hidden="true" ></i>
@@ -3563,7 +3570,7 @@ iframe {
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <span class="navbar-brand" href="#">Feedback Dashboard</span>
+                    <span class="navbar-brand" href="#">Feedback Dashboard - {{name | title}}</span>
                 </div>
                 <div class="collapse navbar-collapse">
 
