@@ -3523,6 +3523,14 @@ iframe {
                         </ul>
                       </li>
                         {% endif %}
+                        {% if user_type == 'Hod' %}
+                            <li>
+                                <a href="/report-select-hod">
+                                    <i class="fa fa-file-text-o" aria-hidden="true"></i>
+                                    <p>Department Report</p>
+                                </a>
+                            </li>
+                        {% endif %}
                 </li>
                 <li>
                     <a href="/report-not-viewed">

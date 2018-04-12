@@ -646,7 +646,6 @@ def Dashboard(request):
 	user = request.user
 	user_type = user.get_user_type()
 	total = int(User.objects.filter(user_type__name='Student', department__name='CSE').count()) + int(User.objects.filter( user_type__name='Student', department__name='ECE').count()) + int(User.objects.filter( user_type__name='Student', department__name='MECH').count()) + int(User.objects.filter( user_type__name='Student', department__name='TCE').count()) + int(User.objects.filter( user_type__name='Student', department__name='EEE').count()) + int(User.objects.filter( user_type__name='Student', department__name='CIV').count()) + int(User.objects.filter( user_type__name='Student', department__name='ISE').count()) + int(User.objects.filter(user_type__name='Student', department__name='MCA').count())
-	print(user_type[0].name)
 	context = { "user_type": user_type[0].name,
 				"cse" : User.objects.filter(done=False, user_type__name='Student', department__name='CSE').count(),
 				"ece" : User.objects.filter(done=False, user_type__name='Student', department__name='ECE').count(),

@@ -21,7 +21,7 @@ from django.contrib.auth import get_user_model
 from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer
 from .forms import FeedbackAnswerForm, AnswerFormSet, StudentFeedbackAnswerForm
 
-from apps.general.models import UserType, Teaches
+from apps.general.models import UserType, Teaches, User
 
 import json
 import random
@@ -382,6 +382,9 @@ def sconsolidated(request, username):
 	template_name = "feedback/student_report.html"
 	user = get_user_model().objects.get(username=username)
 	user_type = user.get_user_type()
+	if str(username) != str(user.username):
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	print('Generating Report')
 	# print("|________________________|user|________________________|")
 	# print(user)
 	forms = FeedbackForm.objects.filter(user_type=5, active=True)
@@ -842,27 +845,36 @@ class Student_Report(TemplateView):
 # 			return HttpResponse("Incorrect OTP")
 
 
-# class select_teacher_hod(FormView):
-# 	'''
-# 	After authenticated by HOD OTP, lets HOD select individual faculty
-# 	'''
-# 	template_name = "report_select_hod.html"
+class select_teacher_hod(FormView):
+	'''
+	After authenticated by HOD OTP, lets HOD select individual faculty
+	'''
+	template_name = "report_select_hod.html"
 
-# 	def get(self, request, *args, **kwargs):
-# 		'''
-# 		Populates the select faculty dropdown
-# 		'''
-# 		dname = request.session['depa']
-# 		fac = Teacher.objects.order_by('fname').filter(dno__dname=dname)
-# 		context = {"subject": fac}
-# 		return render(request, self.template_name, context)
+	def get(self, request, *args, **kwargs):
+		'''
+		Populates the select faculty dropdown
+		'''
+		user = self.request.user
+		username = user.username
+		user_type = user.get_user_type()
+		print(user_type[0])
+		if str(user_type[0]).upper() == 'HOD':
+			department = user.department
+			faculty_list = User.objects.filter(department__name=department).exclude(user_type__name='Student', username=username).order_by('first_name')
+			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
+			context = {"faculty_list": faculty_list}
+			return render(request, self.template_name, context)
 
-# 	def post(self, request, *args, **kwargs):
-# 		'''
-# 		Geneartes the individual faculty report
-# 		'''
-# 		request.session['faculty_id_report'] = request.POST.get('fac_id')
-# 		return redirect(reverse_lazy('generate_report'))
+		context = {"error": 'You are not authorized to view this page.'}
+		return render(request, self.template_name, context)
+		
+	def post(self, request, *args, **kwargs):
+		'''
+		Geneartes the individual faculty report
+		'''
+		faculty_username = request.POST.get('faculty_username')
+		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
 
 
 # class consolidated_principal(FormView):
