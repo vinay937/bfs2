@@ -29,8 +29,20 @@ class UserAdmin(DjangoUserAdmin):
 
 @admin.register(Teaches)
 class TeachesAdmin(admin.ModelAdmin):
-
+	list_display = ('teacher_first_name','subject_name','sem_sem','sec', 'department_name', 'batch', 'ug')
 	search_fields = ('teacher__first_name', 'subject__name', 'subject__code')
+
+	def teacher_first_name(self, instance):
+		return instance.teacher.first_name
+
+	def subject_name(self, instance):
+		return instance.subject.name
+
+	def department_name(self, instance):
+		return instance.department.name
+
+	def sem_sem(self, instance):
+		return instance.sem.sem
 
 admin.site.register(Subject)
 admin.site.register(Department)

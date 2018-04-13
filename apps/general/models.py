@@ -114,5 +114,7 @@ class Teaches(models.Model):
 	sub_batch = models.CharField("Student's sub batch", max_length=50, null=True, blank=True)
 	ug = models.BooleanField(default=False)
 
+	count = models.IntegerField("Student Count", default=0, null=True, blank=True)
+
 	def __str__(self):
 	 	return self.teacher.first_name + ' -> '  + self.subject.name
