@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ['*', 'feedback360.bmsit.ac.in']
 AUTH_USER_MODEL = 'general.User'
 # Application definition
 
+ADMIN_SITE_HEADER = "BMSIT Feedback System Admin Interface"
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
