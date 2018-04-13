@@ -111,11 +111,11 @@ table, th, td {
 					{% endfor %}
 					<tr>
 						<td>{{ i.5.0 }}</td>
-						<td>{{ i.5.1 }}</td>
-						<td>{{ i.5.2 }}</td>
-						<td>{{ i.5.3 }}</td>
-						<td>{{ i.5.4 }}</td>
-						<td>{{ i.5.5 }}</td>
+						<td class="values" id="excellent-total-{{forloop.counter}}">{{ i.5.1 }}</td>
+						<td class="values" id="good-total-{{forloop.counter}}">{{ i.5.2 }}</td>
+						<td class="values" id="average-total-{{forloop.counter}}">{{ i.5.3 }}</td>
+						<td class="values" id="poor-total-{{forloop.counter}}">{{ i.5.4 }}</td>
+						<td class="values" id="very_poor-total-{{forloop.counter}}">{{ i.5.5 }}</td>
 						<td>{{ i.5.6|floatformat:-2 }}</td>
 					</tr>
 				  </tbody>
@@ -128,15 +128,18 @@ table, th, td {
 		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>
 	</div>
 	<script>
-		$('.pie').each(function() {
-			var id = $(this).attr('id').split('_')[1];
-		})
-		alert({{1.5.1}})
-	    var data = [{
-		  	values: [{{i.5.1}}, {{i.5.2}}, {{i.5.3}}, {{i.5.4}}, {{i.5.5}}],
-		  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
-		  	type: 'pie'
-		}];
-		
-		Plotly.newPlot('myDiv_' + id, data);
+		$('.values').each(function() {
+			var old_main = $(this).attr('id').split('-')[2];
+			var excellent = $('#excellent-total-' + old_main).html();
+			var good = $('#good-total-' + old_main).html();
+			var satisfactory = $('#average-total-' + old_main).html();
+			var poor = $('#poor-total-' + old_main).html();
+			var very_poor = $('#very_poor-total-' + old_main).html();
+		    var data = [{
+			  	values: [excellent, good, satisfactory, poor, very_poor],
+			  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
+			  	type: 'pie'
+			}];
+			Plotly.newPlot('myDiv_' + old_main, data);
+		});
   	</script>
