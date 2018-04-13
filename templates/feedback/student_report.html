@@ -82,11 +82,11 @@ table, th, td {
 		<!-- Student Report-->
 			{% for i in report %}
 				{% if i.4 %}
-					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">SEMESTER : {{i.0}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">SECTION : {{i.1}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">SUBJECT : {{i.2}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">UNDERGRADUATE : {{i.3}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SEMESTER : {{i.0}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SECTION : {{i.1}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SUBJECT : {{i.2}} </span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">UNDERGRADUATE : {{i.3}} </span></font></strong></p>
 					<table>
 					<tr>
 						<th>Competency</th>
@@ -121,7 +121,7 @@ table, th, td {
 					</tr>
 				  </tbody>
 				</table>
-				<div id="myDiv"></div>
+				<div class="pie" id="myDiv_{{forloop.counter}}"></div>
 			{% endif %}
 			<br>
 			<br>
@@ -129,11 +129,14 @@ table, th, td {
 		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>
 	</div>
 	<script>
+		$('.pie').each(function() {
+			var id = $(this).attr('id').split('_')[1];
+		})
 	    var data = [{
-		  	values: [{{i.5.0}}, {{i.5.1}}, {{i.5.2}}, {{i.5.3}}, {{i.5.4}}],
+		  	values: [{{i.5.1}}, {{i.5.2}}, {{i.5.3}}, {{i.5.4}}, {{i.5.5}}],
 		  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
 		  	type: 'pie'
 		}];
 		
-		Plotly.newPlot('myDiv', data);
+		Plotly.newPlot('myDiv_' + id, data);
   	</script>
