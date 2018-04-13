@@ -70,7 +70,7 @@ table, th, td {
 </style>
 </head>
 <body>
-	<!--Sample: http://localhost:8000/report/F_CS_15/5A/T-->
+	<!--Sample: http://localhost:8000/sreport/VISHAKHAY-->
 		<div id="dvContainer" class="col-md-12">
 		<center><img class="col-md-4" id="resize" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"/>
 		<br><br>
@@ -121,9 +121,19 @@ table, th, td {
 					</tr>
 				  </tbody>
 				</table>
+				<div id="myDiv"></div>
 			{% endif %}
 			<br>
 			<br>
 		{% endfor %}
 		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>
 	</div>
+	<script>
+	    var data = [{
+		  	values: [{{i.5.0}}, {{i.5.1}}, {{i.5.2}}, {{i.5.3}}, {{i.5.4}}],
+		  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
+		  	type: 'pie'
+		}];
+		
+		Plotly.newPlot('myDiv', data);
+  	</script>
