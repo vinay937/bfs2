@@ -82,7 +82,6 @@ table, th, td {
 		<!-- Student Report-->
 			{% for i in report %}
 				{% if i.4 %}
-					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
 					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SEMESTER : {{i.0}} </span></font></strong></p>
 					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SECTION : {{i.1}} </span></font></strong></p>
 					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SUBJECT : {{i.2}} </span></font></strong></p>
@@ -132,6 +131,7 @@ table, th, td {
 		$('.pie').each(function() {
 			var id = $(this).attr('id').split('_')[1];
 		})
+		alert({{1.5.1}})
 	    var data = [{
 		  	values: [{{i.5.1}}, {{i.5.2}}, {{i.5.3}}, {{i.5.4}}, {{i.5.5}}],
 		  	labels: ['Excellent', 'Good', 'Satisfactory', 'Poor', 'Very Poor'],
