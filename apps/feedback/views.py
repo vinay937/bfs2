@@ -407,10 +407,10 @@ def sconsolidated(request, username):
 
 	value = list()
 	for i in data:
-		print("________________________| CLASS: |________________________")
-		print("Subject",i.subject.name)
-		print("Section",i.sec)
-		print("Sem",i.sem.sem)
+		# print("________________________| CLASS: |________________________")
+		# print("Subject",i.subject.name)
+		# print("Section",i.sec)
+		# print("Sem",i.sem.sem)
 		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
 		for form, answers in results.items():
 			excellent_total = 0
@@ -419,9 +419,11 @@ def sconsolidated(request, username):
 			poor_total = 0
 			very_poor_total = 0
 			l = list()
+			que_count = 0
 			for que in form.question.all():
 				# print("________________________| QUESTION: |________________________")
 				# print(que.text)
+				que_count = 0
 				excellent = 0
 				good = 0
 				satisfactory = 0
@@ -435,35 +437,41 @@ def sconsolidated(request, username):
 					# print("________________________| PROJECT: |________________________")
 					# print(i.subject.project, j.teacher.subject.project)
 					res = bool()
-					if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch and i.subject.theory == j.teacher.subject.theory and i.subject.elective == j.teacher.subject.elective and i.subject.project == j.teacher.subject.project and i.subject.code == j.teacher.subject.code:
-						print("________________________| RESULT: |________________________")
-						res = True
-						print(res)
-					if j.question == que:
-						if j.value == 'Excellent':
-							if res:
-								excellent += 1
-								excellent_total += 1
+					if que_count < i.count:
+						if i == j.teacher:
+							# print("________________________| RESULT: |________________________")
+							res = True
+							# print(res)
+						if j.question == que:
+							if j.value == 'Excellent':
+								if res:
+									excellent += 1
+									excellent_total += 1
+									que_count += 1
 
-						if j.value == 'Good':
-							if res:
-								good += 1
-								good_total += 1
+							if j.value == 'Good':
+								if res:
+									good += 1
+									good_total += 1
+									que_count += 1
 
-						if j.value == 'Satisfactory':
-							if res:
-								satisfactory += 1
-								satisfactory_total += 1
+							if j.value == 'Satisfactory':
+								if res:
+									satisfactory += 1
+									satisfactory_total += 1
+									que_count += 1
 
-						if j.value == 'Poor':
-							if res:
-								poor += 1
-								poor_total += 1
+							if j.value == 'Poor':
+								if res:
+									poor += 1
+									poor_total += 1
+									que_count += 1
 
-						if j.value == 'Very Poor':
-							if res:
-								very_poor += 1
-								very_poor_total += 1
+							if j.value == 'Very Poor':
+								if res:
+									very_poor += 1
+									very_poor_total += 1
+									que_count += 1
 
 				if excellent or good or satisfactory or poor or very_poor:
 					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
@@ -534,9 +542,11 @@ def Test_report(request, username):
 			poor_total = 0
 			very_poor_total = 0
 			l = list()
+			que_count = 0
 			for que in form.question.all():
 				# print("________________________| QUESTION: |________________________")
 				# print(que.text)
+				que_count = 0
 				excellent = 0
 				good = 0
 				satisfactory = 0
@@ -550,35 +560,41 @@ def Test_report(request, username):
 					# print("________________________| PROJECT: |________________________")
 					# print(i.subject.project, j.teacher.subject.project)
 					res = bool()
-					if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch and i.subject.theory == j.teacher.subject.theory and i.subject.elective == j.teacher.subject.elective and i.subject.project == j.teacher.subject.project and i.subject.code == j.teacher.subject.code:
-						print("________________________| RESULT: |________________________")
-						res = True
-						print(res)
-					if j.question == que:
-						if j.value == 'Excellent':
-							if res:
-								excellent += 1
-								excellent_total += 1
+					if que_count < i.count:
+						if i == j.teacher:
+							# print("________________________| RESULT: |________________________")
+							res = True
+							# print(res)
+						if j.question == que:
+							if j.value == 'Excellent':
+								if res:
+									excellent += 1
+									excellent_total += 1
+									que_count += 1
 
-						if j.value == 'Good':
-							if res:
-								good += 1
-								good_total += 1
+							if j.value == 'Good':
+								if res:
+									good += 1
+									good_total += 1
+									que_count += 1
 
-						if j.value == 'Satisfactory':
-							if res:
-								satisfactory += 1
-								satisfactory_total += 1
+							if j.value == 'Satisfactory':
+								if res:
+									satisfactory += 1
+									satisfactory_total += 1
+									que_count += 1
 
-						if j.value == 'Poor':
-							if res:
-								poor += 1
-								poor_total += 1
+							if j.value == 'Poor':
+								if res:
+									poor += 1
+									poor_total += 1
+									que_count += 1
 
-						if j.value == 'Very Poor':
-							if res:
-								very_poor += 1
-								very_poor_total += 1
+							if j.value == 'Very Poor':
+								if res:
+									very_poor += 1
+									very_poor_total += 1
+									que_count += 1
 
 				if excellent or good or satisfactory or poor or very_poor:
 					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
@@ -1206,3 +1222,22 @@ class select_teacher_hod(FormView):
 # 		context['percent'] = ((146 - count)/146)*100
 # 		context['count'] = count
 # 		return render(request, self.template_name, context)
+
+# def beta_report(request, username):
+# 	template_name = "feedback/student_report.html"
+# 	user = get_user_model().objects.get(username=username)
+#
+# 	forms = FeedbackForm.objects.filter(user_type=5, active=True)
+# 	data = Teaches.objects.filter(teacher__username=user)
+# 	results = dict()
+# 	value = 0
+# 	excellent = 0
+#
+# 	for i in data:
+# 		for form in forms:
+# 			for que in form.question.all():
+# 				excellent = StudentAnswer.objects.filter(form=form, teacher=i, value='Excellent', question=que).count()
+# 				print(excellent)
+#
+# 	context = {"user" : user, "report" : value,}
+# 	return render(request, template_name, context)

@@ -78,8 +78,8 @@ table, th, td {
 		<center><img class="col-md-4" id="resize" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"/>
 		<br><br>
 		<div style="float:right;" class="col-md-2"><a href="/logout" class="btn btn-primary">Logout</a><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
-		<font style="margin-left:5%;" color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
-		<b><center><p><font style="margin-left:12%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
+		<font style="margin-left:5%;" color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font style="margin-left:5%;" size="4" color="#1c0565">BENGALURU-64</font></center><br>
+		<b><center><p><font style="margin-left:5%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
 		  	<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
 			<p><font size="2"><span style="margin-left:15%;" class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
 			<hr />
@@ -119,14 +119,15 @@ table, th, td {
 								<td>{{ j.6|floatformat:-2 }}</td>
 							</tr>
 						{% endfor %}
+						{% comment %} TOTAL  {% endcomment %}
 						<tr>
-							<td>{{ i.9.0 }}</td>
-							<td class="values" id="excellent-total-{{forloop.counter}}">{{ i.9.1 }}</td>
-							<td class="values" id="good-total-{{forloop.counter}}">{{ i.9.2 }}</td>
-							<td class="values" id="average-total-{{forloop.counter}}">{{ i.9.3 }}</td>
-							<td class="values" id="poor-total-{{forloop.counter}}">{{ i.9.4 }}</td>
-							<td class="values" id="very_poor-total-{{forloop.counter}}">{{ i.9.5 }}</td>
-							<td>{{ i.9.6|floatformat:-2 }}</td>
+							<td style="background-color:#8C9EFF; color: #fff; text-align: center;">{{ i.9.0 }}</td>
+							<td class="values" style="background-color:#8C9EFF; color: #fff;" id="excellent-total-{{forloop.counter}}">{{ i.9.1 }}</td>
+							<td class="values" style="background-color:#8C9EFF; color: #fff;" id="good-total-{{forloop.counter}}">{{ i.9.2 }}</td>
+							<td class="values" style="background-color:#8C9EFF; color: #fff;" id="average-total-{{forloop.counter}}">{{ i.9.3 }}</td>
+							<td class="values" style="background-color:#8C9EFF; color: #fff;" id="poor-total-{{forloop.counter}}">{{ i.9.4 }}</td>
+							<td class="values" style="background-color:#8C9EFF; color: #fff;" id="very_poor-total-{{forloop.counter}}">{{ i.9.5 }}</td>
+							<td style="background-color:#8C9EFF; color: #fff;">{{ i.9.6|floatformat:-2 }}</td>
 						</tr>
 					  </tbody>
 					</table>
