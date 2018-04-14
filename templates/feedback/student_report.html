@@ -79,53 +79,60 @@ table, th, td {
 		<br><br>
 		<div style="float:right;" class="col-md-2"><a href="/logout" class="btn btn-primary">Logout</a><p>Powered by DevX</p><img src="https://bmsit.ac.in/devx.png"></div>
 		<font style="margin-left:5%;" color="#1c0565" size="5">BMS INSTITUTE OF TECHNOLOGY AND MANAGEMENT.</font><br><font size="4" color="#1c0565">BENGALURU-64</font></center><br>
-		<b><center><p><font style="margin-left:15%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
+		<b><center><p><font style="margin-left:12%;" size="3" face="arial">Faculty Feedback on <span id="time"></span> (Even Semester 2017-18)</font></p></b>
 		  	<p><strong><font size="2"><span style="margin-left:15%;" class="faculty_name">FACULTY NAME : {{user.first_name}} </span></font></strong></p>
-			<p><font size="2"><span class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
+			<p><font size="2"><span style="margin-left:15%;" class="faculty_dept">DEPARTMENT : {{user.department}} </span></font></p>
+			<hr />
 		<!-- Student Report-->
 			{% for i in report %}
-				{% if i.4 %}
-					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SEMESTER : {{i.0}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SECTION : {{i.1}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SUBJECT : {{i.2}} </span></font></strong></p>
-					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">UNDERGRADUATE : {{i.3}} </span></font></strong></p>
-					<table>
-					<tr>
-						<th>Competency</th>
-						<th>Excellent</th>
-						<th>Good</th>
-						<th>Average</th>
-						<th>Poor</th>
-						<th>Very poor</th>
-						<th>Total %</th>
-					</tr>
-					<tbody>
-
-					<tr>
-					{% for j in i.4 %}
-						<td>{{ j.0 }}</td>
-							<td>{{ j.1 }}</td>
-							<td>{{ j.2 }}</td>
-							<td>{{ j.3 }}</td>
-							<td>{{ j.4 }}</td>
-							<td>{{ j.5 }}</td>
-							<td>{{ j.6|floatformat:-2 }}</td>
+				{% if i.8 %}
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">DEPARTMENT : {{i.6}} {% if not i.3 %}(PG){% else %}(UG){% endif %}</span></font></strong></p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SEMESTER : {{i.0}} </span></font></strong>
+					<strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SECTION : {{i.1}} </span></font></strong></p>
+					<p>{% if i.4 %}
+						<strong><font size="2"><span style="margin-left:3%;" class="faculty_name">BATCH : {{i.4}} </span></font></strong>
+					{% endif %}
+					{% if i.5 %}
+						<strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SUB BATCH : {{i.5}} </span></font></strong>
+					{% endif %}</p>
+					<p><strong><font size="2"><span style="margin-left:3%;" class="faculty_name">SUBJECT : {{i.2}} {% if i.7 %} (ELECTIVE) {% endif %}</span></font></strong></p>
+						<table>
+						<tr>
+							<th>Competency</th>
+							<th>Excellent</th>
+							<th>Good</th>
+							<th>Average</th>
+							<th>Poor</th>
+							<th>Very poor</th>
+							<th>Total %</th>
 						</tr>
-					{% endfor %}
-					<tr>
-						<td>{{ i.5.0 }}</td>
-						<td class="values" id="excellent-total-{{forloop.counter}}">{{ i.5.1 }}</td>
-						<td class="values" id="good-total-{{forloop.counter}}">{{ i.5.2 }}</td>
-						<td class="values" id="average-total-{{forloop.counter}}">{{ i.5.3 }}</td>
-						<td class="values" id="poor-total-{{forloop.counter}}">{{ i.5.4 }}</td>
-						<td class="values" id="very_poor-total-{{forloop.counter}}">{{ i.5.5 }}</td>
-						<td>{{ i.5.6|floatformat:-2 }}</td>
-					</tr>
-				  </tbody>
-				</table>
-				<div class="pie" id="myDiv_{{forloop.counter}}"></div>
+						<tbody>
+
+						<tr>
+						{% for j in i.8 %}
+							<td>{{ j.0 }}</td>
+								<td>{{ j.1 }}</td>
+								<td>{{ j.2 }}</td>
+								<td>{{ j.3 }}</td>
+								<td>{{ j.4 }}</td>
+								<td>{{ j.5 }}</td>
+								<td>{{ j.6|floatformat:-2 }}</td>
+							</tr>
+						{% endfor %}
+						<tr>
+							<td>{{ i.9.0 }}</td>
+							<td class="values" id="excellent-total-{{forloop.counter}}">{{ i.9.1 }}</td>
+							<td class="values" id="good-total-{{forloop.counter}}">{{ i.9.2 }}</td>
+							<td class="values" id="average-total-{{forloop.counter}}">{{ i.9.3 }}</td>
+							<td class="values" id="poor-total-{{forloop.counter}}">{{ i.9.4 }}</td>
+							<td class="values" id="very_poor-total-{{forloop.counter}}">{{ i.9.5 }}</td>
+							<td>{{ i.9.6|floatformat:-2 }}</td>
+						</tr>
+					  </tbody>
+					</table>
+					<div class="pie" id="myDiv_{{forloop.counter}}"></div>
 			{% endif %}
-			<br>
+			<hr>
 			<br>
 		{% endfor %}
 		<h1>To Download your report, press CTRL + P and click on "Save As PDF"</h1>

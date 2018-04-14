@@ -407,11 +407,11 @@ def sconsolidated(request, username):
 
 	value = list()
 	for i in data:
-		# print("________________________| CLASS: |________________________")
-		# print("Subject",i.subject.name)
-		# print("Section",i.sec)
-		# print("Sem",i.sem.sem)
-		ls = [i.sem.sem,i.sec,i.subject.name,i.ug]
+		print("________________________| CLASS: |________________________")
+		print("Subject",i.subject.name)
+		print("Section",i.sec)
+		print("Sem",i.sem.sem)
+		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
 		for form, answers in results.items():
 			excellent_total = 0
 			good_total = 0
@@ -428,35 +428,40 @@ def sconsolidated(request, username):
 				poor = 0
 				very_poor = 0
 				for j in answers:
-					# print("________________________| SEM: |________________________")
-					# print(i.sem.sem, j.teacher.sem.sem)
-					# print("________________________| SEC: |________________________")
-					# print(i.sec, j.teacher.sec)
-					# print("________________________| DEPARTMENT: |________________________")
-					# print(i.department, j.teacher.department)
+					# print("________________________| THEORY: |________________________")
+					# print(i.subject.theory, j.teacher.subject.theory)
+					# print("________________________| ELECTIVE: |________________________")
+					# print(i.subject.elective, j.teacher.subject.elective)
+					# print("________________________| PROJECT: |________________________")
+					# print(i.subject.project, j.teacher.subject.project)
+					res = bool()
+					if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch and i.subject.theory == j.teacher.subject.theory and i.subject.elective == j.teacher.subject.elective and i.subject.project == j.teacher.subject.project and i.subject.code == j.teacher.subject.code:
+						print("________________________| RESULT: |________________________")
+						res = True
+						print(res)
 					if j.question == que:
 						if j.value == 'Excellent':
-							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+							if res:
 								excellent += 1
 								excellent_total += 1
 
 						if j.value == 'Good':
-							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+							if res:
 								good += 1
 								good_total += 1
 
 						if j.value == 'Satisfactory':
-							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+							if res:
 								satisfactory += 1
 								satisfactory_total += 1
 
 						if j.value == 'Poor':
-							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+							if res:
 								poor += 1
 								poor_total += 1
 
 						if j.value == 'Very Poor':
-							if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch:
+							if res:
 								very_poor += 1
 								very_poor_total += 1
 
@@ -499,6 +504,103 @@ class Student_Report(TemplateView):
 			results[form] = answers
 		context['results'] = results
 		return context
+
+def Test_report(request, username):
+	template_name = "feedback/student_report.html"
+	user = get_user_model().objects.get(username=username)
+
+	forms = FeedbackForm.objects.filter(user_type=5, active=True)
+	data = Teaches.objects.filter(teacher__username=user)
+	results = dict()
+
+	for form in forms:
+		answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user)
+		results[form] = answers
+
+	# for i in data:
+	# 	print(i.subject)
+
+	value = list()
+	for i in data:
+		print("________________________| CLASS: |________________________")
+		print("Subject",i.subject.name)
+		print("Section",i.sec)
+		print("Sem",i.sem.sem)
+		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
+		for form, answers in results.items():
+			excellent_total = 0
+			good_total = 0
+			satisfactory_total = 0
+			poor_total = 0
+			very_poor_total = 0
+			l = list()
+			for que in form.question.all():
+				# print("________________________| QUESTION: |________________________")
+				# print(que.text)
+				excellent = 0
+				good = 0
+				satisfactory = 0
+				poor = 0
+				very_poor = 0
+				for j in answers:
+					# print("________________________| THEORY: |________________________")
+					# print(i.subject.theory, j.teacher.subject.theory)
+					# print("________________________| ELECTIVE: |________________________")
+					# print(i.subject.elective, j.teacher.subject.elective)
+					# print("________________________| PROJECT: |________________________")
+					# print(i.subject.project, j.teacher.subject.project)
+					res = bool()
+					if i.sem.sem == j.teacher.sem.sem and i.sec == j.teacher.sec and i.department == j.teacher.department and i.batch == j.teacher.batch and i.sub_batch == j.teacher.sub_batch and i.subject.theory == j.teacher.subject.theory and i.subject.elective == j.teacher.subject.elective and i.subject.project == j.teacher.subject.project and i.subject.code == j.teacher.subject.code:
+						print("________________________| RESULT: |________________________")
+						res = True
+						print(res)
+					if j.question == que:
+						if j.value == 'Excellent':
+							if res:
+								excellent += 1
+								excellent_total += 1
+
+						if j.value == 'Good':
+							if res:
+								good += 1
+								good_total += 1
+
+						if j.value == 'Satisfactory':
+							if res:
+								satisfactory += 1
+								satisfactory_total += 1
+
+						if j.value == 'Poor':
+							if res:
+								poor += 1
+								poor_total += 1
+
+						if j.value == 'Very Poor':
+							if res:
+								very_poor += 1
+								very_poor_total += 1
+
+				if excellent or good or satisfactory or poor or very_poor:
+					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
+					l.append([que.text, excellent, good, satisfactory, poor, very_poor, total])
+					# print("________________________| List: |________________________")
+					# for x in l:
+					# 	print(x)
+			if l:
+				grand_total = (((excellent_total * 5) + (good_total * 4) + (satisfactory_total * 3) + (poor_total * 2) + (very_poor_total))/((excellent_total+good_total+satisfactory_total+poor_total+very_poor_total)*5)*100)
+				ls.append(l)
+				ls.append(["Total", excellent_total, good_total, satisfactory_total, poor_total, very_poor_total, grand_total])
+			# print("________________________| LS: |________________________")
+			# for x in ls:
+			# 	print(x)
+		value.append(ls)
+
+	# print("________________________| VALUE: |________________________")
+	# for x in value:
+	# 	print(x)
+
+	context = {"user" : user, "report" : value,}
+	return render(request, template_name, context)
 # def feedback(request):
 # 	'''
 # 	Displays the main student feedback form
@@ -868,14 +970,14 @@ class select_teacher_hod(FormView):
 		print(user_type[0])
 		if str(user_type[0]).upper() == 'HOD':
 			department = user.department
-			faculty_list = User.objects.filter(department__name=department).exclude(user_type__name='Student').order_by('first_name')
+			faculty_list = User.objects.filter(department__name=department, user_type__name='Faculty').exclude(user_type__name='Student').order_by('first_name')
 			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
 			context = {"faculty_list": faculty_list}
 			return render(request, self.template_name, context)
 
 		context = {"error": 'You are not authorized to view this page.'}
 		return render(request, self.template_name, context)
-		
+
 	def post(self, request, *args, **kwargs):
 		'''
 		Geneartes the individual faculty report
