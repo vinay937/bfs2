@@ -530,10 +530,10 @@ def Test_report(request, username):
 
 	value = list()
 	for i in data:
-		print("________________________| CLASS: |________________________")
-		print("Subject",i.subject.name)
-		print("Section",i.sec)
-		print("Sem",i.sem.sem)
+		# print("________________________| CLASS: |________________________")
+		# print("Subject",i.subject.name)
+		# print("Section",i.sec)
+		# print("Sem",i.sem.sem)
 		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
 		for form, answers in results.items():
 			excellent_total = 0
