@@ -499,12 +499,13 @@ def sconsolidated(request, username):
 
 def student_view_consolidated(request):
 	template_name = "student_consolidated_report.html"
-	report = StudentConsolidatedReport.objects.all()
-	context = {"report": report}
-	for i in report:
-		print(i.name)
-		print(i.department)
-		print(i.total)
+	report = StudentConsolidatedReport.objects.all().order_by('department')
+	department = {'CSE': 'Computer Science & Engineering', 'MECH': 'Mechanical Engineering', 'CHEM': 'Chemistry', 'PHY': 'Phyiscs', 'MCA': 'MCA', 'MECH': 'Mechanical Engineering', 'TCE': 'Telecom Engineering' , 'EEE': 'Electrical Engineering', 'ECE': 'Electronics Engineering', 'CIVIL': 'Civil Engineering', 'ISE': 'Information Science Engineering'}
+	context = {"report": report, "dept": department}
+	# for i in report:
+	# 	print(i.name)
+	# 	print(i.department)
+	# 	print(i.total)
 	return render(request, template_name, context)
 
 class Student_Report(TemplateView):
