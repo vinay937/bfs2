@@ -76,6 +76,13 @@ class User(AbstractUser):
 		else:
 			return False
 
+	def is_principal(self):
+		principal = UserType.objects.get(name="Principal")
+		if principal in self.user_type.all():
+			return True
+		else:
+			return False
+
 	def get_user_type(self):
 		return self.user_type.all()
 

@@ -17,6 +17,7 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
 from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer, StudentConsolidatedReport
 from .forms import FeedbackAnswerForm, AnswerFormSet, StudentFeedbackAnswerForm
@@ -497,11 +498,27 @@ def sconsolidated(request, username):
 	context = {"user" : user, "report" : value,}
 	return render(request, template_name, context)
 
+@login_required(login_url='/signin/')
 def student_view_consolidated(request):
+	if not request.user.is_principal():
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
 	template_name = "student_consolidated_report.html"
-	report = StudentConsolidatedReport.objects.all().order_by('department')
+	report = StudentConsolidatedReport.objects.all().order_by('name')
 	department = {'CSE': 'Computer Science & Engineering', 'MECH': 'Mechanical Engineering', 'CHEM': 'Chemistry', 'PHY': 'Phyiscs', 'MCA': 'MCA', 'MECH': 'Mechanical Engineering', 'TCE': 'Telecom Engineering' , 'EEE': 'Electrical Engineering', 'ECE': 'Electronics Engineering', 'CIVIL': 'Civil Engineering', 'ISE': 'Information Science Engineering'}
 	context = {"report": report, "dept": department}
+	# for i in report:
+	# 	print(i.name)
+	# 	print(i.department)
+	# 	print(i.total)
+	return render(request, template_name, context)
+
+@login_required(login_url='/signin/')
+def student_view_consolidated_sixty(request):
+	if not request.user.is_principal():
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	template_name = "student_consolidated_report_sixty.html"
+	report = StudentConsolidatedReport.objects.filter(total__lt = 60.0).order_by('name')
+	context = {"report": report}
 	# for i in report:
 	# 	print(i.name)
 	# 	print(i.department)

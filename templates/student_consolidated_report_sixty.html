@@ -103,13 +103,10 @@ table, th, td {
     	</b>
     </center>
     <hr />
-    {% for key, value in dept.items %}
-    <center><h1><span class="faculty_dept">DEPARTMENT : {{value}} </span></h1></center>
-    <br />
     <br />
             <table>
             <tr>
-                <th>Name</th>
+                <th>Name (Department)</th>
                 <th>Subject</th>
                 <th>Semester</th>
                 <th>Section</th>
@@ -119,25 +116,19 @@ table, th, td {
                 <th>Total %</th>
             </tr>
             {% for rep in report %}
-            {% if key == rep.department %}
                 <tr>
-                    <td><center style="font-size:0.8em;">{{rep.name}}</center></td>
-                    <td><center style="font-size:0.8em;">{{rep.teacher.subject.name}}</center></td>
-                    <td><center style="font-size:0.8em;">{{rep.teacher.sem.sem}}</center></td>
-                    <td><center style="font-size:0.8em;">{{rep.teacher.sec}}</center></td>
-                    <td><center style="font-size:0.8em;">{% if rep.teacher.batch != None %}{{rep.teacher.batch}}{% else %} - {% endif %}</center></td>
-                    <td><center style="font-size:0.8em;">{% if rep.teacher.sub_batch != None %}{{rep.teacher.sub_batch}}{% else %} - {% endif %}</center></td>
-                    <td><center style="font-size:0.8em;">{{rep.teacher.department}}{% if rep.teacher.ug %} (UG){% else %} (PG){% endif %}</center></td>
-                    <td><center style="color:{% if rep.total < 60.0 %}#ff084a{% else %}green{% endif %}; font-size:0.8em;">{{rep.total}}</center></td>
+                    <td style="font-size:0.8em;"><center>{{rep.name}}({{rep.department}})</center></td>
+                    <td style="font-size:0.8em;"><center>{{rep.teacher.subject.name}}</center></td>
+                    <td style="font-size:0.8em;"><center>{{rep.teacher.sem.sem}}</center></td>
+                    <td style="font-size:0.8em;"><center>{{rep.teacher.sec}}</center></td>
+                    <td style="font-size:0.8em;"><center>{% if rep.teacher.batch != None %}{{rep.teacher.batch}}{% else %} - {% endif %}</center></td>
+                    <td style="font-size:0.8em;"><center>{% if rep.teacher.sub_batch != None %}{{rep.teacher.sub_batch}}{% else %} - {% endif %}</center></td>
+                    <td style="font-size:0.8em;"><center>{{rep.teacher.department}}{% if rep.teacher.ug %} (UG){% else %} (PG){% endif %}</center></td>
+                    <td style="font-size:0.8em;"><center style="color:{% if rep.total < 60.0 %}#ff084a{% else %}green{% endif %};">{{rep.total}}</center></td>
                 </tr>
-            {% endif %}
             {% endfor %}
 
             </table>
-            <br />
-            <br />
-            <hr />
-            {% endfor %}
 
 <p class="text-center" style="font-size: 150%">To save as PDF, press <b>control+P and choose the option to save as PDF</b> in Chrome browser only.</p>
 <div class="col-md-6 text-center pull-right" style="padding: 3%;">
