@@ -18,7 +18,7 @@ from django.views.generic import TemplateView, FormView
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 
-from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer
+from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer, StudentConsolidatedReport
 from .forms import FeedbackAnswerForm, AnswerFormSet, StudentFeedbackAnswerForm
 
 from apps.general.models import UserType, Teaches, User
@@ -404,7 +404,7 @@ def sconsolidated(request, username):
 
 	# for i in data:
 	# 	print(i.subject)
-
+	good_total = 0
 	value = list()
 	for i in data:
 		# print("________________________| CLASS: |________________________")
@@ -488,11 +488,23 @@ def sconsolidated(request, username):
 			# 	print(x)
 		value.append(ls)
 
+		#
+
 	# print("________________________| VALUE: |________________________")
 	# for x in value:
 	# 	print(x)
 
 	context = {"user" : user, "report" : value,}
+	return render(request, template_name, context)
+
+def student_view_consolidated(request):
+	template_name = "student_consolidated_report.html"
+	report = StudentConsolidatedReport.objects.all()
+	context = {"report": report}
+	for i in report:
+		print(i.name)
+		print(i.department)
+		print(i.total)
 	return render(request, template_name, context)
 
 class Student_Report(TemplateView):
@@ -611,9 +623,13 @@ def Test_report(request, username):
 			# 	print(x)
 		value.append(ls)
 
+		if not StudentConsolidatedReport.objects.filter(name = user.first_name, total = round(grand_total, 2), department=user.department, teacher=i).exists():
+				total_count = StudentConsolidatedReport.objects.create(name = user.first_name, total = round(grand_total, 2), department=user.department, teacher=i)
+
 	# print("________________________| VALUE: |________________________")
 	# for x in value:
 	# 	print(x)
+
 
 	context = {"user" : user, "report" : value,}
 	return render(request, template_name, context)
@@ -1001,6 +1017,35 @@ class select_teacher_hod(FormView):
 		faculty_username = request.POST.get('faculty_username')
 		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
 
+class select_teacher_principal(FormView):
+	'''
+	After authenticated by HOD OTP, lets HOD select individual faculty
+	'''
+	template_name = "report_select_hod.html"
+
+	def get(self, request, *args, **kwargs):
+		'''
+		Populates the select faculty dropdown
+		'''
+		user = self.request.user
+		username = user.username
+		user_type = user.get_user_type()
+		print(user_type[0])
+		if str(user_type[0]) == 'Principal':
+			faculty_list = User.objects.filter(user_type__name='Faculty').exclude(user_type__name='Student').order_by('first_name')
+			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
+			context = {"faculty_list": faculty_list}
+			return render(request, self.template_name, context)
+
+		context = {"error": 'You are not authorized to view this page.'}
+		return render(request, self.template_name, context)
+
+	def post(self, request, *args, **kwargs):
+		'''
+		Geneartes the individual faculty report
+		'''
+		faculty_username = request.POST.get('faculty_username')
+		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
 
 # class consolidated_principal(FormView):
 # 	'''
@@ -1045,29 +1090,29 @@ class select_teacher_hod(FormView):
 # 			return HttpResponse("Incorrect otp")
 
 
-# class consolidated_report(TemplateView):
-# 	'''
-# 	Consolidated report for viewing by principal
-# 	'''
-# 	template_name = "consolidated_report.html"
-# 	def get(self, request, *args, **kwargs):
+class consolidated_report(TemplateView):
+	'''
+	Consolidated report for viewing by principal
+	'''
+	template_name = "consolidated_report.html"
+	def get(self, request, *args, **kwargs):
 
-# 		if request.session['is_principal'] == True:
-# 			teacher_list = Teacher.objects.all().order_by('dno__dno')
-# 			sub_list = []
-# 			for teacher in teacher_list:
-# 				for sub in TheoryTeaches.objects.filter(fid=teacher):
-# 					sub_list.append(sub)
-# 				for sub in ElectiveTeaches.objects.filter(fid=teacher):
-# 					sub_list.append(sub)
-# 				for sub in LabTeaches.objects.filter(fid=teacher):
-# 					sub_list.append(sub)
-# 			context = self.get_context_data()
-# 			context['subject_list'] = sub_list
-# 			context['principal'] = True
-# 			return render(request, self.template_name, context)
-# 		else:
-# 			return HttpResponse("Not Authorized, Please login")
+		if request.session['is_principal'] == True:
+			teacher_list = Teacher.objects.all().order_by('dno__dno')
+			sub_list = []
+			for teacher in teacher_list:
+				for sub in TheoryTeaches.objects.filter(fid=teacher):
+					sub_list.append(sub)
+				for sub in ElectiveTeaches.objects.filter(fid=teacher):
+					sub_list.append(sub)
+				for sub in LabTeaches.objects.filter(fid=teacher):
+					sub_list.append(sub)
+			context = self.get_context_data()
+			context['subject_list'] = sub_list
+			context['principal'] = True
+			return render(request, self.template_name, context)
+		else:
+			return HttpResponse("Not Authorized, Please login")
 
 
 # class consololidated_hod(TemplateView):
