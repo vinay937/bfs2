@@ -458,7 +458,7 @@ def counter_view(request):
 	for i in count:
 		if i.is_student():
 			student_count += 1
-			if i.done == True: 
+			if i.done == True:
 				total_done += 1
 	template_name = 'counter.html'
 	context = {"total" : total_done, "student_count" : student_count}
@@ -646,6 +646,9 @@ def Dashboard(request):
 	user = request.user
 	user_type = user.get_user_type()
 	total = int(User.objects.filter(user_type__name='Student', department__name='CSE').count()) + int(User.objects.filter( user_type__name='Student', department__name='ECE').count()) + int(User.objects.filter( user_type__name='Student', department__name='MECH').count()) + int(User.objects.filter( user_type__name='Student', department__name='TCE').count()) + int(User.objects.filter( user_type__name='Student', department__name='EEE').count()) + int(User.objects.filter( user_type__name='Student', department__name='CIV').count()) + int(User.objects.filter( user_type__name='Student', department__name='ISE').count()) + int(User.objects.filter(user_type__name='Student', department__name='MCA').count())
+	done = User.objects.filter(user_type__name='Student', done=True).count()
+	total_p = User.objects.filter(user_type__name='Student').count()
+	total_percent = int(done/total_p *100)
 	context = { "user_type": user_type[0].name,
 				"username" : user.username,
 				"name" : user.first_name,
@@ -663,7 +666,7 @@ def Dashboard(request):
 				"eee_total" : User.objects.filter( user_type__name='Student', department__name='EEE').count(),
 				"civil_total" : User.objects.filter(user_type__name='Student', department__name='CIVIL').count(),
 				"ise_total" : User.objects.filter(user_type__name='Student', department__name='ISE').count(),
-				"total" : total	}
+				"total" : total, "percent" : total_percent}
 	return render(request, template_name, context)
 
 # 	def get_context_data(self, **kwargs):

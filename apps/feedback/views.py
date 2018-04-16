@@ -504,7 +504,7 @@ def student_view_consolidated(request):
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
 	template_name = "student_consolidated_report.html"
 	report = StudentConsolidatedReport.objects.all().order_by('name')
-	department = {'CSE': 'Computer Science & Engineering', 'MECH': 'Mechanical Engineering', 'CHEM': 'Chemistry', 'PHY': 'Phyiscs', 'MCA': 'MCA', 'MECH': 'Mechanical Engineering', 'TCE': 'Telecom Engineering' , 'EEE': 'Electrical Engineering', 'ECE': 'Electronics Engineering', 'CIVIL': 'Civil Engineering', 'ISE': 'Information Science Engineering'}
+	department = {'CSE': 'Computer Science & Engineering', 'MECH': 'Mechanical Engineering', 'CHEM': 'Chemistry', 'PHY': 'Phyiscs', 'MCA': 'MCA', 'MECH': 'Mechanical Engineering', 'TCE': 'Telecom Engineering' , 'EEE': 'Electrical Engineering', 'ECE': 'Electronics Engineering', 'CIVIL': 'Civil Engineering', 'ISE': 'Information Science Engineering', 'MATH' : 'Mathematics'}
 	context = {"report": report, "dept": department}
 	# for i in report:
 	# 	print(i.name)
