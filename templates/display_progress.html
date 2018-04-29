@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<!-- BULMA CSS -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<script>
+
+	var source = new EventSource("/progress");
+	source.onmessage = function(event) {
+		$('.progress').css('width', event.data+'%').attr('value', event.data);
+		$('.progress-bar-label').text(event.data+' messages sent');
+
+		if(event.data == {{total}}){
+			source.close()
+		}
+	}
+	</script>
+</head>
+<body>
+	<section class="hero is-success is-fullheight">
+  <!-- Hero head: will stick at the top -->
+  <div class="hero-head">
+    <header class="navbar">
+      <div class="container">
+        <div class="navbar-brand">
+          <a class="navbar-item">
+            <img src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png" alt="Logo">
+          </a>
+          <span class="navbar-burger burger" data-target="navbarMenuHeroC">
+            <span></span>
+            <span></span>
+            <span></span>
+          </span>
+        </div>
+        <div id="navbarMenuHeroC" class="navbar-menu">
+          <div class="navbar-end">
+            <a class="navbar-item is-active">
+              Home
+            </a>
+            <span class="navbar-item">
+              <a class="button is-success is-inverted">
+                <span>Logout</span>
+              </a>
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <!-- Hero content: will be in the middle -->
+  <div class="hero-body">
+    <div class="container has-text-centered">
+      <progress class="progress is-link" value="0" max="60000">0%</progress>
+	<span class="progress-bar-label">0%</span> / {{total}} messages
+    </div>
+  </div>
+
+  
+</section>
+	
+</div>
+</body>
+</html>

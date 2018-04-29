@@ -1,0 +1,597 @@
+<!--
+Copyright 2017 DevX Labs
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+{% load static %}
+<head>
+	<title>Portal Closed</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Raleway:200,400,800' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+<style>
+	::-webkit-scrollbar {
+	    width: 0px;
+	    background: transparent; /* make scrollbar transparent */
+	}
+	/* Header */
+	input:focus {
+	    outline:none;
+	}
+	button:focus {
+	    outline:none;
+	}
+	::placeholder { /* Most modern browsers support this now. */
+	   color:    #e5e5e5;
+	}
+	body {
+	  position:relative;
+	}
+	.main-title {
+	    position: absolute;
+	    margin: 0;
+	    padding: 0;
+	    color: #fff;
+	    text-align: center;
+	    top: 10%;
+	    left: 50%;
+	    -webkit-transform: translate3d(-50%,-50%,0);
+	    transform: translate3d(-50%,-50%,0);
+	}
+
+	.main-title {
+	    text-transform: uppercase;
+	}
+
+	.main-title .thin {
+	    font-weight: 200;
+	}
+
+	@media only screen and (max-width : 768px) {
+	    .main-title {
+	        font-size: 3em;
+	    }
+	}
+	li {
+	    list-style-type: none;
+	}
+	.help {
+	    border-radius:0%;
+	    background-color:#665851 !important;
+	    color:#e5e5e5;
+	    margin-left:2%;
+	}
+	.help:hover {
+	    opacity:0.7;
+	    color:white;
+	} 
+	.popup-box {
+	    background-color: #ffffff;
+	    bottom: 0%;
+	    margin-right:-3.2%;
+	    display: none;
+	    height: 385px;
+	    position: fixed;
+	    right: 70px;
+	    width: 300px;
+	    font-family: 'Open Sans', sans-serif;
+	}
+	.round.hollow {
+	    margin: 40px 0 0;
+	}
+	.round.hollow a {
+	    text-decoration: none;
+	    background-color: #fff;
+	    clear: both;
+	    color: #7b7b7b;
+	    display: inline-table;
+	    font-size: 20px;
+	    padding: 10px 10px;
+	    width: 110%;
+	    font-family: 'Open Sans', sans-serif;
+	    margin-left:-10%;
+	}
+	#qnimate {
+	    transition:height 0.5s ease;
+	}
+	.popup-box-on {
+	    display: block !important;
+	}
+	.popup-box .popup-head {
+	    background-color: #fff;
+	    clear: both;
+	    color: #7b7b7b;
+	    display: inline-table;
+	    font-size: 20px;
+	    padding: 7px 10px;
+	    width: 100%;
+	    font-family: 'Open Sans', sans-serif;
+	}
+	.bg_none i {
+	    border: 1px solid #4ca64c;
+	    border-radius: 25px;
+	    color: #4ca64c;
+	    font-size: 17px;
+	    height: 33px;
+	    line-height: 30px;
+	    width: 33px;
+	}
+	.bg_none:hover i {
+	    border: 1px solid #000;
+	    border-radius: 25px;
+	    color: #000;
+	    font-size: 17px;
+	    height: 33px;
+	    line-height: 30px;
+	    width: 33px;
+	}
+	.bg_none {
+	    background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+	    border: medium none;
+	}
+
+	.popup-box .popup-messages {
+	    background-image: url('{% static 'img/chat_bg1.jpg' %}');
+	    border:none;
+	    height: 275px;
+	    overflow: auto;
+	}
+	.popup-head-right .btn-group {
+	    display: inline-flex;
+	    margin: 0 8px 0 0;
+	    vertical-align: top !important;
+	}
+	.chat-header-button {
+	    background: transparent none repeat scroll 0 0;
+	    border: 1px solid #636364;
+	    border-radius: 50%;
+	    font-size: 14px;
+	    height: 30px;
+	    width: 30px;
+	}
+
+	.direct-chat-text {
+	    background: #4ca64c none repeat scroll 0 0;
+	    border: 1px solid #4ca64c;
+	    border-radius: 5px;
+	    color: #fff;
+	    margin: 5px 10px 0 50px;
+	    padding: 5px 10px;
+	    position: relative;
+	} 
+	.left{
+	    background: #d2d6de none repeat scroll 0 0;
+	    border: 1px solid #d2d6de;
+	    border-radius: 5px;
+	    color: #444;
+	    margin: 5px 100px 5px -28px;
+	    padding: 5px 10px;
+	    position: relative; 
+	}
+	.send_btn {
+	    margin-top: -12%;
+	}
+	.login-page {
+	  width: 360px;
+	  padding: 8% 0 0;
+	  margin: auto;
+	}
+	.form {
+	  position: relative;
+	  z-index: 1;
+	  background: #FFFFFF;
+	  max-width: 350px;
+	  margin: 0 auto 100px;
+	  padding: 35px;
+	  text-align: center;
+	  box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
+	}
+	.form input {
+	  font-family: "Roboto", sans-serif;
+	  outline: 0;
+	  background: #f2f2f2;
+	  width: 100%;
+	  border: 0;
+	  margin: 0 0 15px;
+	  padding: 15px;
+	  box-sizing: border-box;
+	  font-size: 14px;
+	}
+	.signin {
+	  font-family: "Roboto", sans-serif;
+	  text-transform: uppercase;
+	  outline: 0;
+	  width: 100%;
+	  border: 0;
+	  padding: 15px;
+	  color: #FFFFFF;
+	  font-size: 14px;
+	  -webkit-transition: all 0.3 ease;
+	  transition: all 0.3 ease;
+	  cursor: pointer;
+	  border-radius: 0%;
+	}
+	.signin:hover {
+	  color:black;
+	}
+	.form a {
+	  font-family: "Roboto", sans-serif;
+	  text-transform: uppercase;
+	  outline: 0;
+	  width: 100%;
+	  border: 0;
+	  padding: 15px;
+	  color: #FFFFFF;
+	  font-size: 14px;
+	  -webkit-transition: all 0.3 ease;
+	  transition: all 0.3 ease;
+	  cursor: pointer;
+	  border-radius:0%;
+	}
+	.form .message {
+	  margin: 15px 0 0;
+	  color: #b3b3b3;
+	  font-size: 12px;
+	}
+	.form .message a {
+	  color: #4CAF50;
+	  text-decoration: none;
+	}
+	.form .register-form {
+	  display: none;
+	}
+	.container {
+	  position: relative;
+	  z-index: 1;
+	  max-width: 300px;
+	  margin: 0 auto;
+	}
+	.container:before, .container:after {
+	  content: "";
+	  display: block;
+	  clear: both;
+	}
+	.container .info {
+	  margin: 50px auto;
+	  text-align: center;
+	}
+	.container .info h1 {
+	  margin: 0 0 15px;
+	  padding: 0;
+	  font-size: 36px;
+	  font-weight: 300;
+	  color: #1a1a1a;
+	}
+	.container .info span {
+	  color: #4d4d4d;
+	  font-size: 12px;
+	}
+	.container .info span a {
+	  color: #000000;
+	  text-decoration: none;
+	}
+	.container .info span .fa {
+	  color: #EF3B3A;
+	}
+	body {
+	  font-family: "Roboto", sans-serif;
+	  -webkit-font-smoothing: antialiased;
+	  -moz-osx-font-smoothing: grayscale;      
+	}
+	@media(max-width:776px) {
+	  .main-title {
+	    margin-top:7% !important;
+	  }
+	  #thick {
+	    font-size:0.7em !important;
+	    vertical-align:4px !important;
+	  }
+	  .thin {
+	    font-size:1em !important;
+	  }
+	  .form {
+	    margin-top:25% !important;
+	  }
+	}
+	.alert {
+	    padding: 10px;
+	    color: white;
+	    text-align: center;
+	}
+</style>
+</head>
+<center><h1 style="z-index:100;" class="main-title"><span id="thick" style="font-size:1em;vertical-align:11px;">REPORT Portal Closed</span> <span style="font-size:2em;color:#004c4a;" class="thin"> </span></h1></center>
+<div class="login-page">
+  <div style="margin-top:25%;" class="form">
+    <img style="margin-top:-5%;margin-bottom:5%;" width="50" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png">
+    <h3>The Report Portal Is Currently Closed.</h3><br><p>We're currently in the process of taking feedback or are under maintenance and hence access to the report portal is not possible at this time. If you feel there's some problem, feel free to notify the feedback team.</p>
+      <a href="/dashboard" style="margin-top:1%;width:100%;" name="myButton" class="btn btn-default btn-lg signin">Go back to Dashboard</a>
+      <a href="/notify?q={{error_url}}" name="myButton" class="btn btn-primary btn-lg" style="margin-top:1%;width:100%;">Notify Feedback Team</a>
+  </div>
+</div><script>
+function myFunction() {
+    var x = document.getElementById("otp");
+    if (x.type === "password") {
+        x.type = "text";
+        $('#eye').addClass('fa-eye-slash');
+    } else {
+        x.type = "password";
+        $('#eye').removeClass('fa-eye-slash');
+    }
+}
+</script>
+        <script>
+            window.location.hash = window.location.pathname;
+            GetURLParameter('usn');
+
+            function GetURLParameter(sParam) {
+                var sPageURL = window.location.hash.substring(1);
+
+                console.log(sPageURL);
+
+                var sURLVariables = sPageURL.split('/');
+                for (var i = 0; i < sURLVariables.length; i++) {
+                    var sParameterName = sURLVariables[i].split('=');
+                    if (sParameterName[0] == sParam) {
+                        document.getElementById('usn').value = sParameterName[1].toUpperCase();
+                        return sParameterName[1];
+                    }
+                }
+            }
+        </script>
+        <script>
+            $(document).ready(function(){
+                $("#otp").keyup(function(){
+                    $("#otp").val($("#otp").val().toUpperCase());
+                });
+            });
+        </script>
+<!-- <div class="col-md-4 aitsloginwthree w3layouts agileits" style="margin-top:13%;left:33%;padding-top:10%;padding-bottom:1%;background-color: rgba(250,250,250, 0.3);z-index:1000;border-radius:5%;">
+    <div style="left:0;top:3%;position: absolute;" class="col-md-4">
+    <img style="padding:10%;" width="100" src="https://bmsit.ac.in/assets/logo-167a1e45069e8f279b09630a9bff0d35e6cba7f016a24651e39a40dc422e9dc1.png"></div>
+    <div style="top:3%;left:27%;position:absolute;padding:2%;" class="col-md-8">
+    <h3 style="color:#e5e5e5;text-align: center;">BMS INSTITUTE OF TECHNOLOGY</h3>
+</div>
+    <form style="margin-left:3%;margin-top:3%;" action="/login/" method="post" onsubmit="return checkForm(this);">{% csrf_token %}
+        <p id="usn1">{{ form.username }}</p>
+        <p>{{ form.password }}</p>
+        <p style="z-index:100;"><i id="eye" class="fa fa-eye" aria-hidden="true"></i></p>
+        
+        <div class="send-button wthree agileits">
+            <input type="submit" name="myButton" class="btn btn-default btn-lg signin" value="Submit">
+            <a onclick="goHome();" class="btn btn-default btn-lg help" data-toggle="modal" data-target="#cbModal">Resend OTP</a>
+        </div>
+    </form>
+</div> -->
+<div style="z-index:100;" class="hidden-sm popup-box chat-popup" id="qnimate">
+    <div class="popup-head">
+        <div class="popup-head-left pull-left">Feedback Assistance</div>
+        <div class="popup-head-right pull-right">
+            <div class="btn-group">
+                <button id="clear" class="chat-header-button" title="Clear chat">
+                    <i class="fa fa-eraser"></i> </button>
+                    </div>
+                <button title="Close" data-widget="remove" id="removeClass" class="chat-header-button pull-right" type="button"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+            <div class="popup-messages">
+                <div class="direct-chat-msg">
+                <ul class="messages">
+                </ul>
+                  <!-- /.direct-chat-text -->
+                </div>
+            </div>
+            <div class="popup-messages-footer">
+                <input style="border-radius:10px;border:1px solid #4ca64c;margin-left:2%;padding:2%;z-index:100;width:80%;margin-top: 5%;" id="status_message" placeholder="Type a message..." name="message">
+                <div class="btn-footer">
+                    <button class="bg_none pull-right send_btn"><i class="fa fa-paper-plane"></i></button>
+                </div>
+            </div>
+    </div>
+</div>
+<footer style="position:fixed;bottom:0;" class="col-md-12 page-footer fixed-bottom center-on-small-only footer-main">
+    <div class="col-md-6 container-fluid">
+        <h5><strong><center style="margin-top:5%;float:left;"><span style="color:white;">A product by</span><a style="color:#ffc05b;" href="https://devxlabs.co" target="blank"> DevX<img id="logo" src="https://bmsit.ac.in/devx.png" style="width:50px; vertical-align: middle;"></a></center></strong></h5>
+    </div>
+    <div style="width:20%;float:right;" class="hidden-xs hidden-sm col-md-6 container text-center">
+        <div class="round hollow text-center">
+            <a href="#" id="addClass"> CHAT WITH US </a>
+        </div>
+    </div>  
+</footer>
+</div>
+<script>
+    $(document).ready(function(){
+        $("#usn").keyup(function(){
+            $("#usn").val($("#usn").val().toUpperCase());
+        });
+    });
+</script>
+<script>
+    function checkForm(form)
+    {
+        form.myButton.disabled = true;
+        form.myButton.value = "Please Wait..."
+        return true;
+    }
+</script>
+    <script>
+            (function() {
+                var pageWrap = document.getElementById( 'pagewrap' ),
+                    pages = [].slice.call( pageWrap.querySelectorAll( 'div.container' ) ),
+                    currentPage = 0,
+                    triggerLoading = [].slice.call( pageWrap.querySelectorAll( 'a.pageload-link' ) ),
+                    loader = new SVGLoader( document.getElementById( 'loader' ), { speedIn : 100 } );
+
+                function init() {
+                    triggerLoading.forEach( function( trigger ) {
+                        trigger.addEventListener( 'click', function( ev ) {
+                            ev.preventDefault();
+                            loader.show();
+                            // after some time hide loader
+                            setTimeout( function() {
+                                loader.hide();
+
+                                classie.removeClass( pages[ currentPage ], 'show' );
+                                // update..
+                                currentPage = currentPage ? 0 : 1;
+                                classie.addClass( pages[ currentPage ], 'show' );
+
+                            }, 2000 );
+                        } );
+                    } );    
+                }
+
+                init();
+            })();
+        </script>
+<script>
+    $(function(){
+        $("#addClass").click(function () {
+            $('.text-center').css('display', 'none');
+            $('#qnimate').addClass('popup-box-on');
+            $('#status_message').focus();
+        });
+        $("#removeClass").click(function () {
+        $('#qnimate').removeClass('popup-box-on');
+        $('.text-center').css('display', 'block');
+        });
+    })
+</script>
+<script>
+    !function(a){if("function"==typeof define&&define.amd)define(a);else if("object"==typeof exports)module.exports=a();else{var b=window.Cookies,c=window.Cookies=a(window.jQuery);c.noConflict=function(){return window.Cookies=b,c}}}(function(){function a(){for(var a=0,b={};a<arguments.length;a++){var c=arguments[a];for(var d in c)b[d]=c[d]}return b}function b(c){function d(b,e,f){var g;if(arguments.length>1){if(f=a({path:"/"},d.defaults,f),"number"==typeof f.expires){var h=new Date;h.setMilliseconds(h.getMilliseconds()+864e5*f.expires),f.expires=h}try{g=JSON.stringify(e),/^[\{\[]/.test(g)&&(e=g)}catch(i){}return e=encodeURIComponent(String(e)),e=e.replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g,decodeURIComponent),b=encodeURIComponent(String(b)),b=b.replace(/%(23|24|26|2B|5E|60|7C)/g,decodeURIComponent),b=b.replace(/[\(\)]/g,escape),document.cookie=[b,"=",e,f.expires&&"; expires="+f.expires.toUTCString(),f.path&&"; path="+f.path,f.domain&&"; domain="+f.domain,f.secure?"; secure":""].join("")}b||(g={});for(var j=document.cookie?document.cookie.split("; "):[],k=/(%[0-9A-Z]{2})+/g,l=0;l<j.length;l++){var m=j[l].split("="),n=m[0].replace(k,decodeURIComponent),o=m.slice(1).join("=");'"'===o.charAt(0)&&(o=o.slice(1,-1));try{if(o=c&&c(o,n)||o.replace(k,decodeURIComponent),this.json)try{o=JSON.parse(o)}catch(i){}if(b===n){g=o;break}b||(g[n]=o)}catch(i){}}return g}return d.get=d.set=d,d.getJSON=function(){return d.apply({json:!0},[].slice.call(arguments))},d.defaults={},d.remove=function(b,c){d(b,"",a(c,{expires:-1}))},d.withConverter=b,d}return b()});
+    </script>
+<script>
+    var chatterbotUrl = '{% url "chatterbot:chatterbot" %}';
+    var csrftoken = Cookies.get('csrftoken');
+      function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+      }
+      $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+          if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+          }
+        }
+      });
+    String.prototype.format = function() {
+        a = this;
+        for (k in arguments) {
+            a = a.replace("{" + k + "}", arguments[k])
+        }
+        return a
+    }
+    String.prototype.newLine = function() {
+        a = this;
+        a = a.replace(new RegExp('\r?\n','g'), '<br />');
+        return a
+    }
+    $(function() {
+        $('#status_message').keypress(function(e) {
+            if(e.which == 13) {
+                $('.popup-messages').animate({
+                    scrollTop: $(".popup-messages-footer").offset().top
+                }, 100);
+                var message = $('#status_message').val();
+                $('.messages').append(`<li><div class="direct-chat-text">{0}</div></li>`.format(message));
+                $('#status_message').val('');
+                var csrfmiddlewaretoken = $('input[name=csrfmiddlewaretoken]').val();
+            var $submit = $.ajax({
+              type: 'POST',
+              url: chatterbotUrl,
+              data: JSON.stringify({'text':message}),
+                contentType: 'application/json'
+            });
+            $submit.done(function(statement) {
+                // $('.popup-messages').animate({
+                //     scrollTop: $(".popup-messages-footer").offset().top
+                // }, 100);
+                $('.messages').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text).newLine());
+                
+                $('#status_message').val('');
+                // Scroll to the bottom of the chat interface
+                $chatlog[0].scrollTop = $chatlog[0].scrollHeight;
+            });
+            }
+        });
+    })
+    $(function() {
+        $('.send_btn').click(function() {
+            $('.popup-messages').animate({
+                scrollTop: $(".popup-messages-footer").offset().top
+            }, 100);
+            var message = $('#status_message').val();
+            $('ul').append(`<li><div class="direct-chat-text">{0}</div></li>`.format(message));
+            $('#status_message').val('');
+            var csrfmiddlewaretoken = $('input[name=csrfmiddlewaretoken]').val();
+            var $submit = $.ajax({
+              type: 'POST',
+              url: chatterbotUrl,
+              data: JSON.stringify({'text':message}),
+                contentType: 'application/json'
+            });
+            $submit.done(function(statement) {
+                $('.popup-messages').animate({
+                    scrollTop: $(".popup-messages-footer").offset().top
+                }, 100);
+                $('ul').append(`<li><div class="direct-chat-text left">{0}</div></li>`.format(statement.text).newLine());
+                // Clear the input field
+                $('#status_message').val('');
+                // Scroll to the bottom of the chat interface
+                //$chatlog[0].scrollTop = $chatlog[0].scrollHeight;
+            });
+        });
+    })
+    $(function() {
+        $('#clear').click(function() {
+            $('.messages').empty();
+        })
+    })
+</script>
+<script>
+    var backgrounds = [
+  {  color: '#F44336', button: '#FFC107', alert: '#B71C1C',
+  },
+  {  color: '#9C27B0', button: '#00E676', alert: '#4A148C',
+  }, 
+  {  color: '#673AB7', button: '#F50057', alert: '#673AB7',
+  },
+  {  color: '#3F51B5', button: '#F50057', alert: '#1A237E',
+  },
+  {  color: '#009688', button: '#FF5252', alert: '#004D40',
+  },
+  {  color: '#FF9800', button: '#757575', alert: '#E65100',
+  },
+  {  color: '#795548', button: '#C0CA33', alert: '#3E2723',
+  },
+       ]; 
+/**
+ * Returns a random integer between min and max
+ * Using Math.round() will give you a non-uniform distribution!
+ */
+function getRandomInt (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+       $(document).ready(function(){
+         var bgNumber = getRandomInt(0, backgrounds.length-1);
+         $('body').css('background-color', backgrounds[bgNumber].color);
+         $('.signin').css('background-color', backgrounds[bgNumber].button);
+         $('form a').css('background-color', backgrounds[bgNumber].color);
+         $('.thin').css('color', backgrounds[bgNumber].button);
+         $('.alert').css('background-color', backgrounds[bgNumber].alert);
+       });
+  </script>

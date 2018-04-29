@@ -3511,7 +3511,7 @@ iframe {
                     </a>
                 </li>
                 <li>
-                        {% if user_type == 'Principal' %}
+                    {% if user_type == 'Principal' %}
                         <li class="dropdown"><a class="dropdown-toggle" data-toggle="dropdown" href="#"><i class="fa fa-file-excel-o" aria-hidden="true"></i>
                         <p>Consolidated Report<span class="caret"></span></p></a>
                         <ul style="background:#996fd1; margin-left: 15%; margin-top:2%; width:400px;" class="dropdown-menu">
@@ -3527,10 +3527,10 @@ iframe {
                               <a target="_blank" href="https://cdn.bmsit.ac.in/BMSIT1PeertoPeerConsolidatedReport_even%20sem-2017-18.pdf" download="Even sem 2017-18 First Peer to Peer Feedback Consolidated Report.pdf">Peer-Peer Report
                               </a>
                             </li>
-							<li>
+							               <li>
                               <a target="_blank" href="/consolidated">Consolidated Report</a>
                             </li>
-							<li>
+							               <li>
                               <a target="_blank" href="/consolidated_sixty">Consolidated Under sixty</a>
                             </li>
                         </ul>
@@ -3618,7 +3618,7 @@ iframe {
                                     <span class="branchwise"> ECE  <strong>{{ ece }}/{{ece_total}}</strong></span>
                                     <span class="branchwise"> EEE  <strong>{{ eee }}/{{eee_total}}</strong></span>
                                     <span class="branchwise"> TCE  <strong>{{ tce }}/{{tce_total}}</strong></span>
-                                    <span class="branchwise"> Mech  <strong>{{ mech }}/{{mech_total}}</strong><!-- </span>
+                                    <span class="branchwise"> Mech <strong>{{ mech }}/{{mech_total}}</strong></span><!--
                                     <span class="branchwise"> MCA  <strong>{{ mca }}</strong></span> -->
                                 </div>
                             </div>
@@ -3637,19 +3637,20 @@ iframe {
                                 <h4 class="title">Live Feedback Rating</h4>
                             </div>
                             <div class="content">
-                                <h3>4.994</h3>
+                                <h3>4.991</h3>
                             </div>
                         </div>
-						<div class="card ">
-						   <div class="header">
-							   <h4 class="title">Percentage Done</h4>
-						   </div>
-						   <div class="content">
-							   <h3>{{ percent }}%</h3>
-						   </div>
-					   </div>
+						
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-4">
+                      <div class="card ">
+                         <div class="header">
+                           <h4 class="title">Percentage Done</h4>
+                         </div>
+                         <div class="content">
+                           <h3>{{ percent }}%</h3>
+                         </div>
+                       </div>
                       <!-- <div class="card ">
                             <div class="header">
                                 <h4 class="title">Total Students</h4>

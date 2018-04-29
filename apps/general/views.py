@@ -50,6 +50,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
+
+#Send email, text message
 import psycopg2
 
 import urllib.parse as ap
@@ -117,11 +119,7 @@ class HomeView(FormView):
 					'Feedback Support <feedbackotp@bmsit.in>',
 					[qs.email],
 					)
-		email.send()
-
-	def is_admin(self, user):
-		if user.is_superuser:
-			return HttpResponseRedirect("/login/usn=" + user.username)
+		email.send()		
 
 	def feedback_over_view(self, request):
 		template_name = 'feedback_over_final.html'
@@ -138,8 +136,11 @@ class HomeView(FormView):
 			usn = usn.upper()
 			otp_page = otp_page + '/usn/' + usn
 			qs = get_user_model().objects.get(username=usn)
+
 			#Checks if user is admin and redirects directly
-			self.is_admin(qs)
+			if qs.is_superuser:
+				messages.error(request, "Yo admin be so cool!")
+				return HttpResponseRedirect("/login/usn=" + usn)
 
 			# Checks if done=False
 			if not qs.done or not qs.is_student():
@@ -401,6 +402,9 @@ class MainView(TemplateView):
 	def get(self, request, *args, **kwargs):
 		context = self.get_context_data(**kwargs)
 
+		if self.user.is_superuser:
+			return HttpResponseRedirect(reverse_lazy('dashboard'))
+
 		if not self.user.is_student() and self.user.done:
 			return HttpResponseRedirect(reverse_lazy('dashboard'))
 
@@ -448,7 +452,7 @@ def faculty_remaining(request):
 	return render(request, template_name)
 
 
-def counter_view(request):
+def counter_view(request, text):
 	'''
 	Displays the total number of students who have given feedback
 	'''
@@ -464,6 +468,67 @@ def counter_view(request):
 	context = {"total" : total_done, "student_count" : student_count}
 	return render(request, template_name, context)
 
+
+# def send_text_message_view(request):
+# 	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+# 	cursor = conn.cursor()
+
+# 	cursor.execute("SELECT first_name, phone, username FROM general_user ")
+# 	data = cursor.fetchall()
+
+# 	total = len(data)
+# 	context = {"total" : total}
+# 	return render(request, 'display_progress.html', context)
+
+# def show_message_sent_view(request):
+# 	def progress():
+# 		def generate():
+# 			conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+# 			cursor = conn.cursor()
+
+# 			cursor.execute("SELECT first_name, phone, username FROM general_user ")
+# 			data = cursor.fetchall()
+# 			c = 0
+# 			for n, i in enumerate(data):
+# 				yield "data:" + str(n) + "\n\n"
+# 				# print(i[0],i[1],i[2],i[3], i[4])
+# 				# message = 'Dear %s,\n\nYou are required to submit the second feedback using the URL: https://feedback360.bmsit.ac.in. Complete it ASAP. In case of inconvenience submit your query in the help form. The process ends by 1st of May 2018.\nYour Username: %s\n\nPowered by DevX' %(i[0],i[2])
+# 				# params = { 'number' : i[1], 'text' : message }
+# 				# baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
+# 				# urllib.request.urlopen(baseUrl).read(1000)
+# 				#time.sleep(0.01)
+# 				c+=1
+# 				print("Message sent to %s [%s] - %s" %(i[0],i[1], i[2]))
+# 			print(c)
+# 			# x = 0
+			
+# 			# while x <= 100:
+# 			# 	yield "data:" + str(x) + "\n\n"
+# 			# 	x = x + 10
+# 			# 	time.sleep(0.5)
+# 			return 
+# 		return HttpResponse(generate(), content_type= 'text/event-stream')
+	# conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+	# cursor = conn.cursor()
+
+	# cursor.execute("SELECT first_name, phone, username FROM general_user WHERE username = '%s';" %(i))
+	# data = cursor.fetchall()
+
+
+	# # for i in data:
+	# #     if i[0] != 'HOD_SPORTS':
+	# #         print(i[0], i[1], i[2], i[3])
+	# count = 0
+	# message = ''
+
+	# for i in data:
+	#     # print(i[0],i[1],i[2],i[3], i[4])
+	#     # \nYou are required to submit the second feedback using the URL: https://feedback360.bmsit.ac.in. Complete it ASAP. In case of inconvenience submit your query in the help form. The process ends by 1st of May 2018.
+	#     message = 'Dear %s,\n\nYour Username: %s\n\nPowered by DevX' %(i[0],i[2])
+	#     params = { 'number' : i[1], 'text' : message }
+	#     baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
+	#     urllib.request.urlopen(baseUrl).read(1000)
+	#     print("Message sent to %s [%s]" %(i[0],i[1]))
 # @login_required(login_url='/signin/')
 # def main_view(request):
 # 	'''
