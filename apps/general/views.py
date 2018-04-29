@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -469,45 +469,34 @@ def counter_view(request, text):
 	return render(request, template_name, context)
 
 
-# def send_text_message_view(request):
-# 	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
-# 	cursor = conn.cursor()
-
-# 	cursor.execute("SELECT first_name, phone, username FROM general_user ")
-# 	data = cursor.fetchall()
-
-# 	total = len(data)
-# 	context = {"total" : total}
-# 	return render(request, 'display_progress.html', context)
-
-# def show_message_sent_view(request):
-# 	def progress():
-# 		def generate():
-# 			conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
-# 			cursor = conn.cursor()
-
-# 			cursor.execute("SELECT first_name, phone, username FROM general_user ")
-# 			data = cursor.fetchall()
-# 			c = 0
-# 			for n, i in enumerate(data):
-# 				yield "data:" + str(n) + "\n\n"
-# 				# print(i[0],i[1],i[2],i[3], i[4])
-# 				# message = 'Dear %s,\n\nYou are required to submit the second feedback using the URL: https://feedback360.bmsit.ac.in. Complete it ASAP. In case of inconvenience submit your query in the help form. The process ends by 1st of May 2018.\nYour Username: %s\n\nPowered by DevX' %(i[0],i[2])
-# 				# params = { 'number' : i[1], 'text' : message }
-# 				# baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
-# 				# urllib.request.urlopen(baseUrl).read(1000)
-# 				#time.sleep(0.01)
-# 				c+=1
-# 				print("Message sent to %s [%s] - %s" %(i[0],i[1], i[2]))
-# 			print(c)
-# 			# x = 0
-			
-# 			# while x <= 100:
-# 			# 	yield "data:" + str(x) + "\n\n"
-# 			# 	x = x + 10
-# 			# 	time.sleep(0.5)
-# 			return 
-# 		return HttpResponse(generate(), content_type= 'text/event-stream')
+def send_text_message_view(request):
+	students = User.objects.filter(user_type__name='Student', done=False, is_superuser=False)	
+	total = len(students)
+	message = Message.objects.first()
+	context = {"total" : total - 1, "message" : message}
+	return render(request, 'send_message.html', context)
+import time
+def show_message_sent_view(request):
+	def generate():
+		students = User.objects.filter(user_type__name='Student', done=False)		
+		c = 0
+		message = Message.objects.first()
+		for n, i in enumerate(students):
+			yield "data:" + str(n) + "\n\n"
+			text_message = str(str(message) % (i.first_name, i.username))
+			params = { 'number' : i.phone, 'text' : text_message }
+			baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
+			urllib.request.urlopen(baseUrl).read(1000)
+			time.sleep(0.01)
+			c+=1
+			print("Message sent to %s [%s] - %s" %(i.first_name,i.phone, i.username))
+		# x = 0
+		
+		# while x <= 100:
+		# 	yield "data:" + str(x) + "\n\n"
+		# 	x = x + 10
+		# 	time.sleep(0.5)
+	return StreamingHttpResponse(generate(), content_type= 'text/event-stream')
 	# conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
 	# cursor = conn.cursor()
 
@@ -529,6 +518,10 @@ def counter_view(request, text):
 	#     baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
 	#     urllib.request.urlopen(baseUrl).read(1000)
 	#     print("Message sent to %s [%s]" %(i[0],i[1]))
+
+
+
+
 # @login_required(login_url='/signin/')
 # def main_view(request):
 # 	'''
@@ -710,6 +703,7 @@ def Dashboard(request):
 	template_name = 'dashboard.html'
 	user = request.user
 	user_type = user.get_user_type()
+	superuser = user.is_superuser
 	total = int(User.objects.filter(user_type__name='Student', department__name='CSE').count()) + int(User.objects.filter( user_type__name='Student', department__name='ECE').count()) + int(User.objects.filter( user_type__name='Student', department__name='MECH').count()) + int(User.objects.filter( user_type__name='Student', department__name='TCE').count()) + int(User.objects.filter( user_type__name='Student', department__name='EEE').count()) + int(User.objects.filter( user_type__name='Student', department__name='CIV').count()) + int(User.objects.filter( user_type__name='Student', department__name='ISE').count()) + int(User.objects.filter(user_type__name='Student', department__name='MCA').count())
 	done = User.objects.filter(user_type__name='Student', done=True).count()
 	total_p = User.objects.filter(user_type__name='Student').count()
@@ -731,7 +725,7 @@ def Dashboard(request):
 				"eee_total" : User.objects.filter( user_type__name='Student', department__name='EEE').count(),
 				"civil_total" : User.objects.filter(user_type__name='Student', department__name='CIVIL').count(),
 				"ise_total" : User.objects.filter(user_type__name='Student', department__name='ISE').count(),
-				"total" : total, "percent" : total_percent}
+				"total" : total, "percent" : total_percent, "superuser" : superuser}
 	return render(request, template_name, context)
 
 # 	def get_context_data(self, **kwargs):

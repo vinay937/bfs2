@@ -125,3 +125,11 @@ class Teaches(models.Model):
 
 	def __str__(self):
 	 	return self.teacher.first_name + ' -> '  + self.subject.name
+
+class Message(models.Model):
+	'''
+	This stores the message that will be sent to the students. 
+	'''
+	message_text = models.TextField("Message to send to students", max_length=350)
+	def __str__(self):
+		return self.message_text

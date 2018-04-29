@@ -8,15 +8,19 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 	<script>
-
 	var source = new EventSource("/progress");
 	source.onmessage = function(event) {
 		$('.progress').css('width', event.data+'%').attr('value', event.data);
 		$('.progress-bar-label').text(event.data+' messages sent');
 
 		if(event.data == {{total}}){
-			source.close()
+      $('.progress').css('width', '100%').attr('value', '50000');
+			source.close();
 		}
+
+    function stop_text(){
+      source.close();
+    }
 	}
 	</script>
 </head>
@@ -38,11 +42,14 @@
         </div>
         <div id="navbarMenuHeroC" class="navbar-menu">
           <div class="navbar-end">
-            <a class="navbar-item is-active">
+            <a href='/dashboard' class="navbar-item is-active">
               Home
             </a>
             <span class="navbar-item">
-              <a class="button is-success is-inverted">
+              <a href='/dashboard' class="button is-danger">
+                <span>Stop</span>
+              </a>
+              <a href='/logout' class="button is-success is-inverted">
                 <span>Logout</span>
               </a>
             </span>
@@ -55,7 +62,10 @@
   <!-- Hero content: will be in the middle -->
   <div class="hero-body">
     <div class="container has-text-centered">
-      <progress class="progress is-link" value="0" max="60000">0%</progress>
+      <h3>Message being sent: </h3>
+      <p>{{message}}</p>
+      <br><hr>
+      <progress class="progress is-link" value="0" max="50000">0%</progress>
 	<span class="progress-bar-label">0%</span> / {{total}} messages
     </div>
   </div>
