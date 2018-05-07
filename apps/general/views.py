@@ -452,7 +452,7 @@ def faculty_remaining(request):
 	return render(request, template_name)
 
 
-def counter_view(request, text):
+def counter_view(request):
 	'''
 	Displays the total number of students who have given feedback
 	'''
@@ -690,7 +690,7 @@ def done_cron(request, dept_name):
 	response['Content-Disposition'] = 'attachment; filename=feedback_pending_' +dept_name +'.csv'
 	writer = csv.writer(response)
 	for student in student_list:
-		writer.writerow([student.username, student.first_name])
+		writer.writerow([student.username, student.first_name, student.sem, student.sec])
 	writer.writerow(['Total Remaining',student_list.count()])
 
 	return response
