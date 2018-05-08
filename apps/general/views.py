@@ -520,7 +520,17 @@ def show_message_sent_view(request):
 	#     print("Message sent to %s [%s]" %(i[0],i[1]))
 
 
+def ping_url(request):
+	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+	cursor = conn.cursor()
 
+	cursor.execute("SELECT username FROM general_user A, general_user_user_type B WHERE A.id = B.user_id AND B.usertype_id = 4 ORDER BY username;")
+	data = cursor.fetchall()
+
+	for i in data:
+		r = requests.get('https://feedback360.bmsit.ac.in/__/__/--/__/__sreports/%s/' %(i[0]))
+
+	return HttpResponse("Successfully Pinged all reports")
 
 # @login_required(login_url='/signin/')
 # def main_view(request):
