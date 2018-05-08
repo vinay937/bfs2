@@ -519,7 +519,7 @@ def show_message_sent_view(request):
 	#     urllib.request.urlopen(baseUrl).read(1000)
 	#     print("Message sent to %s [%s]" %(i[0],i[1]))
 
-
+import requests
 def ping_url(request):
 	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
 	cursor = conn.cursor()
