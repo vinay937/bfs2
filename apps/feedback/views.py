@@ -390,7 +390,7 @@ def sconsolidated(request, username):
 		return HttpResponseRedirect(reverse_lazy('login'))
 	if username != loggedin_user.username and user_type[0].name == 'Faculty':
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
-	if department.name != user.department.name and user_type[0].name != 'Principal':
+	if department.name != user.department.name and user_type[0].name != 'Principal' or user.is_superuser:
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
 	print('Generating Report')
 	# print("|________________________|user|________________________|")
@@ -500,7 +500,7 @@ def sconsolidated(request, username):
 
 @login_required(login_url='/signin/')
 def student_view_consolidated(request):
-	if not request.user.is_principal():
+	if not (request.user.is_superuser or request.user.is_principal()):
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
 	template_name = "student_consolidated_report.html"
 	report = StudentConsolidatedReport.objects.all().order_by('name')
@@ -514,7 +514,8 @@ def student_view_consolidated(request):
 
 @login_required(login_url='/signin/')
 def student_view_consolidated_sixty(request):
-	if not request.user.is_principal():
+	if not (request.user.is_superuser or request.user.is_principal()):
+		print(request.user.is_superuser)
 		return HttpResponseRedirect(reverse_lazy('dashboard'))
 	template_name = "student_consolidated_report_sixty.html"
 	report = StudentConsolidatedReport.objects.filter(total__lt = 60.0).order_by('name')
