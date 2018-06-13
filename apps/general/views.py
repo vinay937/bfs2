@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 '''
 from django.shortcuts import render, get_object_or_404, redirect
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
@@ -50,6 +50,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 import smtplib
 
+
+#Send email, text message
 import psycopg2
 
 import urllib.parse as ap
@@ -110,17 +112,14 @@ class HomeView(FormView):
 		"""
 		Sends OTP to email
 		"""
+		print(random_otp)
 		email = EmailMessage(
 					'Feedback OTP',
 					'Hi, ' + qs.first_name + '\n\n' +'Your OTP for feedback is: ' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
 					'Feedback Support <feedbackotp@bmsit.in>',
 					[qs.email],
 					)
-		email.send()
-
-	def is_admin(self, user):
-		if user.is_superuser:
-			return HttpResponseRedirect("/login/usn=" + user.username)
+		email.send()		
 
 	def feedback_over_view(self, request):
 		template_name = 'feedback_over_final.html'
@@ -137,8 +136,11 @@ class HomeView(FormView):
 			usn = usn.upper()
 			otp_page = otp_page + '/usn/' + usn
 			qs = get_user_model().objects.get(username=usn)
+
 			#Checks if user is admin and redirects directly
-			self.is_admin(qs)
+			if qs.is_superuser:
+				messages.error(request, "Yo admin be so cool!")
+				return HttpResponseRedirect("/login/usn=" + usn)
 
 			# Checks if done=False
 			if not qs.done or not qs.is_student():
@@ -400,6 +402,9 @@ class MainView(TemplateView):
 	def get(self, request, *args, **kwargs):
 		context = self.get_context_data(**kwargs)
 
+		if self.user.is_superuser:
+			return HttpResponseRedirect(reverse_lazy('dashboard'))
+
 		if not self.user.is_student() and self.user.done:
 			return HttpResponseRedirect(reverse_lazy('dashboard'))
 
@@ -453,15 +458,79 @@ def counter_view(request):
 	'''
 	total_done = 0
 	student_count = 0
-	count = User.objects.all()
+	count = User.objects.all().filter(is_active=True)
 	for i in count:
 		if i.is_student():
 			student_count += 1
-			if i.done == True: 
+			if i.done == True:
 				total_done += 1
 	template_name = 'counter.html'
 	context = {"total" : total_done, "student_count" : student_count}
 	return render(request, template_name, context)
+
+
+def send_text_message_view(request):
+	students = User.objects.filter(user_type__name='Student', done=False, is_superuser=False)	
+	total = len(students)
+	message = Message.objects.first()
+	context = {"total" : total - 1, "message" : message}
+	return render(request, 'send_message.html', context)
+import time
+def show_message_sent_view(request):
+	def generate():
+		students = User.objects.filter(user_type__name='Student', done=False)		
+		c = 0
+		message = Message.objects.first()
+		for n, i in enumerate(students):
+			yield "data:" + str(n) + "\n\n"
+			text_message = str(str(message) % (i.first_name, i.username))
+			params = { 'number' : i.phone, 'text' : text_message }
+			baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
+			urllib.request.urlopen(baseUrl).read(1000)
+			time.sleep(0.01)
+			c+=1
+			print("Message sent to %s [%s] - %s" %(i.first_name,i.phone, i.username))
+		# x = 0
+		
+		# while x <= 100:
+		# 	yield "data:" + str(x) + "\n\n"
+		# 	x = x + 10
+		# 	time.sleep(0.5)
+	return StreamingHttpResponse(generate(), content_type= 'text/event-stream')
+	# conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+	# cursor = conn.cursor()
+
+	# cursor.execute("SELECT first_name, phone, username FROM general_user WHERE username = '%s';" %(i))
+	# data = cursor.fetchall()
+
+
+	# # for i in data:
+	# #     if i[0] != 'HOD_SPORTS':
+	# #         print(i[0], i[1], i[2], i[3])
+	# count = 0
+	# message = ''
+
+	# for i in data:
+	#     # print(i[0],i[1],i[2],i[3], i[4])
+	#     # \nYou are required to submit the second feedback using the URL: https://feedback360.bmsit.ac.in. Complete it ASAP. In case of inconvenience submit your query in the help form. The process ends by 1st of May 2018.
+	#     message = 'Dear %s,\n\nYour Username: %s\n\nPowered by DevX' %(i[0],i[2])
+	#     params = { 'number' : i[1], 'text' : message }
+	#     baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
+	#     urllib.request.urlopen(baseUrl).read(1000)
+	#     print("Message sent to %s [%s]" %(i[0],i[1]))
+
+import requests
+def ping_url(request):
+	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+	cursor = conn.cursor()
+
+	cursor.execute("SELECT username FROM general_user A, general_user_user_type B WHERE A.id = B.user_id AND B.usertype_id = 4 ORDER BY username;")
+	data = cursor.fetchall()
+
+	for i in data:
+		r = requests.get('https://feedback360.bmsit.ac.in/__/__/--/__/__sreports/%s/' %(i[0]))
+
+	return HttpResponse("Successfully Pinged all reports")
 
 # @login_required(login_url='/signin/')
 # def main_view(request):
@@ -625,13 +694,14 @@ def done_cron(request, dept_name):
 	'''
 	Downloads the list of remaing students, department wise in a CSV file
 	'''
-	student_list = User.objects.filter(department__name=dept_name, done=False).order_by('sem')
+	student_list = User.objects.filter(department__name=dept_name, done=False, is_active=True).order_by('sem')
 	response = HttpResponse(content_type='text/csv')
 
 	response['Content-Disposition'] = 'attachment; filename=feedback_pending_' +dept_name +'.csv'
 	writer = csv.writer(response)
 	for student in student_list:
-		writer.writerow([student.username, student.first_name])
+		writer.writerow([student.username, student.first_name, student.sem, student.sec])
+	writer.writerow(['Total Remaining',student_list.count()])
 
 	return response
 
@@ -643,8 +713,30 @@ def Dashboard(request):
 	template_name = 'dashboard.html'
 	user = request.user
 	user_type = user.get_user_type()
-	context = { "type": user_type}
-	return render(request, template_name)
+	superuser = user.is_superuser
+	total = int(User.objects.filter(user_type__name='Student', department__name='CSE').count()) + int(User.objects.filter( user_type__name='Student', department__name='ECE').count()) + int(User.objects.filter( user_type__name='Student', department__name='MECH').count()) + int(User.objects.filter( user_type__name='Student', department__name='TCE').count()) + int(User.objects.filter( user_type__name='Student', department__name='EEE').count()) + int(User.objects.filter( user_type__name='Student', department__name='CIV').count()) + int(User.objects.filter( user_type__name='Student', department__name='ISE').count()) + int(User.objects.filter(user_type__name='Student', department__name='MCA').count())
+	done = User.objects.filter(user_type__name='Student', done=True).count()
+	total_p = User.objects.filter(user_type__name='Student').count()
+	total_percent = int(done/total_p *100)
+	context = { "user_type": user_type[0].name,
+				"username" : user.username,
+				"name" : user.first_name,
+				"cse" : User.objects.filter(done=False, user_type__name='Student', department__name='CSE').count(),
+				"ece" : User.objects.filter(done=False, user_type__name='Student', department__name='ECE').count(),
+				"mech" : User.objects.filter(done=False, user_type__name='Student', department__name='MECH').count(),
+				"tce" : User.objects.filter(done=False, user_type__name='Student', department__name='TCE').count(),
+				"eee" : User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count(),
+				"civil" : User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count(),
+				"ise" : User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count(),
+				"cse_total" : User.objects.filter( user_type__name='Student', department__name='CSE').count(),
+				"ece_total" : User.objects.filter( user_type__name='Student', department__name='ECE').count(),
+				"mech_total" : User.objects.filter(user_type__name='Student', department__name='MECH').count(),
+				"tce_total" : User.objects.filter(user_type__name='Student', department__name='TCE').count(),
+				"eee_total" : User.objects.filter( user_type__name='Student', department__name='EEE').count(),
+				"civil_total" : User.objects.filter(user_type__name='Student', department__name='CIVIL').count(),
+				"ise_total" : User.objects.filter(user_type__name='Student', department__name='ISE').count(),
+				"total" : total, "percent" : total_percent, "superuser" : superuser}
+	return render(request, template_name, context)
 
 # 	def get_context_data(self, **kwargs):
 # 		context = super(Dashboard, self).get_context_data(**kwargs)

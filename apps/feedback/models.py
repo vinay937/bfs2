@@ -98,3 +98,12 @@ class ConsolidatedReport(models.Model):
 
 	# def __str__(self):
 	# 	return self.name
+
+class StudentConsolidatedReport(models.Model):
+	'''
+	The Student consolidated report is stored in this table.
+	'''
+	name = models.CharField("Name of faculty",max_length=100)
+	total = models.FloatField("Total value they got", max_length=10)
+	department = models.CharField("Department Code", max_length=30,null=True, blank=True)
+	teacher = models.ForeignKey('general.teaches', null=True)

@@ -4,6 +4,8 @@ from .models import *
 
 admin.site.register(FeedbackForm)
 admin.site.register(Question)
+admin.site.register(ConsolidatedReport)
+admin.site.register(StudentConsolidatedReport)
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):

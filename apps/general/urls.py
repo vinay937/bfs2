@@ -19,5 +19,9 @@ urlpatterns = [
     url(r'^dashboard/', views.Dashboard, name='dashboard'),
     url(r'^notify/', views.notifyView, name='notify'),
     url(r'^completed/', views.counter_view, name='counter_view'),
+    url(r'^send_message/', views.send_text_message_view, name='send_text_message_view'),
+    url(r'^progress/', views.show_message_sent_view, name='show_message_sent_view'),
+    url(r'^ping-report/$',views.ping_url, name='ping_url'),
+
     #url(r'^consolidated/', views.consolidated.as_view(), name='feedback/consolidated_report'),
 ]

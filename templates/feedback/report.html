@@ -99,7 +99,7 @@ table, th, td {
 			  		{% for que in form.question.all %}
 			  	<tr>
 			  		{% with forloop.counter as id %}
-		  		<td>{{que | title }</td>
+		  		<td>{{que.text | title }</td>
 				  	{% for answer in answers %}
 					  	{% if answer.value == 'Excellent' and answer.question == que %}
 					  	<div style="display:none;" class="excellent" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>
@@ -157,7 +157,7 @@ table, th, td {
 			  		{% for que in form.question.all %}
 			  	<tr>
 			  		{% with forloop.counter as id %}
-		  		<td>{{que}}</td>
+		  		<td>{{que.text}}</td>
 				  	{% for answer in answers %}
 					  	{% if answer.value == 'Excellent' and answer.question == que %}
 					  	<div style="display:none;" class="excellent" id="values_{{main_id}}_{{id}}">{{answer.value}}</div>

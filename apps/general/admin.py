@@ -3,6 +3,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DjangoUserAdmin
 from .models import *
 
+admin.site.site_header = 'BMSIT Feedback System Admin Interface'
+
 @admin.register(User)
 class UserAdmin(DjangoUserAdmin):
 
@@ -29,10 +31,23 @@ class UserAdmin(DjangoUserAdmin):
 
 @admin.register(Teaches)
 class TeachesAdmin(admin.ModelAdmin):
-
+	list_display = ('teachers_first_name','subject_name','semester','sec', 'department_name', 'batch', 'ug')
 	search_fields = ('teacher__first_name', 'subject__name', 'subject__code')
+
+	def teachers_first_name(self, instance):
+		return instance.teacher.first_name
+
+	def subject_name(self, instance):
+		return instance.subject.name
+
+	def department_name(self, instance):
+		return instance.department.name
+
+	def semester(self, instance):
+		return instance.sem.sem
 
 admin.site.register(Subject)
 admin.site.register(Department)
 admin.site.register(Semester)
 admin.site.register(UserType)
+admin.site.register(Message)

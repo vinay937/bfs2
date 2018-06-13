@@ -76,6 +76,13 @@ class User(AbstractUser):
 		else:
 			return False
 
+	def is_principal(self):
+		principal = UserType.objects.get(name="Principal")
+		if principal in self.user_type.all():
+			return True
+		else:
+			return False
+
 	def get_user_type(self):
 		return self.user_type.all()
 
@@ -114,5 +121,15 @@ class Teaches(models.Model):
 	sub_batch = models.CharField("Student's sub batch", max_length=50, null=True, blank=True)
 	ug = models.BooleanField(default=False)
 
+	count = models.IntegerField("Student Count", default=0, null=True, blank=True)
+
 	def __str__(self):
 	 	return self.teacher.first_name + ' -> '  + self.subject.name
+
+class Message(models.Model):
+	'''
+	This stores the message that will be sent to the students. 
+	'''
+	message_text = models.TextField("Message to send to students", max_length=350)
+	def __str__(self):
+		return self.message_text

@@ -17,11 +17,12 @@ from django.urls import reverse_lazy
 from django.views.generic import TemplateView, FormView
 from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
 
-from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer
+from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer, StudentConsolidatedReport
 from .forms import FeedbackAnswerForm, AnswerFormSet, StudentFeedbackAnswerForm
 
-from apps.general.models import UserType, Teaches
+from apps.general.models import UserType, Teaches, User
 
 import json
 import random
@@ -378,6 +379,279 @@ def view_consolidated(request):
 	context = {"report": report}
 	return render(request, template_name, context)
 
+def sconsolidated(request, username):
+	template_name = "feedback/student_report.html"
+	user = get_user_model().objects.get(username=username)
+	loggedin_user = request.user
+	print(loggedin_user)
+	user_type = loggedin_user.get_user_type()
+	department = loggedin_user.department
+	if user_type[0].name == 'AnonymousUser':
+		return HttpResponseRedirect(reverse_lazy('login'))
+	if username != loggedin_user.username and user_type[0].name == 'Faculty':
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	if department.name != user.department.name and user_type[0].name != 'Principal' or user.is_superuser:
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	print('Generating Report')
+	# print("|________________________|user|________________________|")
+	# print(user)
+	forms = FeedbackForm.objects.filter(user_type=5, active=True)
+	data = Teaches.objects.filter(teacher__username=user)
+	results = dict()
+
+	for form in forms:
+		answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user)
+		results[form] = answers
+
+	# for i in data:
+	# 	print(i.subject)
+	good_total = 0
+	value = list()
+	for i in data:
+		# print("________________________| CLASS: |________________________")
+		# print("Subject",i.subject.name)
+		# print("Section",i.sec)
+		# print("Sem",i.sem.sem)
+		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
+		for form, answers in results.items():
+			excellent_total = 0
+			good_total = 0
+			satisfactory_total = 0
+			poor_total = 0
+			very_poor_total = 0
+			l = list()
+			que_count = 0
+			for que in form.question.all():
+				# print("________________________| QUESTION: |________________________")
+				# print(que.text)
+				que_count = 0
+				excellent = 0
+				good = 0
+				satisfactory = 0
+				poor = 0
+				very_poor = 0
+				for j in answers:
+					# print("________________________| THEORY: |________________________")
+					# print(i.subject.theory, j.teacher.subject.theory)
+					# print("________________________| ELECTIVE: |________________________")
+					# print(i.subject.elective, j.teacher.subject.elective)
+					# print("________________________| PROJECT: |________________________")
+					# print(i.subject.project, j.teacher.subject.project)
+					res = bool()
+					if que_count < i.count:
+						if i == j.teacher:
+							# print("________________________| RESULT: |________________________")
+							res = True
+							# print(res)
+						if j.question == que:
+							if j.value == 'Excellent':
+								if res:
+									excellent += 1
+									excellent_total += 1
+									que_count += 1
+
+							if j.value == 'Good':
+								if res:
+									good += 1
+									good_total += 1
+									que_count += 1
+
+							if j.value == 'Satisfactory':
+								if res:
+									satisfactory += 1
+									satisfactory_total += 1
+									que_count += 1
+
+							if j.value == 'Poor':
+								if res:
+									poor += 1
+									poor_total += 1
+									que_count += 1
+
+							if j.value == 'Very Poor':
+								if res:
+									very_poor += 1
+									very_poor_total += 1
+									que_count += 1
+
+				if excellent or good or satisfactory or poor or very_poor:
+					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
+					l.append([que.text, excellent, good, satisfactory, poor, very_poor, total])
+					# print("________________________| List: |________________________")
+					# for x in l:
+					# 	print(x)
+			if l:
+				grand_total = (((excellent_total * 5) + (good_total * 4) + (satisfactory_total * 3) + (poor_total * 2) + (very_poor_total))/((excellent_total+good_total+satisfactory_total+poor_total+very_poor_total)*5)*100)
+				ls.append(l)
+				ls.append(["Total", excellent_total, good_total, satisfactory_total, poor_total, very_poor_total, grand_total])
+			# print("________________________| LS: |________________________")
+			# for x in ls:
+			# 	print(x)
+		value.append(ls)
+
+		#
+
+	# print("________________________| VALUE: |________________________")
+	# for x in value:
+	# 	print(x)
+
+	context = {"user" : user, "report" : value,}
+	return render(request, template_name, context)
+
+@login_required(login_url='/signin/')
+def student_view_consolidated(request):
+	if not (request.user.is_superuser or request.user.is_principal()):
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	template_name = "student_consolidated_report.html"
+	report = StudentConsolidatedReport.objects.all().order_by('name')
+	department = {'CSE': 'Computer Science & Engineering', 'MECH': 'Mechanical Engineering', 'CHEM': 'Chemistry', 'PHY': 'Phyiscs', 'MCA': 'MCA', 'MECH': 'Mechanical Engineering', 'TCE': 'Telecom Engineering' , 'EEE': 'Electrical Engineering', 'ECE': 'Electronics Engineering', 'CIVIL': 'Civil Engineering', 'ISE': 'Information Science Engineering', 'MATH' : 'Mathematics'}
+	context = {"report": report, "dept": department}
+	# for i in report:
+	# 	print(i.name)
+	# 	print(i.department)
+	# 	print(i.total)
+	return render(request, template_name, context)
+
+@login_required(login_url='/signin/')
+def student_view_consolidated_sixty(request):
+	if not (request.user.is_superuser or request.user.is_principal()):
+		print(request.user.is_superuser)
+		return HttpResponseRedirect(reverse_lazy('dashboard'))
+	template_name = "student_consolidated_report_sixty.html"
+	report = StudentConsolidatedReport.objects.filter(total__lt = 60.0).order_by('name')
+	context = {"report": report}
+	# for i in report:
+	# 	print(i.name)
+	# 	print(i.department)
+	# 	print(i.total)
+	return render(request, template_name, context)
+
+class Student_Report(TemplateView):
+	template_name = "feedback/student_report.html"
+
+	def get_context_data(self, username, *args, **kwargs):
+		context = super(Student_Report, self).get_context_data(*args, **kwargs)
+		user = get_user_model().objects.get(username=username)
+		context['user'] = user
+		# user_type = user.get_user_type()
+		forms = FeedbackForm.objects.filter(user_type__name='Student', active=True)
+		print(forms)
+		results = dict()
+		for form in forms:
+			print(form)
+			answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user.username)
+			results[form] = answers
+		context['results'] = results
+		return context
+
+def Test_report(request, username):
+	template_name = "feedback/student_report.html"
+	user = get_user_model().objects.get(username=username)
+
+	forms = FeedbackForm.objects.filter(user_type=5, active=True)
+	data = Teaches.objects.filter(teacher__username=user)
+	results = dict()
+
+	for form in forms:
+		answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user)
+		results[form] = answers
+
+	# for i in data:
+	# 	print(i.subject)
+
+	value = list()
+	for i in data:
+		# print("________________________| CLASS: |________________________")
+		# print("Subject",i.subject.name)
+		# print("Section",i.sec)
+		# print("Sem",i.sem.sem)
+		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
+		for form, answers in results.items():
+			excellent_total = 0
+			good_total = 0
+			satisfactory_total = 0
+			poor_total = 0
+			very_poor_total = 0
+			l = list()
+			que_count = 0
+			for que in form.question.all():
+				# print("________________________| QUESTION: |________________________")
+				# print(que.text)
+				que_count = 0
+				excellent = 0
+				good = 0
+				satisfactory = 0
+				poor = 0
+				very_poor = 0
+				for j in answers:
+					# print("________________________| THEORY: |________________________")
+					# print(i.subject.theory, j.teacher.subject.theory)
+					# print("________________________| ELECTIVE: |________________________")
+					# print(i.subject.elective, j.teacher.subject.elective)
+					# print("________________________| PROJECT: |________________________")
+					# print(i.subject.project, j.teacher.subject.project)
+					res = bool()
+					if que_count < i.count:
+						if i == j.teacher:
+							# print("________________________| RESULT: |________________________")
+							res = True
+							# print(res)
+						if j.question == que:
+							if j.value == 'Excellent':
+								if res:
+									excellent += 1
+									excellent_total += 1
+									que_count += 1
+
+							if j.value == 'Good':
+								if res:
+									good += 1
+									good_total += 1
+									que_count += 1
+
+							if j.value == 'Satisfactory':
+								if res:
+									satisfactory += 1
+									satisfactory_total += 1
+									que_count += 1
+
+							if j.value == 'Poor':
+								if res:
+									poor += 1
+									poor_total += 1
+									que_count += 1
+
+							if j.value == 'Very Poor':
+								if res:
+									very_poor += 1
+									very_poor_total += 1
+									que_count += 1
+
+				if excellent or good or satisfactory or poor or very_poor:
+					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
+					l.append([que.text, excellent, good, satisfactory, poor, very_poor, total])
+					# print("________________________| List: |________________________")
+					# for x in l:
+					# 	print(x)
+			if l:
+				grand_total = (((excellent_total * 5) + (good_total * 4) + (satisfactory_total * 3) + (poor_total * 2) + (very_poor_total))/((excellent_total+good_total+satisfactory_total+poor_total+very_poor_total)*5)*100)
+				ls.append(l)
+				ls.append(["Total", excellent_total, good_total, satisfactory_total, poor_total, very_poor_total, grand_total])
+			# print("________________________| LS: |________________________")
+			# for x in ls:
+			# 	print(x)
+		value.append(ls)
+
+		if not StudentConsolidatedReport.objects.filter(name = user.first_name, total = round(grand_total, 2), department=user.department, teacher=i).exists():
+				total_count = StudentConsolidatedReport.objects.create(name = user.first_name, total = round(grand_total, 2), department=user.department, teacher=i)
+
+	# print("________________________| VALUE: |________________________")
+	# for x in value:
+	# 	print(x)
+
+
+	context = {"user" : user, "report" : value,}
+	return render(request, template_name, context)
 # def feedback(request):
 # 	'''
 # 	Displays the main student feedback form
@@ -731,28 +1005,66 @@ def view_consolidated(request):
 # 			return HttpResponse("Incorrect OTP")
 
 
-# class select_teacher_hod(FormView):
-# 	'''
-# 	After authenticated by HOD OTP, lets HOD select individual faculty
-# 	'''
-# 	template_name = "report_select_hod.html"
+class select_teacher_hod(FormView):
+	'''
+	After authenticated by HOD OTP, lets HOD select individual faculty
+	'''
+	template_name = "report_select_hod.html"
 
-# 	def get(self, request, *args, **kwargs):
-# 		'''
-# 		Populates the select faculty dropdown
-# 		'''
-# 		dname = request.session['depa']
-# 		fac = Teacher.objects.order_by('fname').filter(dno__dname=dname)
-# 		context = {"subject": fac}
-# 		return render(request, self.template_name, context)
+	def get(self, request, *args, **kwargs):
+		'''
+		Populates the select faculty dropdown
+		'''
+		user = self.request.user
+		username = user.username
+		user_type = user.get_user_type()
+		print(user_type[0])
+		if str(user_type[0]).upper() == 'HOD':
+			department = user.department
+			faculty_list = User.objects.filter(department__name=department, user_type__name='Faculty').exclude(user_type__name='Student').order_by('first_name')
+			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
+			context = {"faculty_list": faculty_list}
+			return render(request, self.template_name, context)
 
-# 	def post(self, request, *args, **kwargs):
-# 		'''
-# 		Geneartes the individual faculty report
-# 		'''
-# 		request.session['faculty_id_report'] = request.POST.get('fac_id')
-# 		return redirect(reverse_lazy('generate_report'))
+		context = {"error": 'You are not authorized to view this page.'}
+		return render(request, self.template_name, context)
 
+	def post(self, request, *args, **kwargs):
+		'''
+		Geneartes the individual faculty report
+		'''
+		faculty_username = request.POST.get('faculty_username')
+		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
+
+class select_teacher_principal(FormView):
+	'''
+	After authenticated by HOD OTP, lets HOD select individual faculty
+	'''
+	template_name = "report_select_hod.html"
+
+	def get(self, request, *args, **kwargs):
+		'''
+		Populates the select faculty dropdown
+		'''
+		user = self.request.user
+		username = user.username
+		user_type = user.get_user_type()
+		print(user_type[0])
+		if str(user_type[0]) == 'Principal':
+			faculty_list = User.objects.filter(user_type__name='Faculty').exclude(user_type__name='Student').order_by('first_name')
+			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
+			context = {"faculty_list": faculty_list}
+			return render(request, self.template_name, context)
+
+		context = {"error": 'You are not authorized to view this page.'}
+		return render(request, self.template_name, context)
+
+	def post(self, request, *args, **kwargs):
+		'''
+		Geneartes the individual faculty report
+		'''
+		faculty_username = request.POST.get('faculty_username')
+		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
 
 # class consolidated_principal(FormView):
 # 	'''
@@ -797,29 +1109,29 @@ def view_consolidated(request):
 # 			return HttpResponse("Incorrect otp")
 
 
-# class consolidated_report(TemplateView):
-# 	'''
-# 	Consolidated report for viewing by principal
-# 	'''
-# 	template_name = "consolidated_report.html"
-# 	def get(self, request, *args, **kwargs):
+class consolidated_report(TemplateView):
+	'''
+	Consolidated report for viewing by principal
+	'''
+	template_name = "consolidated_report.html"
+	def get(self, request, *args, **kwargs):
 
-# 		if request.session['is_principal'] == True:
-# 			teacher_list = Teacher.objects.all().order_by('dno__dno')
-# 			sub_list = []
-# 			for teacher in teacher_list:
-# 				for sub in TheoryTeaches.objects.filter(fid=teacher):
-# 					sub_list.append(sub)
-# 				for sub in ElectiveTeaches.objects.filter(fid=teacher):
-# 					sub_list.append(sub)
-# 				for sub in LabTeaches.objects.filter(fid=teacher):
-# 					sub_list.append(sub)
-# 			context = self.get_context_data()
-# 			context['subject_list'] = sub_list
-# 			context['principal'] = True
-# 			return render(request, self.template_name, context)
-# 		else:
-# 			return HttpResponse("Not Authorized, Please login")
+		if request.session['is_principal'] == True:
+			teacher_list = Teacher.objects.all().order_by('dno__dno')
+			sub_list = []
+			for teacher in teacher_list:
+				for sub in TheoryTeaches.objects.filter(fid=teacher):
+					sub_list.append(sub)
+				for sub in ElectiveTeaches.objects.filter(fid=teacher):
+					sub_list.append(sub)
+				for sub in LabTeaches.objects.filter(fid=teacher):
+					sub_list.append(sub)
+			context = self.get_context_data()
+			context['subject_list'] = sub_list
+			context['principal'] = True
+			return render(request, self.template_name, context)
+		else:
+			return HttpResponse("Not Authorized, Please login")
 
 
 # class consololidated_hod(TemplateView):
@@ -974,3 +1286,22 @@ def view_consolidated(request):
 # 		context['percent'] = ((146 - count)/146)*100
 # 		context['count'] = count
 # 		return render(request, self.template_name, context)
+
+# def beta_report(request, username):
+# 	template_name = "feedback/student_report.html"
+# 	user = get_user_model().objects.get(username=username)
+#
+# 	forms = FeedbackForm.objects.filter(user_type=5, active=True)
+# 	data = Teaches.objects.filter(teacher__username=user)
+# 	results = dict()
+# 	value = 0
+# 	excellent = 0
+#
+# 	for i in data:
+# 		for form in forms:
+# 			for que in form.question.all():
+# 				excellent = StudentAnswer.objects.filter(form=form, teacher=i, value='Excellent', question=que).count()
+# 				print(excellent)
+#
+# 	context = {"user" : user, "report" : value,}
+# 	return render(request, template_name, context)
