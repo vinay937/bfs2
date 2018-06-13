@@ -1,4 +1,6 @@
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -74,11 +76,11 @@
     text-decoration: none;
 }
 
-.sidebar-nav li a:hover {
+/*.sidebar-nav li a:hover {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
     text-decoration: none;
-}
+}*/
 
 .sidebar-nav li a:active,
 .sidebar-nav li a:focus {
@@ -143,12 +145,12 @@ h3{
 
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#menu-toggle" id="menu-toggle"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
-        </div>
         <div class="navbar-collapse">
+            <ul style="margin-top:1%;" class="nav navbar-nav">
+                <li style="font-size:1.2em;font-weight: bold; color: #FFF;pointer-events: none;pointer: default;text-decoration: none;">Welcome, {{user.first_name}}</li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li style="font-weight: bold; color: #FFF;" class="active" id="recipient" value="{{recipient_name}}"><a href="#">{{ recipient_name.teacher.first_name }} </a></li>
+                <li style="font-weight: bold; color: #FFF;pointer-events: none;pointer: default;text-decoration: none;" class="active" id="recipient" value="{{recipient_name}}"><a href="#"><span style="color:#d9d9d9;">Faculty: </span>{{ recipient_name.teacher.first_name }} </a></li>
             </ul>
         </div>
     </div>
@@ -157,13 +159,9 @@ h3{
 <div id="wrapper">
     <div class="container-fluid">
         <!-- Sidebar -->
-        <div id="sidebar-wrapper">
+        <div class="hidden-xs" id="sidebar-wrapper">
             <ul class="sidebar-nav">
-              	<li class="sidebar-brand">
-                    <br>
-                </li>
                  <li style="margin-top:10%;" class="sidebar-brand">
-                    <a href="#" class="navbar-brand">Welcome, {{user.first_name}}</a>
                 </li>
                 {% if recipients_theory %}
                     {% for rn in recipients_theory %}
@@ -205,7 +203,7 @@ h3{
                         {{ form }}
                         <br>
                         {% endfor %}
-                        <input name="myButton" type="submit" id="submit" style="background-color: black;color:white;border:1px solid black;" class="btn btn-lg">
+                        <input name="myButton" type="submit" id="submit" class="btn btn-lg">
 					</form></p>
                     </div>
                 </div>
@@ -224,7 +222,43 @@ h3{
 </script>
 
 <script type="text/javascript">
-    $(document).keydown(function(e){
-        e.preventDefault();
-    });
+//     $(document).keydown(function(e){
+//         e.preventDefault();
+//     });
+// </script>
+<script>
+$(function() {
+    if (screen.width < 720) {
+        $('#sidebar-wrapper').hide();
+        $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
+        $('.navbar-nav').css('text-align', 'center');
+    }
+    else {
+        $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
+    }
+})
 </script>
+<script>
+$( window ).resize(function() {
+    if (screen.width < 720) {
+        $('#sidebar-wrapper').hide();
+        $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
+        $('.navbar-nav').css('text-align', 'center');
+    }
+    else {
+        $('#sidebar-wrapper').show();
+        $('#submit').attr('style', 'margin-bottom:0%;background-color: black;color:white;border:1px solid black;');
+    }
+});
+</script>
+
+<footer style="margin-top:5%;position: fixed; bottom: 0px; width:100%; background-color:#000; height:50px; color:white;" class="visible-xs">
+    <div style="margin-top:2.5%">
+
+        {% for rn in recipients_theory %}
+        {% if rn.teacher.first_name == recipient_name.teacher.first_name and rn.subject == recipient_name.subject %}
+            <strong><center><span style="color: #FFF;">{{rn.subject_name}}</span></center></strong>
+        {% endif %}
+        {% endfor %}
+    </div>
+</footer>
