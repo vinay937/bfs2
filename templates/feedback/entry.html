@@ -1,4 +1,6 @@
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
@@ -46,6 +48,7 @@
     padding: 15px;
     width: 100%;
 }
+
 #wrapper.toggled #page-content-wrapper {
     position: absolute;
     margin-right: -250px;
@@ -58,7 +61,7 @@
     top: 0;
     margin: 0;
     padding: 0;
-    width: 250px;
+    width: 350px;
     list-style: none;
 }
 
@@ -73,11 +76,11 @@
     text-decoration: none;
 }
 
-.sidebar-nav li a:hover {
+/*.sidebar-nav li a:hover {
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
     text-decoration: none;
-}
+}*/
 
 .sidebar-nav li a:active,
 .sidebar-nav li a:focus {
@@ -97,6 +100,17 @@
 .sidebar-nav > .sidebar-brand a:hover {
     background: none;
     color: #fff;
+}
+
+#page-content-wrapper {
+    margin-left:10%;
+}
+
+@media(max-width: 767px) {
+    #page-content-wrapper {
+        padding: 20px;
+        margin-left:-10% !important;
+    }
 }
 
 @media (min-width: 768px) {
@@ -126,8 +140,8 @@
     }
 }
 form li {
-	list-style-type: none !important;
-	display: inline-block !important;
+    list-style-type: none !important;
+    display: inline-block !important;
     margin-left:2%;
 }
 h3{
@@ -143,11 +157,13 @@ h3{
 <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#menu-toggle" id="menu-toggle"><span class="glyphicon glyphicon-list" aria-hidden="true"></span></a>
         </div>
         <div class="navbar-collapse">
+            <ul style="margin-top:1%;" class="nav navbar-nav">
+                <li style="font-size:1.2em;font-weight: bold; color: #FFF;pointer-events: none;pointer: default;text-decoration: none;">Welcome, {{user.first_name}}</li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li id="recipient" value="{{recipient_name}}"><a href="#">{{ recipient_name }} </a></li>
+                <li style="font-weight: bold; color: #FFF;pointer-events: none;pointer: default;text-decoration: none;" id="recipient" value="{{recipient_name}}"><a href="#">{{ recipient_name }} </a></li>
             </ul>
         </div>
     </div>
@@ -157,17 +173,13 @@ h3{
     <div class="container-fluid">
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav">
+            <ul style="width: 100%;" class="sidebar-nav">
               	<li class="sidebar-brand">
-                    <br>
-                </li>
-                 <li style="margin-top:10%;" class="sidebar-brand">
-                    <a href="#" class="navbar-brand">Welcome, <br> {{user.first_name}}</a>
                 </li>
                 {% if recipients %}
                     {% for rn in recipients %}
-                    <li>
-                        <a>{{ rn.subject.name }}</a>
+                    <li {% if rn.first_name == recipient_name %} style="background-color:#fff;color:black;" {% endif %}>
+                        <a>{{ rn.first_name }}</a>
                     </li>
                     {% endfor %}
                 {% endif %}
@@ -179,7 +191,6 @@ h3{
 
                     <div class="col-lg-12">
                       <br><br><br>
-                      <marquee style="background-color: #283593; color: white;" direction = "right">This Feedback Process Is Completely Anonymous.</marquee>
                       <p><form style="width:100%;" method="post" action="." onsubmit="return checkForm(this);">
                         {% csrf_token %}
                         {{ formset.management_form }}
@@ -199,6 +210,11 @@ h3{
         <!-- /#page-content-wrapper -->
     </div>
 </div>
+<footer style="margin-top:5%;position: fixed; bottom: 0px; width:100%; background-color:#000; height:50px; color:white;" class="visible-xs">
+    <div style="margin-top:2.5%">
+        <strong><center><span style="color: #FFF;">{{recipient_name}}</span></center></strong>
+    </div>
+</footer>
 <script>
     function checkForm(form)
     {
@@ -207,7 +223,34 @@ h3{
         return true;
     }
 </script>
-
+<script>
+$(function() {
+    if (screen.width < 767) {
+        $('#sidebar-wrapper').hide();
+        $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
+        $('.navbar-nav').css('text-align', 'center');
+        $('.navbar-right').hide();
+    }
+    else {
+        $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
+    }
+})
+</script>
+<script>
+$( window ).resize(function() {
+    if (screen.width < 767) {
+        $('#sidebar-wrapper').hide();
+        $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
+        $('.navbar-nav').css('text-align', 'center');
+        $('.navbar-right').hide();
+    }
+    else {
+        $('#sidebar-wrapper').show();
+        $('#submit').attr('style', 'margin-bottom:0%;background-color: black;color:white;border:1px solid black;');
+        $('.navbar-right').show();
+    }
+});
+</script>
 <!-- script type="text/javascript">
     $(document).keydown(function(e){
         e.preventDefault();

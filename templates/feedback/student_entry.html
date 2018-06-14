@@ -161,7 +161,7 @@ h3{
         <!-- Sidebar -->
         <div class="hidden-xs" id="sidebar-wrapper">
             <ul class="sidebar-nav">
-                 <li style="margin-top:10%;" class="sidebar-brand">
+                <li style="margin-top:10%;" class="sidebar-brand">
                 </li>
                 {% if recipients_theory %}
                     {% for rn in recipients_theory %}
@@ -222,13 +222,13 @@ h3{
 </script>
 
 <script type="text/javascript">
-//     $(document).keydown(function(e){
-//         e.preventDefault();
-//     });
-// </script>
+    $(document).keydown(function(e){
+        e.preventDefault();
+    });
+</script>
 <script>
 $(function() {
-    if (screen.width < 720) {
+    if (screen.width < 767) {
         $('#sidebar-wrapper').hide();
         $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
         $('.navbar-nav').css('text-align', 'center');
@@ -240,7 +240,7 @@ $(function() {
 </script>
 <script>
 $( window ).resize(function() {
-    if (screen.width < 720) {
+    if (screen.width < 767) {
         $('#sidebar-wrapper').hide();
         $('#submit').attr('style', 'margin-bottom:10%;background-color: black;color:white;border:1px solid black;');
         $('.navbar-nav').css('text-align', 'center');
