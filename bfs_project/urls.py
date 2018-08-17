@@ -22,18 +22,13 @@ from apps.general.views import *
 from apps.feedback.views import *
 
 
-handler404 = 'apps.general.views.page_not_found_view'
-handler500 = 'apps.general.views.internal_server_error_view'
+handler404 = "apps.general.views.page_not_found_view"
+handler500 = "apps.general.views.internal_server_error_view"
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
-    url(r'^', include('apps.feedback.urls')),
-    url(r'^', include('apps.general.urls')),
-    url(r'^$', HomeView.as_view()),
-    url(
-        r'^devbot/',
-        include('apps.django_chatterbot.urls',
-        namespace='chatterbot')
-    ),
-
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r"^admin/", admin.site.urls),
+    url(r"^", include("apps.feedback.urls")),
+    url(r"^", include("apps.general.urls")),
+    url(r"^$", HomeView.as_view()),
+    url(r"^devbot/", include("apps.django_chatterbot.urls", namespace="chatterbot")),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
