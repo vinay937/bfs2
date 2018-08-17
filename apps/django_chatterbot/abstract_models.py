@@ -7,26 +7,17 @@ from django.conf import settings
 
 
 DJANGO_APP_NAME = constants.DEFAULT_DJANGO_APP_NAME
-STATEMENT_MODEL = 'Statement'
-RESPONSE_MODEL = 'Response'
+STATEMENT_MODEL = "Statement"
+RESPONSE_MODEL = "Response"
 
-if hasattr(settings, 'CHATTERBOT'):
+if hasattr(settings, "CHATTERBOT"):
     """
     Allow related models to be overridden in the project settings.
     Default to the original settings if one is not defined.
     """
-    DJANGO_APP_NAME = settings.CHATTERBOT.get(
-        'django_app_name',
-        DJANGO_APP_NAME
-    )
-    STATEMENT_MODEL = settings.CHATTERBOT.get(
-        'statement_model',
-        STATEMENT_MODEL
-    )
-    RESPONSE_MODEL = settings.CHATTERBOT.get(
-        'response_model',
-        RESPONSE_MODEL
-    )
+    DJANGO_APP_NAME = settings.CHATTERBOT.get("django_app_name", DJANGO_APP_NAME)
+    STATEMENT_MODEL = settings.CHATTERBOT.get("statement_model", STATEMENT_MODEL)
+    RESPONSE_MODEL = settings.CHATTERBOT.get("response_model", RESPONSE_MODEL)
 
 
 class AbstractBaseStatement(models.Model, StatementMixin):
@@ -40,13 +31,10 @@ class AbstractBaseStatement(models.Model, StatementMixin):
         unique=True,
         blank=False,
         null=False,
-        max_length=constants.STATEMENT_TEXT_MAX_LENGTH
+        max_length=constants.STATEMENT_TEXT_MAX_LENGTH,
     )
 
-    extra_data = models.CharField(
-        max_length=500,
-        blank=True
-    )
+    extra_data = models.CharField(max_length=500, blank=True)
 
     # This is the confidence with which the chat bot believes
     # this is an accurate response. This value is set when the
@@ -58,10 +46,10 @@ class AbstractBaseStatement(models.Model, StatementMixin):
 
     def __str__(self):
         if len(self.text.strip()) > 60:
-            return '{}...'.format(self.text[:57])
+            return "{}...".format(self.text[:57])
         elif len(self.text.strip()) > 0:
             return self.text
-        return '<empty>'
+        return "<empty>"
 
     def __init__(self, *args, **kwargs):
         super(AbstractBaseStatement, self).__init__(*args, **kwargs)
@@ -84,7 +72,7 @@ class AbstractBaseStatement(models.Model, StatementMixin):
         import json
 
         if not self.extra_data:
-            self.extra_data = '{}'
+            self.extra_data = "{}"
 
         extra_data = json.loads(self.extra_data)
         extra_data[key] = value
@@ -97,9 +85,7 @@ class AbstractBaseStatement(models.Model, StatementMixin):
         (Overrides the method from StatementMixin)
         """
         for tag in tags:
-            self.tags.create(
-                name=tag
-            )
+            self.tags.create(name=tag)
 
     def add_response(self, statement):
         """
@@ -142,17 +128,18 @@ class AbstractBaseStatement(models.Model, StatementMixin):
         :rtype: dict
         """
         import json
+
         data = {}
 
         if not self.extra_data:
-            self.extra_data = '{}'
+            self.extra_data = "{}"
 
-        data['text'] = self.text
-        data['in_response_to'] = []
-        data['extra_data'] = json.loads(self.extra_data)
+        data["text"] = self.text
+        data["in_response_to"] = []
+        data["extra_data"] = json.loads(self.extra_data)
 
         for response in self.in_response.all():
-            data['in_response_to'].append(response.serialize())
+            data["in_response_to"].append(response.serialize())
 
         return data
 
@@ -165,25 +152,21 @@ class AbstractBaseResponse(models.Model):
     """
 
     statement = models.ForeignKey(
-        STATEMENT_MODEL,
-        related_name='in_response',
-        on_delete=models.CASCADE
+        STATEMENT_MODEL, related_name="in_response", on_delete=models.CASCADE
     )
 
     response = models.ForeignKey(
-        STATEMENT_MODEL,
-        related_name='responses',
-        on_delete=models.CASCADE
+        STATEMENT_MODEL, related_name="responses", on_delete=models.CASCADE
     )
 
     created_at = models.DateTimeField(
         default=timezone.now,
-        help_text='The date and time that this statement was created at.'
+        help_text="The date and time that this statement was created at.",
     )
 
     created_at = models.DateTimeField(
         default=timezone.now,
-        help_text='The date and time that this response was created at.'
+        help_text="The date and time that this response was created at.",
     )
 
     class Meta:
@@ -197,16 +180,15 @@ class AbstractBaseResponse(models.Model):
         ResponseModel = apps.get_model(DJANGO_APP_NAME, RESPONSE_MODEL)
 
         return ResponseModel.objects.filter(
-            statement__text=self.statement.text,
-            response__text=self.response.text
+            statement__text=self.statement.text, response__text=self.response.text
         ).count()
 
     def __str__(self):
         statement = self.statement.text
         response = self.response.text
-        return '{} => {}'.format(
-            statement if len(statement) <= 20 else statement[:17] + '...',
-            response if len(response) <= 40 else response[:37] + '...'
+        return "{} => {}".format(
+            statement if len(statement) <= 20 else statement[:17] + "...",
+            response if len(response) <= 40 else response[:37] + "...",
         )
 
     def serialize(self):
@@ -216,9 +198,9 @@ class AbstractBaseResponse(models.Model):
         """
         data = {}
 
-        data['text'] = self.response.text
-        data['created_at'] = self.created_at.isoformat()
-        data['occurrence'] = self.occurrence
+        data["text"] = self.response.text
+        data["created_at"] = self.created_at.isoformat()
+        data["occurrence"] = self.occurrence
 
         return data
 
@@ -232,8 +214,8 @@ class AbstractBaseConversation(models.Model):
 
     responses = models.ManyToManyField(
         RESPONSE_MODEL,
-        related_name='conversations',
-        help_text='The responses in this conversation.'
+        related_name="conversations",
+        help_text="The responses in this conversation.",
     )
 
     class Meta:
@@ -250,14 +232,9 @@ class AbstractBaseTag(models.Model):
     default models.
     """
 
-    name = models.SlugField(
-        max_length=50
-    )
+    name = models.SlugField(max_length=50)
 
-    statements = models.ManyToManyField(
-        STATEMENT_MODEL,
-        related_name='tags'
-    )
+    statements = models.ManyToManyField(STATEMENT_MODEL, related_name="tags")
 
     class Meta:
         abstract = True

@@ -7,14 +7,21 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0012_studentanswer'),
-    ]
+    dependencies = [("feedback", "0012_studentanswer")]
 
     operations = [
         migrations.AlterField(
-            model_name='studentanswer',
-            name='value',
-            field=models.CharField(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Satisfactory', 'Satisfactory'), ('Poor', 'Poor'), ('Very Poor', 'Very Poor')], max_length=60),
-        ),
+            model_name="studentanswer",
+            name="value",
+            field=models.CharField(
+                choices=[
+                    ("Excellent", "Excellent"),
+                    ("Good", "Good"),
+                    ("Satisfactory", "Satisfactory"),
+                    ("Poor", "Poor"),
+                    ("Very Poor", "Very Poor"),
+                ],
+                max_length=60,
+            ),
+        )
     ]

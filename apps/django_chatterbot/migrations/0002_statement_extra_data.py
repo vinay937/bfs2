@@ -7,15 +7,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0001_initial'),
-    ]
+    dependencies = [("django_chatterbot", "0001_initial")]
 
     operations = [
         migrations.AddField(
-            model_name='statement',
-            name='extra_data',
-            field=models.CharField(default='{}', max_length=500),
+            model_name="statement",
+            name="extra_data",
+            field=models.CharField(default="{}", max_length=500),
             preserve_default=False,
-        ),
+        )
     ]

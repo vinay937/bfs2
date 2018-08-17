@@ -10,10 +10,9 @@ class StatementFactory(DjangoModelFactory):
     text = fuzzy.FuzzyText(length=50)
 
     class Meta:
-        model = 'chatterbot.ext.django_chatterbot.Statement'
+        model = "chatterbot.ext.django_chatterbot.Statement"
 
 
 class ConversationFactory(DjangoModelFactory):
-
     class Meta:
-        model = 'chatterbot.ext.django_chatterbot.Conversation'
+        model = "chatterbot.ext.django_chatterbot.Conversation"

@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('general', '0003_auto_20180220_0537'),
-    ]
+    dependencies = [("general", "0003_auto_20180220_0537")]
 
     operations = [
         migrations.AddField(
-            model_name='subject',
-            name='project',
+            model_name="subject",
+            name="project",
             field=models.BooleanField(default=False),
-        ),
+        )
     ]

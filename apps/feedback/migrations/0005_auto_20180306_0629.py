@@ -7,14 +7,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0004_answer_user'),
-    ]
+    dependencies = [("feedback", "0004_answer_user")]
 
     operations = [
-        migrations.RenameField(
-            model_name='answer',
-            old_name='user',
-            new_name='form',
-        ),
+        migrations.RenameField(model_name="answer", old_name="user", new_name="form")
     ]

@@ -10,21 +10,68 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('general', '0005_teaches_ug'),
+        ("general", "0005_teaches_ug"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('feedback', '0011_consolidatedreport_department'),
+        ("feedback", "0011_consolidatedreport_department"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='StudentAnswer',
+            name="StudentAnswer",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('value', models.CharField(choices=[('Excellent', 'Excellent'), ('Good', 'Good'), ('Satisfactory', 'Satisfactory'), ('Poor', 'Poor'), ('Very Poor', 'Very Poor')], max_length=50)),
-                ('form', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='feedback.FeedbackForm')),
-                ('question', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='feedback.Question')),
-                ('recipient', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-                ('teacher', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='general.Teaches')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "value",
+                    models.CharField(
+                        choices=[
+                            ("Excellent", "Excellent"),
+                            ("Good", "Good"),
+                            ("Satisfactory", "Satisfactory"),
+                            ("Poor", "Poor"),
+                            ("Very Poor", "Very Poor"),
+                        ],
+                        max_length=50,
+                    ),
+                ),
+                (
+                    "form",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="feedback.FeedbackForm",
+                    ),
+                ),
+                (
+                    "question",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="feedback.Question",
+                    ),
+                ),
+                (
+                    "recipient",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "teacher",
+                    models.ForeignKey(
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="general.Teaches",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

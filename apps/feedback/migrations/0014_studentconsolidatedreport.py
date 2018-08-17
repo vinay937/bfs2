@@ -7,19 +7,44 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0013_auto_20180327_0601'),
-    ]
+    dependencies = [("feedback", "0013_auto_20180327_0601")]
 
     operations = [
         migrations.CreateModel(
-            name='StudentConsolidatedReport',
+            name="StudentConsolidatedReport",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Name of faculty')),
-                ('form_name', models.CharField(max_length=100, verbose_name='Name of the form')),
-                ('total', models.CharField(max_length=10, verbose_name='Total value they got')),
-                ('department', models.CharField(blank=True, max_length=30, null=True, verbose_name='Department Code')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, verbose_name="Name of faculty"),
+                ),
+                (
+                    "form_name",
+                    models.CharField(max_length=100, verbose_name="Name of the form"),
+                ),
+                (
+                    "total",
+                    models.CharField(
+                        max_length=10, verbose_name="Total value they got"
+                    ),
+                ),
+                (
+                    "department",
+                    models.CharField(
+                        blank=True,
+                        max_length=30,
+                        null=True,
+                        verbose_name="Department Code",
+                    ),
+                ),
             ],
-        ),
+        )
     ]

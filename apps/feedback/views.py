@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2017 DevX Labs
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,7 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from django.shortcuts import render, redirect
 from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
@@ -19,7 +19,13 @@ from django.core.mail import EmailMessage
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 
-from .models import Answer, FeedbackForm, ConsolidatedReport, StudentAnswer, StudentConsolidatedReport
+from .models import (
+    Answer,
+    FeedbackForm,
+    ConsolidatedReport,
+    StudentAnswer,
+    StudentConsolidatedReport,
+)
 from .forms import FeedbackAnswerForm, AnswerFormSet, StudentFeedbackAnswerForm
 
 from apps.general.models import UserType, Teaches, User
@@ -30,628 +36,901 @@ from decimal import Decimal
 
 
 class FeedbackView(FormView):
+    """
+	This view loads all the feedback forms and stores
+	all the values submitted by the users.
+	"""
 
-	template_name = 'feedback/entry.html'
-	form_class = FeedbackAnswerForm
+    template_name = "feedback/entry.html"
+    form_class = FeedbackAnswerForm
 
-	def get_list(self, model, g_list):
-		c_list = list()
-		for pk in g_list:
-			c_list.append(model.objects.get(pk=pk))
-		return c_list
+    def get_list(self, model, g_list):
+        c_list = list()
+        for pk in g_list:
+            c_list.append(model.objects.get(pk=pk))
+        return c_list
 
-	def get_context_data(self, **kwargs):
-		context = super(FeedbackView, self).get_context_data(**kwargs)
+    def get_context_data(self, **kwargs):
+        context = super(FeedbackView, self).get_context_data(**kwargs)
 
-		recipients = self.request.session.get('recipients')
+        recipients = self.request.session.get("recipients")
 
-		if recipients:
-			recipients = self.get_list(get_user_model(), recipients)
+        if recipients:
+            recipients = self.get_list(get_user_model(), recipients)
 
-		post_recipients = self.request.session.get('post_recipients')
-		if post_recipients:
-			post_recipients = self.get_list(get_user_model(), post_recipients)
+        post_recipients = self.request.session.get("post_recipients")
+        if post_recipients:
+            post_recipients = self.get_list(get_user_model(), post_recipients)
 
+            # Student Form
+        if self.request.user.is_student():
+            self.form_class = StudentFeedbackAnswerForm
+            self.template_name = "feedback/student_entry.html"
+            recipients = self.request.session.get("recipients_theory")
+            recipients = self.get_list(Teaches, recipients)
+            lab_recipients = self.request.session.get("recipients_labs")
+            lab_recipients = self.get_list(Teaches, lab_recipients)
+            project_recipients = self.request.session.get("recipients_project")
+            project_recipients = self.get_list(Teaches, project_recipients)
 
-		# Student Form
-		if self.request.user.is_student():
-			self.form_class = StudentFeedbackAnswerForm
-			self.template_name = "feedback/student_entry.html"
-			recipients = self.request.session.get('recipients_theory')
-			recipients = self.get_list(Teaches, recipients)
-			lab_recipients = self.request.session.get('recipients_labs')
-			lab_recipients = self.get_list(Teaches, lab_recipients)
-			project_recipients = self.request.session.get('recipients_project')
-			project_recipients = self.get_list(Teaches, project_recipients)
+            theory_post_recipients = self.request.session.get("post_recipients_theory")
+            theory_post_recipients = self.get_list(Teaches, theory_post_recipients)
+            lab_post_recipients = self.request.session.get("post_recipients_labs")
+            lab_post_recipients = self.get_list(Teaches, lab_post_recipients)
+            project_post_recipients = self.request.session.get(
+                "post_recipients_project"
+            )
+            project_post_recipients = self.get_list(Teaches, project_post_recipients)
 
-			theory_post_recipients = self.request.session.get('post_recipients_theory')
-			theory_post_recipients = self.get_list(Teaches, theory_post_recipients)
-			lab_post_recipients = self.request.session.get('post_recipients_labs')
-			lab_post_recipients = self.get_list(Teaches, lab_post_recipients)
-			project_post_recipients = self.request.session.get('post_recipients_project')
-			project_post_recipients = self.get_list(Teaches, project_post_recipients)
+            context["recipients_theory"] = recipients
+            context["recipients_labs"] = lab_recipients
+            context["recipients_project"] = project_recipients
+            iterable_forms = self.request.session["form"]
+            iterable_forms = self.get_list(FeedbackForm, iterable_forms)
 
-			context['recipients_theory'] = recipients
-			context['recipients_labs'] = lab_recipients
-			context['recipients_project'] = project_recipients
-			iterable_forms = self.request.session['form']
-			iterable_forms = self.get_list(FeedbackForm, iterable_forms)
+            theory_count = self.request.session["theory_count"]
+            lab_count = self.request.session["labs_count"]
+            project_count = self.request.session["project_count"]
+            context["form_recipients"] = self.request.session.get("form_recipients")
 
-			theory_count = self.request.session['theory_count']
-			lab_count = self.request.session['labs_count']
-			project_count = self.request.session['project_count']
-			context['form_recipients'] = self.request.session.get('form_recipients')
+            if theory_count:
+                if theory_post_recipients:
+                    recipients_name = theory_post_recipients[0]
+                    if self.request.user.is_student():
+                        feedback_form = FeedbackForm.objects.get(code="ST")
+                        question_count = feedback_form.question.all().count()
+                        StudentAnswerFormset = modelformset_factory(
+                            StudentAnswer,
+                            form=StudentFeedbackAnswerForm,
+                            extra=question_count,
+                        )
+                        formset = StudentAnswerFormset(
+                            queryset=StudentAnswer.objects.none()
+                        )
+                        context["formset"] = formset
+                        form_zip = zip(formset, feedback_form.question.all())
+                        context["form_zip"] = form_zip
+                        context["recipient_name"] = recipients_name
+            elif lab_count:
+                if lab_post_recipients:
+                    recipients_name = lab_post_recipients[0]
+                    if self.request.user.is_student():
+                        feedback_form = FeedbackForm.objects.get(code="SL")
+                        question_count = feedback_form.question.all().count()
+                        StudentAnswerFormset = modelformset_factory(
+                            StudentAnswer,
+                            form=StudentFeedbackAnswerForm,
+                            extra=question_count,
+                        )
+                        formset = StudentAnswerFormset(
+                            queryset=StudentAnswer.objects.none()
+                        )
+                        context["formset"] = formset
+                        form_zip = zip(formset, feedback_form.question.all())
+                        context["form_zip"] = form_zip
+                        context["recipient_name"] = recipients_name
+            elif project_count:
+                if project_post_recipients:
+                    recipients_name = project_post_recipients[0]
+                    if self.request.user.is_student():
+                        feedback_form = FeedbackForm.objects.get(code="SP")
+                        question_count = feedback_form.question.all().count()
+                        StudentAnswerFormset = modelformset_factory(
+                            StudentAnswer,
+                            form=StudentFeedbackAnswerForm,
+                            extra=question_count,
+                        )
+                        formset = StudentAnswerFormset(
+                            queryset=StudentAnswer.objects.none()
+                        )
+                        context["formset"] = formset
+                        form_zip = zip(formset, feedback_form.question.all())
+                        context["form_zip"] = form_zip
+                        context["recipient_name"] = recipients_name
+            elif iterable_forms:
+                feedback_form = iterable_forms[0]
+                question_count = feedback_form.question.all().count()
+                StudentAnswerFormset = modelformset_factory(
+                    StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count
+                )
+                formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
+                context["formset"] = formset
+                form_zip = zip(formset, feedback_form.question.all())
+                context["form_zip"] = form_zip
+                context["form_recipient_name"] = feedback_form.recipient.name
+            return context
 
-			if theory_count:
-				if theory_post_recipients:
-					recipients_name = theory_post_recipients[0]
-					if self.request.user.is_student():
-						feedback_form = FeedbackForm.objects.get(code='ST')
-						question_count = feedback_form.question.all().count()
-						StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count)
-						formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
-						context['formset'] = formset
-						form_zip = zip(formset, feedback_form.question.all())
-						context['form_zip'] = form_zip
-						context['recipient_name'] = recipients_name
-			elif lab_count:
-				if lab_post_recipients:
-					recipients_name = lab_post_recipients[0]
-					if self.request.user.is_student():
-						feedback_form = FeedbackForm.objects.get(code='SL')
-						question_count = feedback_form.question.all().count()
-						StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count)
-						formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
-						context['formset'] = formset
-						form_zip = zip(formset, feedback_form.question.all())
-						context['form_zip'] = form_zip
-						context['recipient_name'] = recipients_name
-			elif project_count:
-				if project_post_recipients:
-					recipients_name = project_post_recipients[0]
-					if self.request.user.is_student():
-						feedback_form = FeedbackForm.objects.get(code='SP')
-						question_count = feedback_form.question.all().count()
-						StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm, extra=question_count)
-						formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
-						context['formset'] = formset
-						form_zip = zip(formset, feedback_form.question.all())
-						context['form_zip'] = form_zip
-						context['recipient_name'] = recipients_name
-			elif iterable_forms:
-				feedback_form = iterable_forms[0]
-				question_count = feedback_form.question.all().count()
-				StudentAnswerFormset = modelformset_factory(StudentAnswer,
-					form=StudentFeedbackAnswerForm, extra=question_count)
-				formset = StudentAnswerFormset(queryset=StudentAnswer.objects.none())
-				context['formset'] = formset
-				form_zip = zip(formset, feedback_form.question.all())
-				context['form_zip'] = form_zip
-				context['form_recipient_name'] = feedback_form.recipient.name
-			return context
+            # Faculty feedback
+        context["recipients"] = recipients
 
-		# Faculty feedback
-		context['recipients'] = recipients
+        count = self.request.session["count"]
 
-		count = self.request.session['count']
+        iterable_forms = self.request.session["form"]
+        iterable_forms = self.get_list(FeedbackForm, iterable_forms)
+        context["form_recipients"] = self.request.session.get("form_recipients")
 
-		iterable_forms = self.request.session['form']
-		iterable_forms = self.get_list(FeedbackForm, iterable_forms)
-		context['form_recipients'] = self.request.session.get('form_recipients')
+        if count:
+            if post_recipients:
+                recipients_name = (
+                    get_user_model().objects.get(username=post_recipients[0]).first_name
+                )
+                if self.request.user.is_hod():
+                    feedback_form = FeedbackForm.objects.get(code="HH")
+                    question_count = feedback_form.question.all().count()
+                    AnswerFormset = modelformset_factory(
+                        Answer, form=FeedbackAnswerForm, extra=question_count
+                    )
+                    formset = AnswerFormset(queryset=Answer.objects.none())
+                    context["formset"] = formset
+                    form_zip = zip(formset, feedback_form.question.all())
+                    context["form_zip"] = form_zip
+                    context["recipient_name"] = recipients_name
+                elif self.request.user.is_faculty():
+                    feedback_form = FeedbackForm.objects.get(code="FF")
+                    question_count = feedback_form.question.all().count()
+                    AnswerFormset = modelformset_factory(
+                        Answer, form=FeedbackAnswerForm, extra=question_count
+                    )
+                    formset = AnswerFormset(queryset=Answer.objects.none())
+                    context["formset"] = formset
+                    form_zip = zip(formset, feedback_form.question.all())
+                    context["form_zip"] = form_zip
+                    context["recipient_name"] = recipients_name
+            elif iterable_forms:
+                feedback_form = iterable_forms[0]
+                question_count = feedback_form.question.all().count()
+                AnswerFormset = modelformset_factory(
+                    Answer, form=FeedbackAnswerForm, extra=question_count
+                )
+                formset = AnswerFormset(queryset=Answer.objects.none())
+                context["formset"] = formset
+                form_zip = zip(formset, feedback_form.question.all())
+                context["form_zip"] = form_zip
+                context["form_recipient_name"] = feedback_form.recipient.name
+        return context
 
-		if count:
-			if post_recipients:
-				recipients_name = get_user_model().objects.get(username=post_recipients[0]).first_name
-				if self.request.user.is_hod():
-					feedback_form = FeedbackForm.objects.get(code='HH')
-					question_count = feedback_form.question.all().count()
-					AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
-					formset = AnswerFormset(queryset=Answer.objects.none())
-					context['formset'] = formset
-					form_zip = zip(formset, feedback_form.question.all())
-					context['form_zip'] = form_zip
-					context['recipient_name'] = recipients_name
-				elif self.request.user.is_faculty():
-					feedback_form = FeedbackForm.objects.get(code='FF')
-					question_count = feedback_form.question.all().count()
-					AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm, extra=question_count)
-					formset = AnswerFormset(queryset=Answer.objects.none())
-					context['formset'] = formset
-					form_zip = zip(formset, feedback_form.question.all())
-					context['form_zip'] = form_zip
-					context['recipient_name'] = recipients_name
-			elif iterable_forms:
-				feedback_form = iterable_forms[0]
-				question_count = feedback_form.question.all().count()
-				AnswerFormset = modelformset_factory(Answer,
-					form=FeedbackAnswerForm, extra=question_count)
-				formset = AnswerFormset(queryset=Answer.objects.none())
-				context['formset'] = formset
-				form_zip = zip(formset, feedback_form.question.all())
-				context['form_zip'] = form_zip
-				context['form_recipient_name'] = feedback_form.recipient.name
-		return context
+    def get_user(self, type):
+        user = get_user_model().objects.filter(user_type=type)
+        if user.count() > 1:
+            user = user.filter(department=self.request.user.department)
+        return user[0]
 
-	def get_user(self, type):
-		user = get_user_model().objects.filter(user_type=type)
-		if user.count() > 1:
-			user = user.filter(department=self.request.user.department)
-		return user[0]
+    def post(self, request, *args, **kwargs):
+        form_class = self.get_form_class()
+        form = self.get_form(form_class)
+        AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm)
+        formset = AnswerFormset(request.POST)
+        form_valid = form.is_valid()
+        formset_valid = formset.is_valid()
+        if self.request.user.is_student():
+            StudentAnswerFormset = modelformset_factory(
+                StudentAnswer, form=StudentFeedbackAnswerForm
+            )
+            formset = StudentAnswerFormset(request.POST)
+            form_valid = form.is_valid()
+            formset_valid = formset.is_valid()
+            theory_count = self.request.session["theory_count"]
+            lab_count = self.request.session["labs_count"]
+            project_count = self.request.session["project_count"]
+            count = self.request.session["count"]
+            theory_recipients = self.request.session.get("post_recipients_theory")
+            lab_recipients = self.request.session.get("post_recipients_labs")
+            project_recipients = self.request.session.get("post_recipients_project")
+            if theory_recipients:
+                theory_recipients = self.get_list(Teaches, theory_recipients)
+            if lab_recipients:
+                lab_recipients = self.get_list(Teaches, lab_recipients)
+            if project_recipients:
+                project_recipients = self.get_list(Teaches, project_recipients)
+            iterable_forms = self.request.session.get("form")
+            if iterable_forms:
+                iterable_forms = self.get_list(FeedbackForm, iterable_forms)
+            if formset_valid:
+                if count:
+                    if theory_count:
+                        if theory_recipients:
+                            teaches = Teaches.objects.get(pk=theory_recipients[0].pk)
+                            feedback_form = FeedbackForm.objects.get(code="ST")
+                            question = feedback_form.question.all()
+                            for form, que in zip(formset, question):
+                                ans = form.cleaned_data.get("answer")
+                                answer = StudentAnswer.objects.create(
+                                    question=que,
+                                    value=ans,
+                                    teacher=teaches,
+                                    form=feedback_form,
+                                )
+                            del self.request.session["post_recipients_theory"][0]
+                            self.request.session[
+                                "post_recipients_theory"
+                            ] = self.request.session["post_recipients_theory"]
+                            self.request.session["theory_count"] -= 1
+                    elif lab_count:
+                        if lab_recipients:
+                            teaches = Teaches.objects.get(pk=lab_recipients[0].pk)
+                            feedback_form = FeedbackForm.objects.get(code="SL")
+                            question = feedback_form.question.all()
+                            for form, que in zip(formset, question):
+                                ans = form.cleaned_data.get("answer")
+                                answer = StudentAnswer.objects.create(
+                                    question=que,
+                                    value=ans,
+                                    teacher=teaches,
+                                    form=feedback_form,
+                                )
+                            del self.request.session["post_recipients_labs"][0]
+                            self.request.session[
+                                "post_recipients_labs"
+                            ] = self.request.session["post_recipients_labs"]
+                            self.request.session["labs_count"] -= 1
+                    elif project_count:
+                        if project_recipients:
+                            teaches = Teaches.objects.get(pk=project_recipients[0].pk)
+                            feedback_form = FeedbackForm.objects.get(code="SP")
+                            question = feedback_form.question.all()
+                            for form, que in zip(formset, question):
+                                ans = form.cleaned_data.get("answer")
+                                answer = StudentAnswer.objects.create(
+                                    question=que,
+                                    value=ans,
+                                    teacher=teaches,
+                                    form=feedback_form,
+                                )
+                            del self.request.session["post_recipients_project"][0]
+                            self.request.session[
+                                "post_recipients_project"
+                            ] = self.request.session["post_recipients_project"]
+                            self.request.session["project_count"] -= 1
+                    elif iterable_forms:
+                        feedback_form = iterable_forms[0]
+                        question_count = feedback_form.question.all().count()
+                        for form, que in zip(formset, feedback_form.question.all()):
+                            ans = form.cleaned_data.get("answer")
+                            answer = StudentAnswer.objects.create(
+                                question=que,
+                                value=ans,
+                                recipient=self.get_user(feedback_form.recipient),
+                                form=feedback_form,
+                            )
+                            # remove the forms once done
+                        del self.request.session["form"][0]
+                        self.request.session["form"] = self.request.session["form"]
+                    self.request.session["count"] -= 1
 
-	def post(self, request, *args, **kwargs):
-		form_class = self.get_form_class()
-		form = self.get_form(form_class)
-		AnswerFormset = modelformset_factory(Answer, form=FeedbackAnswerForm)
-		formset = AnswerFormset(request.POST)
-		form_valid = form.is_valid()
-		formset_valid = formset.is_valid()
-		if self.request.user.is_student():
-			StudentAnswerFormset = modelformset_factory(StudentAnswer, form=StudentFeedbackAnswerForm)
-			formset = StudentAnswerFormset(request.POST)
-			form_valid = form.is_valid()
-			formset_valid = formset.is_valid()
-			theory_count = self.request.session['theory_count']
-			lab_count = self.request.session['labs_count']
-			project_count = self.request.session['project_count']
-			count = self.request.session['count']
-			theory_recipients = self.request.session.get('post_recipients_theory')
-			lab_recipients = self.request.session.get('post_recipients_labs')
-			project_recipients = self.request.session.get('post_recipients_project')
-			if theory_recipients:
-				theory_recipients = self.get_list(Teaches, theory_recipients)
-			if lab_recipients:
-				lab_recipients = self.get_list(Teaches, lab_recipients)
-			if project_recipients:
-				project_recipients = self.get_list(Teaches, project_recipients)
-			iterable_forms = self.request.session.get('form')
-			if iterable_forms:
-				iterable_forms = self.get_list(FeedbackForm, iterable_forms)
-			if formset_valid:
-				if count:
-					if theory_count:
-						if theory_recipients:
-							teaches = Teaches.objects.get(pk=theory_recipients[0].pk)
-							feedback_form = FeedbackForm.objects.get(code='ST')
-							question = feedback_form.question.all()
-							for form, que in zip(formset, question):
-								ans = form.cleaned_data.get('answer')
-								answer = StudentAnswer.objects.create(question=que,
-										value=ans, teacher=teaches, form=feedback_form)
-							del self.request.session['post_recipients_theory'][0]
-							self.request.session['post_recipients_theory'] = self.request.session['post_recipients_theory']
-							self.request.session['theory_count'] -= 1
-					elif lab_count:
-						if lab_recipients:
-							teaches = Teaches.objects.get(pk=lab_recipients[0].pk)
-							feedback_form = FeedbackForm.objects.get(code='SL')
-							question = feedback_form.question.all()
-							for form, que in zip(formset, question):
-								ans = form.cleaned_data.get('answer')
-								answer = StudentAnswer.objects.create(question=que,
-										value=ans, teacher=teaches, form=feedback_form)
-							del self.request.session['post_recipients_labs'][0]
-							self.request.session['post_recipients_labs'] = self.request.session['post_recipients_labs']
-							self.request.session['labs_count'] -= 1
-					elif project_count:
-						if project_recipients:
-							teaches = Teaches.objects.get(pk=project_recipients[0].pk)
-							feedback_form = FeedbackForm.objects.get(code='SP')
-							question = feedback_form.question.all()
-							for form, que in zip(formset, question):
-								ans = form.cleaned_data.get('answer')
-								answer = StudentAnswer.objects.create(question=que,
-										value=ans, teacher=teaches, form=feedback_form)
-							del self.request.session['post_recipients_project'][0]
-							self.request.session['post_recipients_project'] = self.request.session['post_recipients_project']
-							self.request.session['project_count'] -= 1
-					elif iterable_forms:
-						feedback_form = iterable_forms[0]
-						question_count = feedback_form.question.all().count()
-						for form, que in zip(formset, feedback_form.question.all()):
-							ans = form.cleaned_data.get('answer')
-							answer = StudentAnswer.objects.create(question=que,
-									value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
-						# remove the forms once done
-						del self.request.session['form'][0]
-						self.request.session['form'] = self.request.session['form']
-					self.request.session['count'] -= 1
+            if request.session["count"]:
+                return HttpResponseRedirect(reverse_lazy("feedback_form"))
+            else:
+                self.request.user.done = True
+                self.request.user.save()
+                return HttpResponseRedirect(reverse_lazy("logout"))
 
-			if request.session['count']:
-				return HttpResponseRedirect(reverse_lazy('feedback_form'))
-			else:
-				self.request.user.done = True
-				self.request.user.save()
-				return HttpResponseRedirect(reverse_lazy('logout'))
+        count = self.request.session["count"]
 
+        recipients = self.request.session.get("post_recipients")
+        if recipients:
+            recipients = self.get_list(get_user_model(), recipients)
 
-		count = self.request.session['count']
+        iterable_forms = self.request.session.get("form")
+        if iterable_forms:
+            iterable_forms = self.get_list(FeedbackForm, iterable_forms)
 
-		recipients = self.request.session.get('post_recipients')
-		if recipients:
-			recipients = self.get_list(get_user_model(), recipients)
+        if formset_valid:
+            if count:
+                if recipients:
+                    recipient = get_user_model().objects.get(pk=recipients[0].pk)
+                    if self.request.user.is_hod():
+                        feedback_form = FeedbackForm.objects.get(code="HH")
+                        question = feedback_form.question.all()
+                        for form, que in zip(formset, question):
+                            ans = form.cleaned_data.get("answer")
+                            answer = Answer.objects.create(
+                                question=que,
+                                value=ans,
+                                recipient=recipient,
+                                form=feedback_form,
+                            )
+                    elif self.request.user.is_faculty():
+                        feedback_form = FeedbackForm.objects.get(code="FF")
+                        question = feedback_form.question.all()
+                        for form, que in zip(formset, question):
+                            ans = form.cleaned_data.get("answer")
+                            answer = Answer.objects.create(
+                                question=que,
+                                value=ans,
+                                recipient=recipient,
+                                form=feedback_form,
+                            )
 
-		iterable_forms = self.request.session.get('form')
-		if iterable_forms:
-			iterable_forms = self.get_list(FeedbackForm, iterable_forms)
+                    del self.request.session["post_recipients"][0]
+                    self.request.session["post_recipients"] = self.request.session[
+                        "post_recipients"
+                    ]
 
-		if formset_valid:
-			if count:
-				if recipients:
-					recipient = get_user_model().objects.get(pk=recipients[0].pk)
-					if self.request.user.is_hod():
-						feedback_form = FeedbackForm.objects.get(code='HH')
-						question = feedback_form.question.all()
-						for form, que in zip(formset, question):
-							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que,
-								value=ans, recipient=recipient, form=feedback_form)
-					elif self.request.user.is_faculty():
-						feedback_form = FeedbackForm.objects.get(code='FF')
-						question = feedback_form.question.all()
-						for form, que in zip(formset, question):
-							ans = form.cleaned_data.get('answer')
-							answer = Answer.objects.create(question=que,
-								value=ans, recipient=recipient, form=feedback_form)
+                elif iterable_forms:
+                    feedback_form = iterable_forms[0]
+                    question_count = feedback_form.question.all().count()
+                    for form, que in zip(formset, feedback_form.question.all()):
+                        ans = form.cleaned_data.get("answer")
+                        answer = Answer.objects.create(
+                            question=que,
+                            value=ans,
+                            recipient=self.get_user(feedback_form.recipient),
+                            form=feedback_form,
+                        )
 
-					del self.request.session['post_recipients'][0]
-					self.request.session['post_recipients'] = self.request.session['post_recipients']
+                        # remove the forms once done
+                    del self.request.session["form"][0]
+                    self.request.session["form"] = self.request.session["form"]
 
-				elif iterable_forms:
-					feedback_form = iterable_forms[0]
-					question_count = feedback_form.question.all().count()
-					for form, que in zip(formset, feedback_form.question.all()):
-						ans = form.cleaned_data.get('answer')
-						answer = Answer.objects.create(question=que,
-								value=ans, recipient=self.get_user(feedback_form.recipient), form=feedback_form)
-
-					# remove the forms once done
-					del self.request.session['form'][0]
-					self.request.session['form'] = self.request.session['form']
-
-				# decrease the count
-				self.request.session['count'] -= 1
-		if request.session['count']:
-			return HttpResponseRedirect(reverse_lazy('feedback_form'))
-		else:
-			self.request.user.done = True
-			self.request.user.save()
-			return HttpResponseRedirect(reverse_lazy('logout'))
+                    # decrease the count
+                self.request.session["count"] -= 1
+        if request.session["count"]:
+            return HttpResponseRedirect(reverse_lazy("feedback_form"))
+        else:
+            self.request.user.done = True
+            self.request.user.save()
+            return HttpResponseRedirect(reverse_lazy("logout"))
 
 
 class Report(TemplateView):
-	template_name = "feedback/report.html"
+    """
+	This view displays the report of individual faculty.
+	"""
 
-	def get_context_data(self, *args, **kwargs):
-		context = super(Report, self).get_context_data(*args, **kwargs)
-		user_type = self.request.user.get_user_type()
-		forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
-		results = dict()
-		for form in forms:
-			answers = Answer.objects.filter(form=form, recipient=self.request.user)
-			results[form] = answers
-		context['results'] = results
-		return context
+    template_name = "feedback/report.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(Report, self).get_context_data(*args, **kwargs)
+        user_type = self.request.user.get_user_type()
+        forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
+        results = dict()
+        for form in forms:
+            answers = Answer.objects.filter(form=form, recipient=self.request.user)
+            results[form] = answers
+        context["results"] = results
+        return context
+
 
 def consolidated(request, username):
-	template_name = "feedback/report.html"
-	user = get_user_model().objects.get(username=username)
-	user_type = user.get_user_type()
-	forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
-	results = dict()
-	for form in forms:
-		answers = Answer.objects.filter(form=form, recipient=user)
-		results[form] = answers
-	excellent = 0
-	good = 0
-	satisfactory = 0
-	poor = 0
-	very_poor = 0
-	for form, answers in results.items():
-		for que in form.question.all():
-			for answer in answers:
-				if answer.value == 'Excellent' and answer.question == que:
-					excellent+=1
-				if answer.value == 'Good' and answer.question == que:
-					good+=1
-				if answer.value == 'Satisfactory' and answer.question == que:
-					satisfactory+=1
-				if answer.value == 'Poor' and answer.question == que:
-					poor+=1
-				if answer.value == 'Very Poor' and answer.question == que:
-					very_poor+=1
-		# print(excellent)
-		# print(good)
-		# print(satisfactory)
-		# print(poor)
-		# print(very_poor)
-		# print(form.title)
-		total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
-		# print(total)
-		if not ConsolidatedReport.objects.filter(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department).exists():
-			total_count = ConsolidatedReport.objects.create(name = user.first_name, form_name = form.title, total = round(total, 2), department=user.department)
+    """
+	This view displays report and stores the consolidated report values.
+	"""
+    template_name = "feedback/report.html"
+    user = get_user_model().objects.get(username=username)
+    user_type = user.get_user_type()
+    forms = FeedbackForm.objects.filter(recipient=user_type, active=True)
+    results = dict()
+    for form in forms:
+        answers = Answer.objects.filter(form=form, recipient=user)
+        results[form] = answers
+    excellent = 0
+    good = 0
+    satisfactory = 0
+    poor = 0
+    very_poor = 0
+    for form, answers in results.items():
+        for que in form.question.all():
+            for answer in answers:
+                if answer.value == "Excellent" and answer.question == que:
+                    excellent += 1
+                if answer.value == "Good" and answer.question == que:
+                    good += 1
+                if answer.value == "Satisfactory" and answer.question == que:
+                    satisfactory += 1
+                if answer.value == "Poor" and answer.question == que:
+                    poor += 1
+                if answer.value == "Very Poor" and answer.question == que:
+                    very_poor += 1
+                    # print(excellent)
+                    # print(good)
+                    # print(satisfactory)
+                    # print(poor)
+                    # print(very_poor)
+                    # print(form.title)
+        total = (
+            (
+                (excellent * 5)
+                + (good * 4)
+                + (satisfactory * 3)
+                + (poor * 2)
+                + (very_poor)
+            )
+            / ((excellent + good + satisfactory + poor + very_poor) * 5)
+            * 100
+        )
+        # print(total)
+        if not ConsolidatedReport.objects.filter(
+            name=user.first_name,
+            form_name=form.title,
+            total=round(total, 2),
+            department=user.department,
+        ).exists():
+            total_count = ConsolidatedReport.objects.create(
+                name=user.first_name,
+                form_name=form.title,
+                total=round(total, 2),
+                department=user.department,
+            )
 
-	context = {"results" : results, "user" : user}
-	return render(request, template_name, context)
+    context = {"results": results, "user": user}
+    return render(request, template_name, context)
+
 
 def view_consolidated(request):
-	template_name = "consolidated_report.html"
-	report = ConsolidatedReport.objects.all()
-	context = {"report": report}
-	return render(request, template_name, context)
+    """
+	This view stores the consolidated reports of each faculty.
+	"""
+    template_name = "consolidated_report.html"
+    report = ConsolidatedReport.objects.all()
+    context = {"report": report}
+    return render(request, template_name, context)
+
 
 def sconsolidated(request, username):
-	template_name = "feedback/student_report.html"
-	user = get_user_model().objects.get(username=username)
-	loggedin_user = request.user
-	print(loggedin_user)
-	user_type = loggedin_user.get_user_type()
-	department = loggedin_user.department
-	if user_type[0].name == 'AnonymousUser':
-		return HttpResponseRedirect(reverse_lazy('login'))
-	if username != loggedin_user.username and user_type[0].name == 'Faculty':
-		return HttpResponseRedirect(reverse_lazy('dashboard'))
-	if department.name != user.department.name and user_type[0].name != 'Principal' or user.is_superuser:
-		return HttpResponseRedirect(reverse_lazy('dashboard'))
-	print('Generating Report')
-	# print("|________________________|user|________________________|")
-	# print(user)
-	forms = FeedbackForm.objects.filter(user_type=5, active=True)
-	data = Teaches.objects.filter(teacher__username=user)
-	results = dict()
+    """
+	This view displays the student feeddback reports of the faculty.
+	"""
+    template_name = "feedback/student_report.html"
+    user = get_user_model().objects.get(username=username)
+    loggedin_user = request.user
+    print(loggedin_user)
+    user_type = loggedin_user.get_user_type()
+    department = loggedin_user.department
+    if user_type[0].name == "AnonymousUser":
+        return HttpResponseRedirect(reverse_lazy("login"))
+    if username != loggedin_user.username and user_type[0].name == "Faculty":
+        return HttpResponseRedirect(reverse_lazy("dashboard"))
+    if (
+        department.name != user.department.name
+        and user_type[0].name != "Principal"
+        or user.is_superuser
+    ):
+        return HttpResponseRedirect(reverse_lazy("dashboard"))
+    print("Generating Report")
+    # print("|________________________|user|________________________|")
+    # print(user)
+    forms = FeedbackForm.objects.filter(user_type=5, active=True)
+    data = Teaches.objects.filter(teacher__username=user)
+    results = dict()
 
-	for form in forms:
-		answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user)
-		results[form] = answers
+    for form in forms:
+        answers = StudentAnswer.objects.filter(
+            form=form, teacher__teacher__username=user
+        )
+        results[form] = answers
 
-	# for i in data:
-	# 	print(i.subject)
-	good_total = 0
-	value = list()
-	for i in data:
-		# print("________________________| CLASS: |________________________")
-		# print("Subject",i.subject.name)
-		# print("Section",i.sec)
-		# print("Sem",i.sem.sem)
-		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
-		for form, answers in results.items():
-			excellent_total = 0
-			good_total = 0
-			satisfactory_total = 0
-			poor_total = 0
-			very_poor_total = 0
-			l = list()
-			que_count = 0
-			for que in form.question.all():
-				# print("________________________| QUESTION: |________________________")
-				# print(que.text)
-				que_count = 0
-				excellent = 0
-				good = 0
-				satisfactory = 0
-				poor = 0
-				very_poor = 0
-				for j in answers:
-					# print("________________________| THEORY: |________________________")
-					# print(i.subject.theory, j.teacher.subject.theory)
-					# print("________________________| ELECTIVE: |________________________")
-					# print(i.subject.elective, j.teacher.subject.elective)
-					# print("________________________| PROJECT: |________________________")
-					# print(i.subject.project, j.teacher.subject.project)
-					res = bool()
-					if que_count < i.count:
-						if i == j.teacher:
-							# print("________________________| RESULT: |________________________")
-							res = True
-							# print(res)
-						if j.question == que:
-							if j.value == 'Excellent':
-								if res:
-									excellent += 1
-									excellent_total += 1
-									que_count += 1
+        # for i in data:
+        # 	print(i.subject)
+    good_total = 0
+    value = list()
+    for i in data:
+        # print("________________________| CLASS: |________________________")
+        # print("Subject",i.subject.name)
+        # print("Section",i.sec)
+        # print("Sem",i.sem.sem)
+        ls = [
+            i.sem.sem,
+            i.sec,
+            i.subject.name,
+            i.ug,
+            i.batch,
+            i.sub_batch,
+            i.department,
+            i.subject.elective,
+        ]
+        for form, answers in results.items():
+            excellent_total = 0
+            good_total = 0
+            satisfactory_total = 0
+            poor_total = 0
+            very_poor_total = 0
+            l = list()
+            que_count = 0
+            for que in form.question.all():
+                # print("________________________| QUESTION: |________________________")
+                # print(que.text)
+                que_count = 0
+                excellent = 0
+                good = 0
+                satisfactory = 0
+                poor = 0
+                very_poor = 0
+                for j in answers:
+                    # print("________________________| THEORY: |________________________")
+                    # print(i.subject.theory, j.teacher.subject.theory)
+                    # print("________________________| ELECTIVE: |________________________")
+                    # print(i.subject.elective, j.teacher.subject.elective)
+                    # print("________________________| PROJECT: |________________________")
+                    # print(i.subject.project, j.teacher.subject.project)
+                    res = bool()
+                    if que_count < i.count:
+                        if i == j.teacher:
+                            # print("________________________| RESULT: |________________________")
+                            res = True
+                            # print(res)
+                        if j.question == que:
+                            if j.value == "Excellent":
+                                if res:
+                                    excellent += 1
+                                    excellent_total += 1
+                                    que_count += 1
 
-							if j.value == 'Good':
-								if res:
-									good += 1
-									good_total += 1
-									que_count += 1
+                            if j.value == "Good":
+                                if res:
+                                    good += 1
+                                    good_total += 1
+                                    que_count += 1
 
-							if j.value == 'Satisfactory':
-								if res:
-									satisfactory += 1
-									satisfactory_total += 1
-									que_count += 1
+                            if j.value == "Satisfactory":
+                                if res:
+                                    satisfactory += 1
+                                    satisfactory_total += 1
+                                    que_count += 1
 
-							if j.value == 'Poor':
-								if res:
-									poor += 1
-									poor_total += 1
-									que_count += 1
+                            if j.value == "Poor":
+                                if res:
+                                    poor += 1
+                                    poor_total += 1
+                                    que_count += 1
 
-							if j.value == 'Very Poor':
-								if res:
-									very_poor += 1
-									very_poor_total += 1
-									que_count += 1
+                            if j.value == "Very Poor":
+                                if res:
+                                    very_poor += 1
+                                    very_poor_total += 1
+                                    que_count += 1
 
-				if excellent or good or satisfactory or poor or very_poor:
-					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
-					l.append([que.text, excellent, good, satisfactory, poor, very_poor, total])
-					# print("________________________| List: |________________________")
-					# for x in l:
-					# 	print(x)
-			if l:
-				grand_total = (((excellent_total * 5) + (good_total * 4) + (satisfactory_total * 3) + (poor_total * 2) + (very_poor_total))/((excellent_total+good_total+satisfactory_total+poor_total+very_poor_total)*5)*100)
-				ls.append(l)
-				ls.append(["Total", excellent_total, good_total, satisfactory_total, poor_total, very_poor_total, grand_total])
-			# print("________________________| LS: |________________________")
-			# for x in ls:
-			# 	print(x)
-		value.append(ls)
+                if excellent or good or satisfactory or poor or very_poor:
+                    total = (
+                        (
+                            (excellent * 5)
+                            + (good * 4)
+                            + (satisfactory * 3)
+                            + (poor * 2)
+                            + (very_poor)
+                        )
+                        / ((excellent + good + satisfactory + poor + very_poor) * 5)
+                        * 100
+                    )
+                    l.append(
+                        [
+                            que.text,
+                            excellent,
+                            good,
+                            satisfactory,
+                            poor,
+                            very_poor,
+                            total,
+                        ]
+                    )
+                    # print("________________________| List: |________________________")
+                    # for x in l:
+                    # 	print(x)
+            if l:
+                grand_total = (
+                    (
+                        (excellent_total * 5)
+                        + (good_total * 4)
+                        + (satisfactory_total * 3)
+                        + (poor_total * 2)
+                        + (very_poor_total)
+                    )
+                    / (
+                        (
+                            excellent_total
+                            + good_total
+                            + satisfactory_total
+                            + poor_total
+                            + very_poor_total
+                        )
+                        * 5
+                    )
+                    * 100
+                )
+                ls.append(l)
+                ls.append(
+                    [
+                        "Total",
+                        excellent_total,
+                        good_total,
+                        satisfactory_total,
+                        poor_total,
+                        very_poor_total,
+                        grand_total,
+                    ]
+                )
+                # print("________________________| LS: |________________________")
+                # for x in ls:
+                # 	print(x)
+        value.append(ls)
 
-		#
+        #
 
-	# print("________________________| VALUE: |________________________")
-	# for x in value:
-	# 	print(x)
+        # print("________________________| VALUE: |________________________")
+        # for x in value:
+        # 	print(x)
 
-	context = {"user" : user, "report" : value,}
-	return render(request, template_name, context)
+    context = {"user": user, "report": value}
+    return render(request, template_name, context)
 
-@login_required(login_url='/signin/')
+
+@login_required(login_url="/signin/")
 def student_view_consolidated(request):
-	if not (request.user.is_superuser or request.user.is_principal()):
-		return HttpResponseRedirect(reverse_lazy('dashboard'))
-	template_name = "student_consolidated_report.html"
-	report = StudentConsolidatedReport.objects.all().order_by('name')
-	department = {'CSE': 'Computer Science & Engineering', 'MECH': 'Mechanical Engineering', 'CHEM': 'Chemistry', 'PHY': 'Phyiscs', 'MCA': 'MCA', 'MECH': 'Mechanical Engineering', 'TCE': 'Telecom Engineering' , 'EEE': 'Electrical Engineering', 'ECE': 'Electronics Engineering', 'CIVIL': 'Civil Engineering', 'ISE': 'Information Science Engineering', 'MATH' : 'Mathematics'}
-	context = {"report": report, "dept": department}
-	# for i in report:
-	# 	print(i.name)
-	# 	print(i.department)
-	# 	print(i.total)
-	return render(request, template_name, context)
+    """
+	This view displays the consolidated reports of all the faculty
+	of all the departments.
+	"""
+    if not (request.user.is_superuser or request.user.is_principal()):
+        return HttpResponseRedirect(reverse_lazy("dashboard"))
+    template_name = "student_consolidated_report.html"
+    report = StudentConsolidatedReport.objects.all().order_by("name")
+    department = {
+        "CSE": "Computer Science & Engineering",
+        "MECH": "Mechanical Engineering",
+        "CHEM": "Chemistry",
+        "PHY": "Phyiscs",
+        "MCA": "MCA",
+        "MECH": "Mechanical Engineering",
+        "TCE": "Telecom Engineering",
+        "EEE": "Electrical Engineering",
+        "ECE": "Electronics Engineering",
+        "CIVIL": "Civil Engineering",
+        "ISE": "Information Science Engineering",
+        "MATH": "Mathematics",
+    }
+    context = {"report": report, "dept": department}
+    # for i in report:
+    # 	print(i.name)
+    # 	print(i.department)
+    # 	print(i.total)
+    return render(request, template_name, context)
 
-@login_required(login_url='/signin/')
+
+@login_required(login_url="/signin/")
 def student_view_consolidated_sixty(request):
-	if not (request.user.is_superuser or request.user.is_principal()):
-		print(request.user.is_superuser)
-		return HttpResponseRedirect(reverse_lazy('dashboard'))
-	template_name = "student_consolidated_report_sixty.html"
-	report = StudentConsolidatedReport.objects.filter(total__lt = 60.0).order_by('name')
-	context = {"report": report}
-	# for i in report:
-	# 	print(i.name)
-	# 	print(i.department)
-	# 	print(i.total)
-	return render(request, template_name, context)
+    """
+	This view displays the consolidated report of those faculties who's
+	reports are less than sixty
+	"""
+    if not (request.user.is_superuser or request.user.is_principal()):
+        print(request.user.is_superuser)
+        return HttpResponseRedirect(reverse_lazy("dashboard"))
+    template_name = "student_consolidated_report_sixty.html"
+    report = StudentConsolidatedReport.objects.filter(total__lt=60.0).order_by("name")
+    context = {"report": report}
+    # for i in report:
+    # 	print(i.name)
+    # 	print(i.department)
+    # 	print(i.total)
+    return render(request, template_name, context)
+
 
 class Student_Report(TemplateView):
-	template_name = "feedback/student_report.html"
+    """
+	This view shows the student feedback reports.
+	"""
 
-	def get_context_data(self, username, *args, **kwargs):
-		context = super(Student_Report, self).get_context_data(*args, **kwargs)
-		user = get_user_model().objects.get(username=username)
-		context['user'] = user
-		# user_type = user.get_user_type()
-		forms = FeedbackForm.objects.filter(user_type__name='Student', active=True)
-		print(forms)
-		results = dict()
-		for form in forms:
-			print(form)
-			answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user.username)
-			results[form] = answers
-		context['results'] = results
-		return context
+    template_name = "feedback/student_report.html"
+
+    def get_context_data(self, username, *args, **kwargs):
+        context = super(Student_Report, self).get_context_data(*args, **kwargs)
+        user = get_user_model().objects.get(username=username)
+        context["user"] = user
+        # user_type = user.get_user_type()
+        forms = FeedbackForm.objects.filter(user_type__name="Student", active=True)
+        print(forms)
+        results = dict()
+        for form in forms:
+            print(form)
+            answers = StudentAnswer.objects.filter(
+                form=form, teacher__teacher__username=user.username
+            )
+            results[form] = answers
+        context["results"] = results
+        return context
+
 
 def Test_report(request, username):
-	template_name = "feedback/student_report.html"
-	user = get_user_model().objects.get(username=username)
+    """
+	This view was used for testing. Probably.
+	"""
+    template_name = "feedback/student_report.html"
+    user = get_user_model().objects.get(username=username)
 
-	forms = FeedbackForm.objects.filter(user_type=5, active=True)
-	data = Teaches.objects.filter(teacher__username=user)
-	results = dict()
+    forms = FeedbackForm.objects.filter(user_type=5, active=True)
+    data = Teaches.objects.filter(teacher__username=user)
+    results = dict()
 
-	for form in forms:
-		answers = StudentAnswer.objects.filter(form=form, teacher__teacher__username=user)
-		results[form] = answers
+    for form in forms:
+        answers = StudentAnswer.objects.filter(
+            form=form, teacher__teacher__username=user
+        )
+        results[form] = answers
 
-	# for i in data:
-	# 	print(i.subject)
+        # for i in data:
+        # 	print(i.subject)
 
-	value = list()
-	for i in data:
-		# print("________________________| CLASS: |________________________")
-		# print("Subject",i.subject.name)
-		# print("Section",i.sec)
-		# print("Sem",i.sem.sem)
-		ls = [i.sem.sem,i.sec,i.subject.name,i.ug,i.batch,i.sub_batch,i.department,i.subject.elective]
-		for form, answers in results.items():
-			excellent_total = 0
-			good_total = 0
-			satisfactory_total = 0
-			poor_total = 0
-			very_poor_total = 0
-			l = list()
-			que_count = 0
-			for que in form.question.all():
-				# print("________________________| QUESTION: |________________________")
-				# print(que.text)
-				que_count = 0
-				excellent = 0
-				good = 0
-				satisfactory = 0
-				poor = 0
-				very_poor = 0
-				for j in answers:
-					# print("________________________| THEORY: |________________________")
-					# print(i.subject.theory, j.teacher.subject.theory)
-					# print("________________________| ELECTIVE: |________________________")
-					# print(i.subject.elective, j.teacher.subject.elective)
-					# print("________________________| PROJECT: |________________________")
-					# print(i.subject.project, j.teacher.subject.project)
-					res = bool()
-					if que_count < i.count:
-						if i == j.teacher:
-							# print("________________________| RESULT: |________________________")
-							res = True
-							# print(res)
-						if j.question == que:
-							if j.value == 'Excellent':
-								if res:
-									excellent += 1
-									excellent_total += 1
-									que_count += 1
+    value = list()
+    for i in data:
+        # print("________________________| CLASS: |________________________")
+        # print("Subject",i.subject.name)
+        # print("Section",i.sec)
+        # print("Sem",i.sem.sem)
+        ls = [
+            i.sem.sem,
+            i.sec,
+            i.subject.name,
+            i.ug,
+            i.batch,
+            i.sub_batch,
+            i.department,
+            i.subject.elective,
+        ]
+        for form, answers in results.items():
+            excellent_total = 0
+            good_total = 0
+            satisfactory_total = 0
+            poor_total = 0
+            very_poor_total = 0
+            l = list()
+            que_count = 0
+            for que in form.question.all():
+                # print("________________________| QUESTION: |________________________")
+                # print(que.text)
+                que_count = 0
+                excellent = 0
+                good = 0
+                satisfactory = 0
+                poor = 0
+                very_poor = 0
+                for j in answers:
+                    # print("________________________| THEORY: |________________________")
+                    # print(i.subject.theory, j.teacher.subject.theory)
+                    # print("________________________| ELECTIVE: |________________________")
+                    # print(i.subject.elective, j.teacher.subject.elective)
+                    # print("________________________| PROJECT: |________________________")
+                    # print(i.subject.project, j.teacher.subject.project)
+                    res = bool()
+                    if que_count < i.count:
+                        if i == j.teacher:
+                            # print("________________________| RESULT: |________________________")
+                            res = True
+                            # print(res)
+                        if j.question == que:
+                            if j.value == "Excellent":
+                                if res:
+                                    excellent += 1
+                                    excellent_total += 1
+                                    que_count += 1
 
-							if j.value == 'Good':
-								if res:
-									good += 1
-									good_total += 1
-									que_count += 1
+                            if j.value == "Good":
+                                if res:
+                                    good += 1
+                                    good_total += 1
+                                    que_count += 1
 
-							if j.value == 'Satisfactory':
-								if res:
-									satisfactory += 1
-									satisfactory_total += 1
-									que_count += 1
+                            if j.value == "Satisfactory":
+                                if res:
+                                    satisfactory += 1
+                                    satisfactory_total += 1
+                                    que_count += 1
 
-							if j.value == 'Poor':
-								if res:
-									poor += 1
-									poor_total += 1
-									que_count += 1
+                            if j.value == "Poor":
+                                if res:
+                                    poor += 1
+                                    poor_total += 1
+                                    que_count += 1
 
-							if j.value == 'Very Poor':
-								if res:
-									very_poor += 1
-									very_poor_total += 1
-									que_count += 1
+                            if j.value == "Very Poor":
+                                if res:
+                                    very_poor += 1
+                                    very_poor_total += 1
+                                    que_count += 1
 
-				if excellent or good or satisfactory or poor or very_poor:
-					total = (((excellent * 5) + (good * 4) + (satisfactory * 3) + (poor * 2) + (very_poor))/((excellent+good+satisfactory+poor+very_poor)*5)*100)
-					l.append([que.text, excellent, good, satisfactory, poor, very_poor, total])
-					# print("________________________| List: |________________________")
-					# for x in l:
-					# 	print(x)
-			if l:
-				grand_total = (((excellent_total * 5) + (good_total * 4) + (satisfactory_total * 3) + (poor_total * 2) + (very_poor_total))/((excellent_total+good_total+satisfactory_total+poor_total+very_poor_total)*5)*100)
-				ls.append(l)
-				ls.append(["Total", excellent_total, good_total, satisfactory_total, poor_total, very_poor_total, grand_total])
-			# print("________________________| LS: |________________________")
-			# for x in ls:
-			# 	print(x)
-		value.append(ls)
+                if excellent or good or satisfactory or poor or very_poor:
+                    total = (
+                        (
+                            (excellent * 5)
+                            + (good * 4)
+                            + (satisfactory * 3)
+                            + (poor * 2)
+                            + (very_poor)
+                        )
+                        / ((excellent + good + satisfactory + poor + very_poor) * 5)
+                        * 100
+                    )
+                    l.append(
+                        [
+                            que.text,
+                            excellent,
+                            good,
+                            satisfactory,
+                            poor,
+                            very_poor,
+                            total,
+                        ]
+                    )
+                    # print("________________________| List: |________________________")
+                    # for x in l:
+                    # 	print(x)
+            if l:
+                grand_total = (
+                    (
+                        (excellent_total * 5)
+                        + (good_total * 4)
+                        + (satisfactory_total * 3)
+                        + (poor_total * 2)
+                        + (very_poor_total)
+                    )
+                    / (
+                        (
+                            excellent_total
+                            + good_total
+                            + satisfactory_total
+                            + poor_total
+                            + very_poor_total
+                        )
+                        * 5
+                    )
+                    * 100
+                )
+                ls.append(l)
+                ls.append(
+                    [
+                        "Total",
+                        excellent_total,
+                        good_total,
+                        satisfactory_total,
+                        poor_total,
+                        very_poor_total,
+                        grand_total,
+                    ]
+                )
+                # print("________________________| LS: |________________________")
+                # for x in ls:
+                # 	print(x)
+        value.append(ls)
 
-		if not StudentConsolidatedReport.objects.filter(name = user.first_name, total = round(grand_total, 2), department=user.department, teacher=i).exists():
-				total_count = StudentConsolidatedReport.objects.create(name = user.first_name, total = round(grand_total, 2), department=user.department, teacher=i)
+        if not StudentConsolidatedReport.objects.filter(
+            name=user.first_name,
+            total=round(grand_total, 2),
+            department=user.department,
+            teacher=i,
+        ).exists():
+            total_count = StudentConsolidatedReport.objects.create(
+                name=user.first_name,
+                total=round(grand_total, 2),
+                department=user.department,
+                teacher=i,
+            )
 
-	# print("________________________| VALUE: |________________________")
-	# for x in value:
-	# 	print(x)
+            # print("________________________| VALUE: |________________________")
+            # for x in value:
+            # 	print(x)
+
+    context = {"user": user, "report": value}
+    return render(request, template_name, context)
 
 
-	context = {"user" : user, "report" : value,}
-	return render(request, template_name, context)
 # def feedback(request):
 # 	'''
 # 	Displays the main student feedback form
@@ -1006,65 +1285,83 @@ def Test_report(request, username):
 
 
 class select_teacher_hod(FormView):
-	'''
+    """
 	After authenticated by HOD OTP, lets HOD select individual faculty
-	'''
-	template_name = "report_select_hod.html"
+	"""
 
-	def get(self, request, *args, **kwargs):
-		'''
+    template_name = "report_select_hod.html"
+
+    def get(self, request, *args, **kwargs):
+        """
 		Populates the select faculty dropdown
-		'''
-		user = self.request.user
-		username = user.username
-		user_type = user.get_user_type()
-		print(user_type[0])
-		if str(user_type[0]).upper() == 'HOD':
-			department = user.department
-			faculty_list = User.objects.filter(department__name=department, user_type__name='Faculty').exclude(user_type__name='Student').order_by('first_name')
-			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
-			context = {"faculty_list": faculty_list}
-			return render(request, self.template_name, context)
+		"""
+        user = self.request.user
+        username = user.username
+        user_type = user.get_user_type()
+        print(user_type[0])
+        if str(user_type[0]).upper() == "HOD":
+            department = user.department
+            faculty_list = (
+                User.objects.filter(
+                    department__name=department, user_type__name="Faculty"
+                )
+                .exclude(user_type__name="Student")
+                .order_by("first_name")
+            )
+            # Teacher.objects.order_by('fname').filter(dno__dname=dname)
+            context = {"faculty_list": faculty_list}
+            return render(request, self.template_name, context)
 
-		context = {"error": 'You are not authorized to view this page.'}
-		return render(request, self.template_name, context)
+        context = {"error": "You are not authorized to view this page."}
+        return render(request, self.template_name, context)
 
-	def post(self, request, *args, **kwargs):
-		'''
+    def post(self, request, *args, **kwargs):
+        """
 		Geneartes the individual faculty report
-		'''
-		faculty_username = request.POST.get('faculty_username')
-		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
+		"""
+        faculty_username = request.POST.get("faculty_username")
+        return redirect(
+            reverse_lazy("sconsolidated", kwargs={"username": faculty_username})
+        )
+
 
 class select_teacher_principal(FormView):
-	'''
+    """
 	After authenticated by HOD OTP, lets HOD select individual faculty
-	'''
-	template_name = "report_select_hod.html"
+	"""
 
-	def get(self, request, *args, **kwargs):
-		'''
+    template_name = "report_select_hod.html"
+
+    def get(self, request, *args, **kwargs):
+        """
 		Populates the select faculty dropdown
-		'''
-		user = self.request.user
-		username = user.username
-		user_type = user.get_user_type()
-		print(user_type[0])
-		if str(user_type[0]) == 'Principal':
-			faculty_list = User.objects.filter(user_type__name='Faculty').exclude(user_type__name='Student').order_by('first_name')
-			#Teacher.objects.order_by('fname').filter(dno__dname=dname)
-			context = {"faculty_list": faculty_list}
-			return render(request, self.template_name, context)
+		"""
+        user = self.request.user
+        username = user.username
+        user_type = user.get_user_type()
+        print(user_type[0])
+        if str(user_type[0]) == "Principal":
+            faculty_list = (
+                User.objects.filter(user_type__name="Faculty")
+                .exclude(user_type__name="Student")
+                .order_by("first_name")
+            )
+            # Teacher.objects.order_by('fname').filter(dno__dname=dname)
+            context = {"faculty_list": faculty_list}
+            return render(request, self.template_name, context)
 
-		context = {"error": 'You are not authorized to view this page.'}
-		return render(request, self.template_name, context)
+        context = {"error": "You are not authorized to view this page."}
+        return render(request, self.template_name, context)
 
-	def post(self, request, *args, **kwargs):
-		'''
+    def post(self, request, *args, **kwargs):
+        """
 		Geneartes the individual faculty report
-		'''
-		faculty_username = request.POST.get('faculty_username')
-		return redirect(reverse_lazy('sconsolidated',kwargs={'username': faculty_username},))
+		"""
+        faculty_username = request.POST.get("faculty_username")
+        return redirect(
+            reverse_lazy("sconsolidated", kwargs={"username": faculty_username})
+        )
+
 
 # class consolidated_principal(FormView):
 # 	'''
@@ -1110,28 +1407,30 @@ class select_teacher_principal(FormView):
 
 
 class consolidated_report(TemplateView):
-	'''
+    """
 	Consolidated report for viewing by principal
-	'''
-	template_name = "consolidated_report.html"
-	def get(self, request, *args, **kwargs):
+	"""
 
-		if request.session['is_principal'] == True:
-			teacher_list = Teacher.objects.all().order_by('dno__dno')
-			sub_list = []
-			for teacher in teacher_list:
-				for sub in TheoryTeaches.objects.filter(fid=teacher):
-					sub_list.append(sub)
-				for sub in ElectiveTeaches.objects.filter(fid=teacher):
-					sub_list.append(sub)
-				for sub in LabTeaches.objects.filter(fid=teacher):
-					sub_list.append(sub)
-			context = self.get_context_data()
-			context['subject_list'] = sub_list
-			context['principal'] = True
-			return render(request, self.template_name, context)
-		else:
-			return HttpResponse("Not Authorized, Please login")
+    template_name = "consolidated_report.html"
+
+    def get(self, request, *args, **kwargs):
+
+        if request.session["is_principal"] == True:
+            teacher_list = Teacher.objects.all().order_by("dno__dno")
+            sub_list = []
+            for teacher in teacher_list:
+                for sub in TheoryTeaches.objects.filter(fid=teacher):
+                    sub_list.append(sub)
+                for sub in ElectiveTeaches.objects.filter(fid=teacher):
+                    sub_list.append(sub)
+                for sub in LabTeaches.objects.filter(fid=teacher):
+                    sub_list.append(sub)
+            context = self.get_context_data()
+            context["subject_list"] = sub_list
+            context["principal"] = True
+            return render(request, self.template_name, context)
+        else:
+            return HttpResponse("Not Authorized, Please login")
 
 
 # class consololidated_hod(TemplateView):
@@ -1205,7 +1504,6 @@ class consolidated_report(TemplateView):
 # 			return render(request, self.template_name, context)
 # 		else:
 # 			return HttpResponse("Not Authorized, Only accessible by principal")
-
 
 
 # class report_not_viewed(TemplateView):

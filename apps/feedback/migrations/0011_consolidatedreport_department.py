@@ -7,14 +7,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0010_remove_consolidatedreport_dep'),
-    ]
+    dependencies = [("feedback", "0010_remove_consolidatedreport_dep")]
 
     operations = [
         migrations.AddField(
-            model_name='consolidatedreport',
-            name='department',
-            field=models.CharField(blank=True, max_length=30, null=True, verbose_name='Department Code'),
-        ),
+            model_name="consolidatedreport",
+            name="department",
+            field=models.CharField(
+                blank=True, max_length=30, null=True, verbose_name="Department Code"
+            ),
+        )
     ]

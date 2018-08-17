@@ -9,18 +9,21 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('general', '0006_auto_20180413_0548'),
-        ('feedback', '0014_studentconsolidatedreport'),
+        ("general", "0006_auto_20180413_0548"),
+        ("feedback", "0014_studentconsolidatedreport"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='studentconsolidatedreport',
-            name='form_name',
+            model_name="studentconsolidatedreport", name="form_name"
         ),
         migrations.AddField(
-            model_name='studentconsolidatedreport',
-            name='teacher',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='general.Teaches'),
+            model_name="studentconsolidatedreport",
+            name="teacher",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="general.Teaches",
+            ),
         ),
     ]

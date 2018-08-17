@@ -8,17 +8,15 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0006_create_conversation'),
-    ]
+    dependencies = [("django_chatterbot", "0006_create_conversation")]
 
     operations = [
         migrations.AddField(
-            model_name='response',
-            name='created_at',
+            model_name="response",
+            name="created_at",
             field=models.DateTimeField(
                 default=django.utils.timezone.now,
-                help_text='The date and time that this response was created at.'
+                help_text="The date and time that this response was created at.",
             ),
-        ),
+        )
     ]

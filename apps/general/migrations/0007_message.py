@@ -7,16 +7,27 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('general', '0006_auto_20180413_0548'),
-    ]
+    dependencies = [("general", "0006_auto_20180413_0548")]
 
     operations = [
         migrations.CreateModel(
-            name='Message',
+            name="Message",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('message_text', models.CharField(max_length=350, verbose_name='Message to send to students')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "message_text",
+                    models.CharField(
+                        max_length=350, verbose_name="Message to send to students"
+                    ),
+                ),
             ],
-        ),
+        )
     ]

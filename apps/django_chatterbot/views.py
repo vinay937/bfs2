@@ -11,9 +11,11 @@ class ChatterBotViewMixin(object):
     Subclass this mixin for access to the 'chatterbot' attribute.
     """
 
-    chatterbot = ChatBot(**settings.CHATTERBOT, 
+    chatterbot = ChatBot(
+        **settings.CHATTERBOT,
         response_selection_method=get_random_response,
-        read_only=True)
+        read_only=True
+    )
 
     def validate(self, data):
         """
@@ -23,7 +25,7 @@ class ChatterBotViewMixin(object):
         """
         from django.core.exceptions import ValidationError
 
-        if 'text' not in data:
+        if "text" not in data:
             raise ValidationError('The attribute "text" is required.')
 
     def get_conversation(self, request):
@@ -40,7 +42,7 @@ class ChatterBotViewMixin(object):
 
         conversation = Obj()
 
-        conversation.id = request.session.get('conversation_id', 0)
+        conversation.id = request.session.get("conversation_id", 0)
         existing_conversation = False
         try:
             Conversation.objects.get(id=conversation.id)
@@ -48,13 +50,11 @@ class ChatterBotViewMixin(object):
 
         except Conversation.DoesNotExist:
             conversation_id = self.chatterbot.storage.create_conversation()
-            request.session['conversation_id'] = conversation_id
+            request.session["conversation_id"] = conversation_id
             conversation.id = conversation_id
 
         if existing_conversation:
-            responses = Response.objects.filter(
-                conversations__id=conversation.id
-            )
+            responses = Response.objects.filter(conversations__id=conversation.id)
 
             for response in responses:
                 conversation.statements.append(response.statement.serialize())
@@ -72,7 +72,7 @@ class ChatterBotView(ChatterBotViewMixin, View):
         """
         Return a response to the statement in the posted data.
         """
-        input_data = json.loads(request.read().decode('utf-8'))
+        input_data = json.loads(request.read().decode("utf-8"))
 
         self.validate(input_data)
 
@@ -91,9 +91,9 @@ class ChatterBotView(ChatterBotViewMixin, View):
         conversation = self.get_conversation(request)
 
         data = {
-            'detail': 'You should make a POST request to this endpoint.',
-            'name': self.chatterbot.name,
-            'conversation': conversation.statements
+            "detail": "You should make a POST request to this endpoint.",
+            "name": self.chatterbot.name,
+            "conversation": conversation.statements,
         }
 
         # Return a method not allowed response
@@ -103,9 +103,7 @@ class ChatterBotView(ChatterBotViewMixin, View):
         """
         The patch method is not allowed for this endpoint.
         """
-        data = {
-            'detail': 'You should make a POST request to this endpoint.'
-        }
+        data = {"detail": "You should make a POST request to this endpoint."}
 
         # Return a method not allowed response
         return JsonResponse(data, status=405)
@@ -114,9 +112,7 @@ class ChatterBotView(ChatterBotViewMixin, View):
         """
         The delete method is not allowed for this endpoint.
         """
-        data = {
-            'detail': 'You should make a POST request to this endpoint.'
-        }
+        data = {"detail": "You should make a POST request to this endpoint."}
 
         # Return a method not allowed response
         return JsonResponse(data, status=405)

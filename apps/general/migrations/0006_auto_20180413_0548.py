@@ -8,19 +8,21 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('general', '0005_teaches_ug'),
-    ]
+    dependencies = [("general", "0005_teaches_ug")]
 
     operations = [
         migrations.AddField(
-            model_name='teaches',
-            name='count',
-            field=models.IntegerField(blank=True, default=0, null=True, verbose_name='Student Count'),
+            model_name="teaches",
+            name="count",
+            field=models.IntegerField(
+                blank=True, default=0, null=True, verbose_name="Student Count"
+            ),
         ),
         migrations.AlterField(
-            model_name='teaches',
-            name='department',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='general.Department'),
+            model_name="teaches",
+            name="department",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE, to="general.Department"
+            ),
         ),
     ]

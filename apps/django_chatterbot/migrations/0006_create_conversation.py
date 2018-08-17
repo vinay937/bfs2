@@ -9,25 +9,38 @@ import django.utils.timezone
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0005_statement_created_at'),
-    ]
+    dependencies = [("django_chatterbot", "0005_statement_created_at")]
 
     operations = [
         migrations.CreateModel(
-            name='Conversation',
+            name="Conversation",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                )
             ],
         ),
         migrations.AlterField(
-            model_name='statement',
-            name='created_at',
-            field=models.DateTimeField(default=django.utils.timezone.now, help_text='The date and time that this statement was created at.'),
+            model_name="statement",
+            name="created_at",
+            field=models.DateTimeField(
+                default=django.utils.timezone.now,
+                help_text="The date and time that this statement was created at.",
+            ),
         ),
         migrations.AddField(
-            model_name='conversation',
-            name='statements',
-            field=models.ManyToManyField(help_text='The statements in this conversation.', related_name='conversation', to='django_chatterbot.Statement'),
+            model_name="conversation",
+            name="statements",
+            field=models.ManyToManyField(
+                help_text="The statements in this conversation.",
+                related_name="conversation",
+                to="django_chatterbot.Statement",
+            ),
         ),
     ]

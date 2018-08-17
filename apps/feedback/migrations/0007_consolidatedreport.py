@@ -7,19 +7,39 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0006_auto_20180315_0852'),
-    ]
+    dependencies = [("feedback", "0006_auto_20180315_0852")]
 
     operations = [
         migrations.CreateModel(
-            name='ConsolidatedReport',
+            name="ConsolidatedReport",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100, verbose_name='Name of faculty')),
-                ('form_name', models.CharField(max_length=100, verbose_name='Name of the form')),
-                ('total', models.CharField(max_length=10, verbose_name='Total value they got')),
-                ('department', models.CharField(max_length=30, verbose_name='Department')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(max_length=100, verbose_name="Name of faculty"),
+                ),
+                (
+                    "form_name",
+                    models.CharField(max_length=100, verbose_name="Name of the form"),
+                ),
+                (
+                    "total",
+                    models.CharField(
+                        max_length=10, verbose_name="Total value they got"
+                    ),
+                ),
+                (
+                    "department",
+                    models.CharField(max_length=30, verbose_name="Department"),
+                ),
             ],
-        ),
+        )
     ]

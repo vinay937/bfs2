@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0009_tags'),
-    ]
+    dependencies = [("django_chatterbot", "0009_tags")]
 
     operations = [
         migrations.AlterField(
-            model_name='statement',
-            name='text',
+            model_name="statement",
+            name="text",
             field=models.CharField(max_length=400, unique=True),
-        ),
+        )
     ]

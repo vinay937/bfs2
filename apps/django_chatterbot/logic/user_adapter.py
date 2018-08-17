@@ -9,53 +9,66 @@ import random
 
 
 class UserAdapter(BestMatch):
-	"""
+    """
 	Checks for abuses in the statement and accordingly gives a defalut response related to it
 	"""
 
-	def __init__(self, **kwargs):
-		super(UserAdapter, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(UserAdapter, self).__init__(**kwargs)
 
-	def can_process(self, statement):
-		return True
+    def can_process(self, statement):
+        return True
 
-	def process(self, statement):
-		confidence = 0
-		closest_match = self.get(statement)
-		user = None
+    def process(self, statement):
+        confidence = 0
+        closest_match = self.get(statement)
+        user = None
 
-		try:
-			validate_email(statement.text)
-			valid_email = True
-		except:
-			valid_email = False
+        try:
+            validate_email(statement.text)
+            valid_email = True
+        except:
+            valid_email = False
 
-		if valid_email:
-			confidence = 2
-			try:
-				user = get_user_model().objects.get(email=statement.text)
-			except get_user_model().DoesNotExist:
-				user = None
-		else:
-			try:
-				user = get_user_model().objects.filter(first_name__icontains=statement.text)
-				print(user)
-			except get_user_model().DoesNotExist:
-				user = None
-		
-		if user:
-			if len(user) > 1:
-				txt = ''
-				for u in user:
-					txt += 'Name : ' + u.first_name + '<br>' + 'Username : ' + u.username + '<br>'
-				response = Statement('More than one results obtained: <br>' + txt)
-				confidence = 2
-			else:
-				response = Statement('You are {} <br> Your username to log in is {}.'.format(user[0].first_name, user[0].username))
-				confidence = 2
-		else:
-			response = Statement('A man has no name')
+        if valid_email:
+            confidence = 2
+            try:
+                user = get_user_model().objects.get(email=statement.text)
+            except get_user_model().DoesNotExist:
+                user = None
+        else:
+            try:
+                user = get_user_model().objects.filter(
+                    first_name__icontains=statement.text
+                )
+                print(user)
+            except get_user_model().DoesNotExist:
+                user = None
 
-		response.confidence = confidence
+        if user:
+            if len(user) > 1:
+                txt = ""
+                for u in user:
+                    txt += (
+                        "Name : "
+                        + u.first_name
+                        + "<br>"
+                        + "Username : "
+                        + u.username
+                        + "<br>"
+                    )
+                response = Statement("More than one results obtained: <br>" + txt)
+                confidence = 2
+            else:
+                response = Statement(
+                    "You are {} <br> Your username to log in is {}.".format(
+                        user[0].first_name, user[0].username
+                    )
+                )
+                confidence = 2
+        else:
+            response = Statement("A man has no name")
 
-		return response
+        response.confidence = confidence
+
+        return response

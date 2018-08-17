@@ -7,14 +7,14 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('general', '0007_message'),
-    ]
+    dependencies = [("general", "0007_message")]
 
     operations = [
         migrations.AlterField(
-            model_name='message',
-            name='message_text',
-            field=models.TextField(max_length=350, verbose_name='Message to send to students'),
-        ),
+            model_name="message",
+            name="message_text",
+            field=models.TextField(
+                max_length=350, verbose_name="Message to send to students"
+            ),
+        )
     ]

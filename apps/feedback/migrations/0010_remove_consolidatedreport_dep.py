@@ -7,13 +7,6 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0009_auto_20180320_0937'),
-    ]
+    dependencies = [("feedback", "0009_auto_20180320_0937")]
 
-    operations = [
-        migrations.RemoveField(
-            model_name='consolidatedreport',
-            name='dep',
-        ),
-    ]
+    operations = [migrations.RemoveField(model_name="consolidatedreport", name="dep")]

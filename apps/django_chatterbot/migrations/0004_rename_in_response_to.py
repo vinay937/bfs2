@@ -8,19 +8,25 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0003_change_occurrence_default'),
-    ]
+    dependencies = [("django_chatterbot", "0003_change_occurrence_default")]
 
     operations = [
         migrations.AlterField(
-            model_name='response',
-            name='statement',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='in_response', to='django_chatterbot.Statement'),
+            model_name="response",
+            name="statement",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="in_response",
+                to="django_chatterbot.Statement",
+            ),
         ),
         migrations.AlterField(
-            model_name='response',
-            name='response',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='responses', to='django_chatterbot.Statement'),
+            model_name="response",
+            name="response",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="responses",
+                to="django_chatterbot.Statement",
+            ),
         ),
     ]

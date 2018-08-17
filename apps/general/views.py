@@ -1,4 +1,4 @@
-'''
+"""
 Copyright 2017 DevX Labs
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -9,7 +9,7 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-'''
+"""
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, HttpResponseRedirect, StreamingHttpResponse
 from django.contrib.auth.decorators import login_required
@@ -51,7 +51,7 @@ from email.mime.text import MIMEText
 import smtplib
 
 
-#Send email, text message
+# Send email, text message
 import psycopg2
 
 import urllib.parse as ap
@@ -59,161 +59,189 @@ import urllib.request
 
 
 def page_not_found_view(request):
-	template_name = '404.html'
-	context = {}
-	return render(request, template_name, context)
+    template_name = "404.html"
+    context = {}
+    return render(request, template_name, context)
+
 
 def internal_server_error_view(request):
-	error_url = request.get_full_path()
-	template_name = '500.html'
-	context = {"error_url": error_url}
-	return render(request, template_name, context)
+    error_url = request.get_full_path()
+    template_name = "500.html"
+    context = {"error_url": error_url}
+    return render(request, template_name, context)
 
 
 def notifyView(request):
-	error_url = request.GET.get('q', 'directly reached notify')
-	print(error_url)
-	template_name = 'notify.html'
-	context = {}
-	email = EmailMessage(
-					'Feedback Error occurred at ' + str(error_url),
-					'Hi Administrator,\nThere is a 500 error reported at "' + str(error_url) + '".\nThis request was made by: ' + str(request.user) +'\nPlease look into it immediately.\n\nThanks,\nBFS-BMSIT' ,
-					'Feedback Support <feedback@bmsit.in>',
-					['nandkeolyar.aayush@gmail.com', 'amoghsk279@gmail.com'] ,
-					)
-	email.send()
-	return render(request, template_name, context)
+    """
+	notifyView: Notifies the Administrators if there are any errors
+	occured in the website.
+	"""
+    error_url = request.GET.get("q", "directly reached notify")
+    print(error_url)
+    template_name = "notify.html"
+    context = {}
+    email = EmailMessage(
+        "Feedback Error occurred at " + str(error_url),
+        'Hi Administrator,\nThere is a 500 error reported at "'
+        + str(error_url)
+        + '".\nThis request was made by: '
+        + str(request.user)
+        + "\nPlease look into it immediately.\n\nThanks,\nBFS-BMSIT",
+        "Feedback Support <feedback@bmsit.in>",
+        ["nandkeolyar.aayush@gmail.com", "amoghsk279@gmail.com"],
+    )
+    email.send()
+    return render(request, template_name, context)
+
 
 class HomeView(FormView):
-	'''
+    """
 	Generates OTP, checks if user exists and has an email address.
-	'''
-	template_name = 'index.html'
+	"""
 
-	def phone_otp(self, random_otp, phone, usn):
-		'''
+    template_name = "index.html"
+
+    def phone_otp(self, random_otp, phone, usn):
+        """
 		Sends OTP to phone
-		'''
-		phone1 = phone
-		message = 'Please login with the OTP: '+random_otp+' for USN:' + usn
-		params = { 'number' : phone1, 'text' : message }
-		baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
-		urllib.request.urlopen(baseUrl).read(1000)
-
-	def password_update(self, random_otp, usn):
 		"""
+        phone1 = phone
+        message = "Please login with the OTP: " + random_otp + " for USN:" + usn
+        params = {"number": phone1, "text": message}
+        baseUrl = (
+            "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&"
+            + ap.urlencode(params)
+        )
+        urllib.request.urlopen(baseUrl).read(1000)
+
+    def password_update(self, random_otp, usn):
+        """
 		Hashes the new password according to the OTP
 		"""
-		hashed_pwd = make_password(random_otp)
-		User.objects.filter(username=usn).update(password=hashed_pwd)
-		print(hashed_pwd)
+        hashed_pwd = make_password(random_otp)
+        User.objects.filter(username=usn).update(password=hashed_pwd)
+        print(hashed_pwd)
 
-	def email_otp(self, random_otp, qs):
-		"""
+    def email_otp(self, random_otp, qs):
+        """
 		Sends OTP to email
 		"""
-		print(random_otp)
-		email = EmailMessage(
-					'Feedback OTP',
-					'Hi, ' + qs.first_name + '\n\n' +'Your OTP for feedback is: ' + random_otp + '\n\nThanks,\nBFS-BMSIT' ,
-					'Feedback Support <feedbackotp@bmsit.in>',
-					[qs.email],
-					)
-		email.send()		
+        print(random_otp)
+        email = EmailMessage(
+            "Feedback OTP",
+            "Hi, "
+            + qs.first_name
+            + "\n\n"
+            + "Your OTP for feedback is: "
+            + random_otp
+            + "\n\nThanks,\nBFS-BMSIT",
+            "Feedback Support <feedbackotp@bmsit.in>",
+            [qs.email],
+        )
+        email.send()
 
-	def feedback_over_view(self, request):
-		template_name = 'feedback_over_final.html'
-		return render(request, template_name)
+    def feedback_over_view(self, request):
+        template_name = "feedback_over_final.html"
+        return render(request, template_name)
 
-	def get(self, request, *args, **kwargs):
-		return render(request, self.template_name)
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
 
-	def post(self, request, *args, **kwargs):
-		random_otp = r''.join(random.choice('01234ABCD') for i in range(8))
-		try:
-			otp_page = 'login.html'
-			usn = request.POST.get("usn1")
-			usn = usn.upper()
-			otp_page = otp_page + '/usn/' + usn
-			qs = get_user_model().objects.get(username=usn)
+    def post(self, request, *args, **kwargs):
+        random_otp = r"".join(random.choice("01234ABCD") for i in range(8))
+        try:
+            otp_page = "login.html"
+            usn = request.POST.get("usn1")
+            usn = usn.upper()
+            otp_page = otp_page + "/usn/" + usn
+            qs = get_user_model().objects.get(username=usn)
 
-			#Checks if user is admin and redirects directly
-			if qs.is_superuser:
-				messages.error(request, "Yo admin be so cool!")
-				return HttpResponseRedirect("/login/usn=" + usn)
+            # Checks if user is admin and redirects directly
+            if qs.is_superuser:
+                messages.error(request, "Yo admin be so cool!")
+                return HttpResponseRedirect("/login/usn=" + usn)
 
-			# Checks if done=False
-			if not qs.done or not qs.is_student():
+                # Checks if done=False
+            if not qs.done or not qs.is_student():
 
-				if qs:
-					# Checks if both email and phone doesn't exist
-					if not qs.email and not qs.phone:
-						messages.error(request, "Contact details incomplete. Contact coordinator")
+                if qs:
+                    # Checks if both email and phone doesn't exist
+                    if not qs.email and not qs.phone:
+                        messages.error(
+                            request, "Contact details incomplete. Contact coordinator"
+                        )
 
-					# Checks if both email and phone exist
-					elif qs.email and qs.phone:
-						self.phone_otp(random_otp, qs.phone, qs.username)
-						self.email_otp(random_otp, qs)
-						self.password_update(random_otp, usn)
-						messages.error(request, "OTP  sent to "+qs.phone+" and "+qs.email)
-						return HttpResponseRedirect("/login/usn=" + usn)
+                        # Checks if both email and phone exist
+                    elif qs.email and qs.phone:
+                        self.phone_otp(random_otp, qs.phone, qs.username)
+                        self.email_otp(random_otp, qs)
+                        self.password_update(random_otp, usn)
+                        messages.error(
+                            request, "OTP  sent to " + qs.phone + " and " + qs.email
+                        )
+                        return HttpResponseRedirect("/login/usn=" + usn)
 
-					# Checks if only phone exists
-					elif qs.phone and not qs.email:
-						self.phone_otp(random_otp, qs.phone, usn)
-						self.password_update(random_otp, usn)
-						messages.error(request, "Email not found, OTP sent to "+qs.phone)
-						return HttpResponseRedirect("/login/usn=" + usn)
+                        # Checks if only phone exists
+                    elif qs.phone and not qs.email:
+                        self.phone_otp(random_otp, qs.phone, usn)
+                        self.password_update(random_otp, usn)
+                        messages.error(
+                            request, "Email not found, OTP sent to " + qs.phone
+                        )
+                        return HttpResponseRedirect("/login/usn=" + usn)
 
-					# Checks if only email exists
-					elif qs.email and not qs.phone:
-						self.email_otp(random_otp, qs)
-						self.password_update(random_otp, usn)
-						messages.error(request, "Phone number not found, OTP  sent to "+qs.email)
-						return HttpResponseRedirect("/login/usn=" + usn)
+                        # Checks if only email exists
+                    elif qs.email and not qs.phone:
+                        self.email_otp(random_otp, qs)
+                        self.password_update(random_otp, usn)
+                        messages.error(
+                            request, "Phone number not found, OTP  sent to " + qs.email
+                        )
+                        return HttpResponseRedirect("/login/usn=" + usn)
 
-			else:
-				messages.error(request, "You have already given the feedback! Thank You.")
+            else:
+                messages.error(
+                    request, "You have already given the feedback! Thank You."
+                )
 
-		except User.DoesNotExist:
-			messages.error(request, "Invalid USN")
-		return render(request, self.template_name)
+        except User.DoesNotExist:
+            messages.error(request, "Invalid USN")
+        return render(request, self.template_name)
 
 
 def done_view(request):
-	'''
+    """
 	Gets the rating after completion of feedback and redirects to home page.
-	'''
-	# rating = request.GET.get("rating")
-	# if str(rating) == 'None':
-	# 	rating = 5
-	# starts = Rating.objects.create(star=rating)
-	return redirect('/')
+	"""
+    # rating = request.GET.get("rating")
+    # if str(rating) == 'None':
+    # 	rating = 5
+    # starts = Rating.objects.create(star=rating)
+    return redirect("/")
 
 
 def exit_view(request):
-	'''
+    """
 	Displays the rating page
-	'''
-	logout(request)
-	template_name = 'exit.html'
-	return render(request, template_name)
+	"""
+    logout(request)
+    template_name = "exit.html"
+    return render(request, template_name)
 
 
 def get_rating_view(request):
-	'''
+    """
 	Displays the current average rating
-	'''
-	template_name = 'rating.html'
-	rating = Rating.objects.aggregate(Avg('star'))
-	rating = rating['star__avg']
-	context = {"rating" : rating}
-	return render(request, template_name, context)
-
+	"""
+    template_name = "rating.html"
+    rating = Rating.objects.aggregate(Avg("star"))
+    rating = rating["star__avg"]
+    context = {"rating": rating}
+    return render(request, template_name, context)
 
 
 class MainView(TemplateView):
-	'''
+    """
 	Checks for the type of user and renders the count and users of their mandatory
 	forms.
 	All the other individual forms are generated subsequently
@@ -229,308 +257,404 @@ class MainView(TemplateView):
 	TODO://
 		1 - Move this to general `views.py` . Doesn't belong here
 		2 - Add student check
-	'''
-	template_name = ""
-	user_type = None
+	"""
 
-	def _student_theory(self):
-		subject_list = []
-		theory_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=True, subject__elective=False, subject__project=False, ug=self.user.ug)
-		for i in theory_subject:
-			subject_list.append(i.pk)
+    template_name = ""
+    user_type = None
 
-		elective_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=True, subject__elective=True, ug=self.user.ug, subject__in=self.user.elective.all())
-		for i in elective_subject:
-			subject_list.append(i.pk)
+    def _student_theory(self):
+        subject_list = []
+        theory_subject = Teaches.objects.filter(
+            sem=self.user.sem,
+            sec=self.user.sec,
+            department=self.user.department,
+            subject__theory=True,
+            subject__elective=False,
+            subject__project=False,
+            ug=self.user.ug,
+        )
+        for i in theory_subject:
+            subject_list.append(i.pk)
 
-		self.request.session['recipients_theory'] = subject_list
+        elective_subject = Teaches.objects.filter(
+            sem=self.user.sem,
+            sec=self.user.sec,
+            department=self.user.department,
+            subject__theory=True,
+            subject__elective=True,
+            ug=self.user.ug,
+            subject__in=self.user.elective.all(),
+        )
+        for i in elective_subject:
+            subject_list.append(i.pk)
 
-		#This is used in post and will be removed on by one
-		self.request.session['post_recipients_theory'] = subject_list
+        self.request.session["recipients_theory"] = subject_list
 
-		self.request.session['theory_count'] = theory_subject.count() + elective_subject.count()
+        # This is used in post and will be removed on by one
+        self.request.session["post_recipients_theory"] = subject_list
 
-		# remove the form as it is already counted
-		self.forms = self.forms.exclude(code="ST")
+        self.request.session["theory_count"] = (
+            theory_subject.count() + elective_subject.count()
+        )
 
-		return
+        # remove the form as it is already counted
+        self.forms = self.forms.exclude(code="ST")
 
-	def _student_labs(self):
+        return
 
-		subject_list = []
-		lab_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec,
-			department=self.user.department, subject__theory=False,subject__project=False, sub_batch=self.user.sub_batch, batch=self.user.batch, ug=self.user.ug)
-		for i in lab_subject:
-			subject_list.append(i.pk)
+    def _student_labs(self):
 
-		self.request.session['recipients_labs'] = subject_list
+        subject_list = []
+        lab_subject = Teaches.objects.filter(
+            sem=self.user.sem,
+            sec=self.user.sec,
+            department=self.user.department,
+            subject__theory=False,
+            subject__project=False,
+            sub_batch=self.user.sub_batch,
+            batch=self.user.batch,
+            ug=self.user.ug,
+        )
+        for i in lab_subject:
+            subject_list.append(i.pk)
 
-		#This is used in post and will be removed on by one
-		self.request.session['post_recipients_labs'] = subject_list
+        self.request.session["recipients_labs"] = subject_list
 
-		self.request.session['labs_count'] = lab_subject.count()
+        # This is used in post and will be removed on by one
+        self.request.session["post_recipients_labs"] = subject_list
 
-		# remove the form as it is already counted
-		self.forms = self.forms.exclude(code="SL")
+        self.request.session["labs_count"] = lab_subject.count()
 
-		return
+        # remove the form as it is already counted
+        self.forms = self.forms.exclude(code="SL")
 
-	def _student_project(self):
+        return
 
-		subject_list = []
-		project_subject = Teaches.objects.filter(sem=self.user.sem, sec=self.user.sec, batch = self.user.batch,
-			department=self.user.department, subject__project=True, subject__theory=False, subject__elective=False, ug=self.user.ug)
-		for i in project_subject:
-			subject_list.append(i.pk)
+    def _student_project(self):
 
-		self.request.session['recipients_project'] = subject_list
+        subject_list = []
+        project_subject = Teaches.objects.filter(
+            sem=self.user.sem,
+            sec=self.user.sec,
+            batch=self.user.batch,
+            department=self.user.department,
+            subject__project=True,
+            subject__theory=False,
+            subject__elective=False,
+            ug=self.user.ug,
+        )
+        for i in project_subject:
+            subject_list.append(i.pk)
 
-		#This is used in post and will be removed on by one
-		self.request.session['post_recipients_project'] = subject_list
+        self.request.session["recipients_project"] = subject_list
 
-		self.request.session['project_count'] = project_subject.count()
+        # This is used in post and will be removed on by one
+        self.request.session["post_recipients_project"] = subject_list
 
-		# remove the form as it is already counted
-		self.forms = self.forms.exclude(code="SP")
+        self.request.session["project_count"] = project_subject.count()
 
-		return
+        # remove the form as it is already counted
+        self.forms = self.forms.exclude(code="SP")
 
-	def _faculty_mandatory(self):
-		"""
+        return
+
+    def _faculty_mandatory(self):
+        """
 		This is a compulsory form for the faculty where they give the
 		feedack to he other faculties
 		"""
 
-		# if the hod is also a faculty, he should be removed form the `faculties` list
-		hod = UserType.objects.get(name="Hod")
+        # if the hod is also a faculty, he should be removed form the `faculties` list
+        hod = UserType.objects.get(name="Hod")
 
-		faculties = get_user_model().objects.filter(department=self.user.department,
-			user_type__in=self.user_types).exclude(pk=self.user.pk)
+        faculties = (
+            get_user_model()
+            .objects.filter(
+                department=self.user.department, user_type__in=self.user_types
+            )
+            .exclude(pk=self.user.pk)
+        )
 
-		recipient_list = []
-		for i in faculties:
-			recipient_list.append(i.pk)
-		self.request.session['recipients'] = recipient_list
+        recipient_list = []
+        for i in faculties:
+            recipient_list.append(i.pk)
+        self.request.session["recipients"] = recipient_list
 
-		#This is used in post and will be removed on by one
-		self.request.session['post_recipients'] = recipient_list
+        # This is used in post and will be removed on by one
+        self.request.session["post_recipients"] = recipient_list
 
-		self.request.session['count'] = faculties.count()
+        self.request.session["count"] = faculties.count()
 
-		# remove the form as it is already counted
-		self.forms = self.forms.exclude(code="FF")
+        # remove the form as it is already counted
+        self.forms = self.forms.exclude(code="FF")
 
-		return
+        return
 
-	def _hod_mandatory(self):
-		"""
+    def _hod_mandatory(self):
+        """
 		Compulsory form for HOD where they give feedback to the department HODs
 		"""
-		faculty = UserType.objects.get(name="Faculty")
-		hods = get_user_model().objects.filter(user_type__in=self.user_types).exclude(pk=self.user.pk)
-		recipient_list = []
-		for i in hods:
-			recipient_list.append(i.pk)
-		self.request.session['recipients'] = recipient_list
+        faculty = UserType.objects.get(name="Faculty")
+        hods = (
+            get_user_model()
+            .objects.filter(user_type__in=self.user_types)
+            .exclude(pk=self.user.pk)
+        )
+        recipient_list = []
+        for i in hods:
+            recipient_list.append(i.pk)
+        self.request.session["recipients"] = recipient_list
 
-		#This is used in post and will be removed on by one
-		self.request.session['post_recipients'] = recipient_list
+        # This is used in post and will be removed on by one
+        self.request.session["post_recipients"] = recipient_list
 
-		self.request.session['count'] = hods.count()
-		# remove the form as it is already counted
-		self.forms = self.forms.exclude(code="HH")
+        self.request.session["count"] = hods.count()
+        # remove the form as it is already counted
+        self.forms = self.forms.exclude(code="HH")
 
-		return
+        return
 
-	def get_context_data(self, **kwargs):
-		context = super(MainView, self).get_context_data(**kwargs)
-		self.user = self.request.user
-		self.user_types = self.user.user_type.all()
-		self.request.session['count'] = 0
+    def get_context_data(self, **kwargs):
+        context = super(MainView, self).get_context_data(**kwargs)
+        self.user = self.request.user
+        self.user_types = self.user.user_type.all()
+        self.request.session["count"] = 0
 
-		if self.user.is_student():
-			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
-			self._student_theory()
-			self._student_labs()
-			self._student_project()
-		# if the user is hod as well as faculty, faculties mandatory forms shouldn't
-		# be displayed
-		elif self.user.is_faculty() and not self.user.is_hod():
-			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
-			self._faculty_mandatory()
+        if self.user.is_student():
+            self.forms = FeedbackForm.objects.filter(
+                active=True, user_type__in=self.user_types
+            )
+            self._student_theory()
+            self._student_labs()
+            self._student_project()
+            # if the user is hod as well as faculty, faculties mandatory forms shouldn't
+            # be displayed
+        elif self.user.is_faculty() and not self.user.is_hod():
+            self.forms = FeedbackForm.objects.filter(
+                active=True, user_type__in=self.user_types
+            )
+            self._faculty_mandatory()
 
-		elif self.user.is_hod():
-			# faculty mandatory forms are not required, so removed them
-			faculty = UserType.objects.get(name="Faculty")
+        elif self.user.is_hod():
+            # faculty mandatory forms are not required, so removed them
+            faculty = UserType.objects.get(name="Faculty")
 
-			self.user_types = self.user_types.exclude(name="Faculty")
-			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+            self.user_types = self.user_types.exclude(name="Faculty")
+            self.forms = FeedbackForm.objects.filter(
+                active=True, user_type__in=self.user_types
+            )
 
-			self._hod_mandatory()
+            self._hod_mandatory()
 
-		else:
-			self.forms = FeedbackForm.objects.filter(active=True, user_type__in=self.user_types)
+        else:
+            self.forms = FeedbackForm.objects.filter(
+                active=True, user_type__in=self.user_types
+            )
 
+        accounts = Department.objects.get(pk=16)
+        if self.user.department == accounts:
+            self.forms = self.forms.exclude(code="OH")
 
-		accounts = Department.objects.get(pk=16)
-		if self.user.department == accounts:
-			self.forms = self.forms.exclude(code="OH")
+        if self.request.user.is_student():
+            self.request.session["count"] = (
+                self.request.session["theory_count"]
+                + self.request.session["labs_count"]
+                + self.request.session["project_count"]
+            )
 
-		if self.request.user.is_student():
-			self.request.session['count'] = (self.request.session['theory_count'] + self.request.session['labs_count'] + self.request.session['project_count'])
+        for form in self.forms:
+            self.request.session["count"] += 1
 
-		for form in self.forms:
-			self.request.session['count'] += 1
+        form_list = list()
+        for f in self.forms:
+            form_list.append(f.pk)
+        self.request.session["form"] = form_list
 
+        # they are the remaining recipients of the iterable forms
+        form_recipients = list()
+        for f in self.forms:
+            form_recipients.append(f.recipient.name)
 
-		form_list = list()
-		for f in self.forms:
-			form_list.append(f.pk)
-		self.request.session['form'] = form_list
+        self.request.session["form_recipients"] = form_recipients
 
-		# they are the remaining recipients of the iterable forms
-		form_recipients = list()
-		for f in self.forms:
-			form_recipients.append(f.recipient.name)
+        return context
 
-		self.request.session['form_recipients'] = form_recipients
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
 
-		return context
+        if self.user.is_superuser:
+            return HttpResponseRedirect(reverse_lazy("dashboard"))
 
-	def get(self, request, *args, **kwargs):
-		context = self.get_context_data(**kwargs)
+        if not self.user.is_student() and self.user.done:
+            return HttpResponseRedirect(reverse_lazy("dashboard"))
 
-		if self.user.is_superuser:
-			return HttpResponseRedirect(reverse_lazy('dashboard'))
+        return HttpResponseRedirect("/entry")
 
-		if not self.user.is_student() and self.user.done:
-			return HttpResponseRedirect(reverse_lazy('dashboard'))
-
-		return HttpResponseRedirect('/entry')
-
-	def serialize_obj(self, obj):
-	    data = serializers.serialize('json', obj)
-	    struct = json.loads(data)
-	    data = json.dumps(struct[0])
-	    return data
-
+    def serialize_obj(self, obj):
+        data = serializers.serialize("json", obj)
+        struct = json.loads(data)
+        data = json.dumps(struct[0])
+        return data
 
 
 def faculty_remaining(request):
+    """
+	faculty_remaining: Sends email with the list of people who
+	haven't submitted the feedback.
+	"""
+    conn = psycopg2.connect(
+        database="feedback",
+        user="postgres",
+        password="feedback321",
+        host="128.199.250.218",
+        port="5433",
+    )
+    cursor = conn.cursor()
 
-	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5433')
-	cursor = conn.cursor()
+    cursor.execute(
+        "SELECT department_id, first_name  FROM general_user WHERE done = 'false' GROUP BY department_id, first_name ORDER BY department_id, first_name "
+    )
+    data = cursor.fetchall()
+    count = len(data) - 4
+    str1 = "Pending: %d/194\nDepartment Name\n" % (count)
+    data = data[:-4]
 
-	cursor.execute("SELECT department_id, first_name  FROM general_user WHERE done = 'false' GROUP BY department_id, first_name ORDER BY department_id, first_name ")
-	data = cursor.fetchall()
-	count = len(data) - 4
-	str1 = 'Pending: %d/194\nDepartment Name\n' %(count)
-	data = data[:-4]
+    for i in data:
+        str1 += "%s %s\n" % (i[0], i[1].title())
 
-	for i in data:
-	    str1 += '%s %s\n'%(i[0],i[1].title())
+    server = smtplib.SMTP("smtp.gmail.com", 587)
+    server.ehlo()
+    server.starttls()
+    server.ehlo()
+    server.login("feedback@bmsit.in", "Feedback@01")
 
-	server = smtplib.SMTP('smtp.gmail.com', 587)
-	server.ehlo()
-	server.starttls()
-	server.ehlo()
-	server.login("feedback@bmsit.in", "Feedback@01")
-
-	fromaddr = "feedback@bmsit.in"
-	toaddr = "vishakhay@bmsit.in"
-	msg = MIMEMultipart()
-	msg['From'] = fromaddr
-	msg['To'] = toaddr.strip()
-	msg['Subject'] = "Feedback pending"
-	body = str1
-	msg.attach(MIMEText(body, 'plain'))
-	text = msg.as_string()
-	server.sendmail(fromaddr, toaddr, text)
-	template_name = 'faculty_pending.html'
-	return render(request, template_name)
+    fromaddr = "feedback@bmsit.in"
+    toaddr = "vishakhay@bmsit.in"
+    msg = MIMEMultipart()
+    msg["From"] = fromaddr
+    msg["To"] = toaddr.strip()
+    msg["Subject"] = "Feedback pending"
+    body = str1
+    msg.attach(MIMEText(body, "plain"))
+    text = msg.as_string()
+    server.sendmail(fromaddr, toaddr, text)
+    template_name = "faculty_pending.html"
+    return render(request, template_name)
 
 
 def counter_view(request):
-	'''
+    """
 	Displays the total number of students who have given feedback
-	'''
-	total_done = 0
-	student_count = 0
-	count = User.objects.all().filter(is_active=True)
-	for i in count:
-		if i.is_student():
-			student_count += 1
-			if i.done == True:
-				total_done += 1
-	template_name = 'counter.html'
-	context = {"total" : total_done, "student_count" : student_count}
-	return render(request, template_name, context)
+	"""
+    total_done = 0
+    student_count = 0
+    count = User.objects.all().filter(is_active=True)
+    for i in count:
+        if i.is_student():
+            student_count += 1
+            if i.done == True:
+                total_done += 1
+    template_name = "counter.html"
+    context = {"total": total_done, "student_count": student_count}
+    return render(request, template_name, context)
 
 
 def send_text_message_view(request):
-	students = User.objects.filter(user_type__name='Student', done=False, is_superuser=False)	
-	total = len(students)
-	message = Message.objects.first()
-	context = {"total" : total - 1, "message" : message}
-	return render(request, 'send_message.html', context)
+    """
+	This view is used to send the message.
+	"""
+    students = User.objects.filter(
+        user_type__name="Student", done=False, is_superuser=False
+    )
+    total = len(students)
+    message = Message.objects.first()
+    context = {"total": total - 1, "message": message}
+    return render(request, "send_message.html", context)
+
+
 import time
+
+
 def show_message_sent_view(request):
-	def generate():
-		students = User.objects.filter(user_type__name='Student', done=False)		
-		c = 0
-		message = Message.objects.first()
-		for n, i in enumerate(students):
-			yield "data:" + str(n) + "\n\n"
-			text_message = str(str(message) % (i.first_name, i.username))
-			params = { 'number' : i.phone, 'text' : text_message }
-			baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
-			urllib.request.urlopen(baseUrl).read(1000)
-			time.sleep(0.01)
-			c+=1
-			print("Message sent to %s [%s] - %s" %(i.first_name,i.phone, i.username))
-		# x = 0
-		
-		# while x <= 100:
-		# 	yield "data:" + str(x) + "\n\n"
-		# 	x = x + 10
-		# 	time.sleep(0.5)
-	return StreamingHttpResponse(generate(), content_type= 'text/event-stream')
-	# conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
-	# cursor = conn.cursor()
+    """
+	This view actually sends the message.
+	"""
 
-	# cursor.execute("SELECT first_name, phone, username FROM general_user WHERE username = '%s';" %(i))
-	# data = cursor.fetchall()
+    def generate():
+        students = User.objects.filter(user_type__name="Student", done=False)
+        c = 0
+        message = Message.objects.first()
+        for n, i in enumerate(students):
+            yield "data:" + str(n) + "\n\n"
+            text_message = str(str(message) % (i.first_name, i.username))
+            params = {"number": i.phone, "text": text_message}
+            baseUrl = (
+                "https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&"
+                + ap.urlencode(params)
+            )
+            urllib.request.urlopen(baseUrl).read(1000)
+            time.sleep(0.01)
+            c += 1
+            print("Message sent to %s [%s] - %s" % (i.first_name, i.phone, i.username))
+            # x = 0
 
+            # while x <= 100:
+            # 	yield "data:" + str(x) + "\n\n"
+            # 	x = x + 10
+            # 	time.sleep(0.5)
 
-	# # for i in data:
-	# #     if i[0] != 'HOD_SPORTS':
-	# #         print(i[0], i[1], i[2], i[3])
-	# count = 0
-	# message = ''
+    return StreamingHttpResponse(generate(), content_type="text/event-stream")
+    # conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
+    # cursor = conn.cursor()
 
-	# for i in data:
-	#     # print(i[0],i[1],i[2],i[3], i[4])
-	#     # \nYou are required to submit the second feedback using the URL: https://feedback360.bmsit.ac.in. Complete it ASAP. In case of inconvenience submit your query in the help form. The process ends by 1st of May 2018.
-	#     message = 'Dear %s,\n\nYour Username: %s\n\nPowered by DevX' %(i[0],i[2])
-	#     params = { 'number' : i[1], 'text' : message }
-	#     baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
-	#     urllib.request.urlopen(baseUrl).read(1000)
-	#     print("Message sent to %s [%s]" %(i[0],i[1]))
+    # cursor.execute("SELECT first_name, phone, username FROM general_user WHERE username = '%s';" %(i))
+    # data = cursor.fetchall()
+
+    # # for i in data:
+    # #     if i[0] != 'HOD_SPORTS':
+    # #         print(i[0], i[1], i[2], i[3])
+    # count = 0
+    # message = ''
+
+    # for i in data:
+    #     # print(i[0],i[1],i[2],i[3], i[4])
+    #     # \nYou are required to submit the second feedback using the URL: https://feedback360.bmsit.ac.in. Complete it ASAP. In case of inconvenience submit your query in the help form. The process ends by 1st of May 2018.
+    #     message = 'Dear %s,\n\nYour Username: %s\n\nPowered by DevX' %(i[0],i[2])
+    #     params = { 'number' : i[1], 'text' : message }
+    #     baseUrl = 'https://www.smsgatewayhub.com/api/mt/SendSMS?APIKey=62sxGWT6MkCjDul6eNKejw&senderid=BMSITM&channel=2&DCS=0&flashsms=0&' + ap.urlencode(params)
+    #     urllib.request.urlopen(baseUrl).read(1000)
+    #     print("Message sent to %s [%s]" %(i[0],i[1]))
+
 
 import requests
+
+
 def ping_url(request):
-	conn = psycopg2.connect(database='feedback', user='postgres', password='feedback321', host='128.199.250.218', port='5431')
-	cursor = conn.cursor()
+    """
+	This view is used to open reports of each and every faculty members.
+	This is used to store the consolidated report data.
+	"""
+    conn = psycopg2.connect(
+        database="feedback",
+        user="postgres",
+        password="feedback321",
+        host="128.199.250.218",
+        port="5431",
+    )
+    cursor = conn.cursor()
 
-	cursor.execute("SELECT username FROM general_user A, general_user_user_type B WHERE A.id = B.user_id AND B.usertype_id = 4 ORDER BY username;")
-	data = cursor.fetchall()
+    cursor.execute(
+        "SELECT username FROM general_user A, general_user_user_type B WHERE A.id = B.user_id AND B.usertype_id = 4 ORDER BY username;"
+    )
+    data = cursor.fetchall()
 
-	for i in data:
-		r = requests.get('https://feedback360.bmsit.ac.in/__/__/--/__/__sreports/%s/' %(i[0]))
+    for i in data:
+        r = requests.get(
+            "https://feedback360.bmsit.ac.in/__/__/--/__/__sreports/%s/" % (i[0])
+        )
 
-	return HttpResponse("Successfully Pinged all reports")
+    return HttpResponse("Successfully Pinged all reports")
+
 
 # @login_required(login_url='/signin/')
 # def main_view(request):
@@ -689,54 +813,133 @@ def ping_url(request):
 # 	return render(request, template_name, context)
 
 
-
 def done_cron(request, dept_name):
-	'''
+    """
 	Downloads the list of remaing students, department wise in a CSV file
-	'''
-	student_list = User.objects.filter(department__name=dept_name, done=False, is_active=True).order_by('sem')
-	response = HttpResponse(content_type='text/csv')
+	"""
+    student_list = User.objects.filter(
+        department__name=dept_name, done=False, is_active=True
+    ).order_by("sem")
+    response = HttpResponse(content_type="text/csv")
 
-	response['Content-Disposition'] = 'attachment; filename=feedback_pending_' +dept_name +'.csv'
-	writer = csv.writer(response)
-	for student in student_list:
-		writer.writerow([student.username, student.first_name, student.sem, student.sec])
-	writer.writerow(['Total Remaining',student_list.count()])
+    response["Content-Disposition"] = (
+        "attachment; filename=feedback_pending_" + dept_name + ".csv"
+    )
+    writer = csv.writer(response)
+    for student in student_list:
+        writer.writerow(
+            [student.username, student.first_name, student.sem, student.sec]
+        )
+    writer.writerow(["Total Remaining", student_list.count()])
 
-	return response
+    return response
 
 
 def Dashboard(request):
-	'''
+    """
 	Shows the dashboard values
-	'''
-	template_name = 'dashboard.html'
-	user = request.user
-	user_type = user.get_user_type()
-	superuser = user.is_superuser
-	total = int(User.objects.filter(user_type__name='Student', department__name='CSE').count()) + int(User.objects.filter( user_type__name='Student', department__name='ECE').count()) + int(User.objects.filter( user_type__name='Student', department__name='MECH').count()) + int(User.objects.filter( user_type__name='Student', department__name='TCE').count()) + int(User.objects.filter( user_type__name='Student', department__name='EEE').count()) + int(User.objects.filter( user_type__name='Student', department__name='CIV').count()) + int(User.objects.filter( user_type__name='Student', department__name='ISE').count()) + int(User.objects.filter(user_type__name='Student', department__name='MCA').count())
-	done = User.objects.filter(user_type__name='Student', done=True).count()
-	total_p = User.objects.filter(user_type__name='Student').count()
-	total_percent = int(done/total_p *100)
-	context = { "user_type": user_type[0].name,
-				"username" : user.username,
-				"name" : user.first_name,
-				"cse" : User.objects.filter(done=False, user_type__name='Student', department__name='CSE').count(),
-				"ece" : User.objects.filter(done=False, user_type__name='Student', department__name='ECE').count(),
-				"mech" : User.objects.filter(done=False, user_type__name='Student', department__name='MECH').count(),
-				"tce" : User.objects.filter(done=False, user_type__name='Student', department__name='TCE').count(),
-				"eee" : User.objects.filter(done=False, user_type__name='Student', department__name='EEE').count(),
-				"civil" : User.objects.filter(done=False, user_type__name='Student', department__name='CIVIL').count(),
-				"ise" : User.objects.filter(done=False, user_type__name='Student', department__name='ISE').count(),
-				"cse_total" : User.objects.filter( user_type__name='Student', department__name='CSE').count(),
-				"ece_total" : User.objects.filter( user_type__name='Student', department__name='ECE').count(),
-				"mech_total" : User.objects.filter(user_type__name='Student', department__name='MECH').count(),
-				"tce_total" : User.objects.filter(user_type__name='Student', department__name='TCE').count(),
-				"eee_total" : User.objects.filter( user_type__name='Student', department__name='EEE').count(),
-				"civil_total" : User.objects.filter(user_type__name='Student', department__name='CIVIL').count(),
-				"ise_total" : User.objects.filter(user_type__name='Student', department__name='ISE').count(),
-				"total" : total, "percent" : total_percent, "superuser" : superuser}
-	return render(request, template_name, context)
+	"""
+    template_name = "dashboard.html"
+    user = request.user
+    user_type = user.get_user_type()
+    superuser = user.is_superuser
+    total = (
+        int(
+            User.objects.filter(
+                user_type__name="Student", department__name="CSE"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="ECE"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="MECH"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="TCE"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="EEE"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="CIV"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="ISE"
+            ).count()
+        )
+        + int(
+            User.objects.filter(
+                user_type__name="Student", department__name="MCA"
+            ).count()
+        )
+    )
+    done = User.objects.filter(user_type__name="Student", done=True).count()
+    total_p = User.objects.filter(user_type__name="Student").count()
+    total_percent = int(done / total_p * 100)
+    context = {
+        "user_type": user_type[0].name,
+        "username": user.username,
+        "name": user.first_name,
+        "cse": User.objects.filter(
+            done=False, user_type__name="Student", department__name="CSE"
+        ).count(),
+        "ece": User.objects.filter(
+            done=False, user_type__name="Student", department__name="ECE"
+        ).count(),
+        "mech": User.objects.filter(
+            done=False, user_type__name="Student", department__name="MECH"
+        ).count(),
+        "tce": User.objects.filter(
+            done=False, user_type__name="Student", department__name="TCE"
+        ).count(),
+        "eee": User.objects.filter(
+            done=False, user_type__name="Student", department__name="EEE"
+        ).count(),
+        "civil": User.objects.filter(
+            done=False, user_type__name="Student", department__name="CIVIL"
+        ).count(),
+        "ise": User.objects.filter(
+            done=False, user_type__name="Student", department__name="ISE"
+        ).count(),
+        "cse_total": User.objects.filter(
+            user_type__name="Student", department__name="CSE"
+        ).count(),
+        "ece_total": User.objects.filter(
+            user_type__name="Student", department__name="ECE"
+        ).count(),
+        "mech_total": User.objects.filter(
+            user_type__name="Student", department__name="MECH"
+        ).count(),
+        "tce_total": User.objects.filter(
+            user_type__name="Student", department__name="TCE"
+        ).count(),
+        "eee_total": User.objects.filter(
+            user_type__name="Student", department__name="EEE"
+        ).count(),
+        "civil_total": User.objects.filter(
+            user_type__name="Student", department__name="CIVIL"
+        ).count(),
+        "ise_total": User.objects.filter(
+            user_type__name="Student", department__name="ISE"
+        ).count(),
+        "total": total,
+        "percent": total_percent,
+        "superuser": superuser,
+    }
+    return render(request, template_name, context)
+
 
 # 	def get_context_data(self, **kwargs):
 # 		context = super(Dashboard, self).get_context_data(**kwargs)

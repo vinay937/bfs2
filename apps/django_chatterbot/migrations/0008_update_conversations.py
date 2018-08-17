@@ -7,26 +7,19 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0007_response_created_at'),
-    ]
+    dependencies = [("django_chatterbot", "0007_response_created_at")]
 
     operations = [
-        migrations.RemoveField(
-            model_name='conversation',
-            name='statements',
-        ),
-        migrations.RemoveField(
-            model_name='response',
-            name='occurrence',
-        ),
-        migrations.RemoveField(
-            model_name='statement',
-            name='created_at',
-        ),
+        migrations.RemoveField(model_name="conversation", name="statements"),
+        migrations.RemoveField(model_name="response", name="occurrence"),
+        migrations.RemoveField(model_name="statement", name="created_at"),
         migrations.AddField(
-            model_name='conversation',
-            name='responses',
-            field=models.ManyToManyField(help_text='The responses in this conversation.', related_name='conversations', to='django_chatterbot.Response'),
+            model_name="conversation",
+            name="responses",
+            field=models.ManyToManyField(
+                help_text="The responses in this conversation.",
+                related_name="conversations",
+                to="django_chatterbot.Response",
+            ),
         ),
     ]

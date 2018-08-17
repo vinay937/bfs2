@@ -7,7 +7,7 @@ class Command(BaseCommand):
     chat bot's training method.
     """
 
-    help = 'Trains the database used by the chat bot'
+    help = "Trains the database used by the chat bot"
     can_import_settings = True
 
     def handle(self, *args, **options):
@@ -19,11 +19,11 @@ class Command(BaseCommand):
         chatterbot.train(chatterbot.training_data)
 
         # Django 1.8 does not define SUCCESS
-        if hasattr(self.style, 'SUCCESS'):
+        if hasattr(self.style, "SUCCESS"):
             style = self.style.SUCCESS
         else:
             style = self.style.NOTICE
 
-        self.stdout.write(style('Starting training...'))
+        self.stdout.write(style("Starting training..."))
         training_class = chatterbot.trainer.__class__.__name__
         self.stdout.write(style('ChatterBot trained using "%s"' % training_class))

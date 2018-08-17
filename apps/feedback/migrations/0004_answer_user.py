@@ -8,14 +8,16 @@ import django.db.models.deletion
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0003_auto_20180303_0652'),
-    ]
+    dependencies = [("feedback", "0003_auto_20180303_0652")]
 
     operations = [
         migrations.AddField(
-            model_name='answer',
-            name='user',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='feedback.FeedbackForm'),
-        ),
+            model_name="answer",
+            name="user",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="feedback.FeedbackForm",
+            ),
+        )
     ]

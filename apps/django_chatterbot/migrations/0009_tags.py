@@ -7,29 +7,35 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('django_chatterbot', '0008_update_conversations'),
-    ]
+    dependencies = [("django_chatterbot", "0008_update_conversations")]
 
     operations = [
         migrations.CreateModel(
-            name='Tag',
+            name="Tag",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.SlugField()),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.SlugField()),
             ],
-            options={
-                'abstract': False,
-            },
+            options={"abstract": False},
         ),
         migrations.AlterField(
-            model_name='statement',
-            name='text',
+            model_name="statement",
+            name="text",
             field=models.CharField(max_length=255, unique=True),
         ),
         migrations.AddField(
-            model_name='tag',
-            name='statements',
-            field=models.ManyToManyField(related_name='tags', to='django_chatterbot.Statement'),
+            model_name="tag",
+            name="statements",
+            field=models.ManyToManyField(
+                related_name="tags", to="django_chatterbot.Statement"
+            ),
         ),
     ]

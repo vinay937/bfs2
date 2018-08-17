@@ -13,27 +13,51 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Response',
+            name="Response",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('occurrence', models.PositiveIntegerField(default=0)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("occurrence", models.PositiveIntegerField(default=0)),
             ],
         ),
         migrations.CreateModel(
-            name='Statement',
+            name="Statement",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('text', models.CharField(max_length=255, unique=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("text", models.CharField(max_length=255, unique=True)),
             ],
         ),
         migrations.AddField(
-            model_name='response',
-            name='response',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='+', to='django_chatterbot.Statement'),
+            model_name="response",
+            name="response",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="+",
+                to="django_chatterbot.Statement",
+            ),
         ),
         migrations.AddField(
-            model_name='response',
-            name='statement',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='in_response_to', to='django_chatterbot.Statement'),
+            model_name="response",
+            name="statement",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="in_response_to",
+                to="django_chatterbot.Statement",
+            ),
         ),
     ]

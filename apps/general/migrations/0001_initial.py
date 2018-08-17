@@ -14,111 +14,312 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('auth', '0008_alter_user_username_max_length'),
-    ]
+    dependencies = [("auth", "0008_alter_user_username_max_length")]
 
     operations = [
         migrations.CreateModel(
-            name='User',
+            name="User",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
-                ('username', models.CharField(error_messages={'unique': 'A user with that username already exists.'}, help_text='Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.', max_length=150, unique=True, validators=[django.contrib.auth.validators.UnicodeUsernameValidator()], verbose_name='username')),
-                ('first_name', models.CharField(blank=True, max_length=30, verbose_name='first name')),
-                ('last_name', models.CharField(blank=True, max_length=30, verbose_name='last name')),
-                ('email', models.EmailField(blank=True, max_length=254, verbose_name='email address')),
-                ('is_staff', models.BooleanField(default=False, help_text='Designates whether the user can log into this admin site.', verbose_name='staff status')),
-                ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
-                ('phone', models.CharField(blank=True, max_length=15, null=True, verbose_name='Phone')),
-                ('sem', models.IntegerField(blank=True, null=True, verbose_name='Semester')),
-                ('sec', models.CharField(blank=True, max_length=10, null=True, verbose_name='Section')),
-                ('date_of_joining', models.DateField(blank=True, null=True, verbose_name='Date of Joining')),
-                ('batch', models.CharField(blank=True, max_length=50, null=True, verbose_name='Lab Batch')),
-                ('sub_batch', models.CharField(blank=True, max_length=50, null=True, verbose_name='Lab Sub Batch')),
-                ('partially_done', models.BooleanField(default=False)),
-                ('done', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        error_messages={
+                            "unique": "A user with that username already exists."
+                        },
+                        help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
+                        max_length=150,
+                        unique=True,
+                        validators=[
+                            django.contrib.auth.validators.UnicodeUsernameValidator()
+                        ],
+                        verbose_name="username",
+                    ),
+                ),
+                (
+                    "first_name",
+                    models.CharField(
+                        blank=True, max_length=30, verbose_name="first name"
+                    ),
+                ),
+                (
+                    "last_name",
+                    models.CharField(
+                        blank=True, max_length=30, verbose_name="last name"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        blank=True, max_length=254, verbose_name="email address"
+                    ),
+                ),
+                (
+                    "is_staff",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates whether the user can log into this admin site.",
+                        verbose_name="staff status",
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(
+                        default=True,
+                        help_text="Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                        verbose_name="active",
+                    ),
+                ),
+                (
+                    "date_joined",
+                    models.DateTimeField(
+                        default=django.utils.timezone.now, verbose_name="date joined"
+                    ),
+                ),
+                (
+                    "phone",
+                    models.CharField(
+                        blank=True, max_length=15, null=True, verbose_name="Phone"
+                    ),
+                ),
+                (
+                    "sem",
+                    models.IntegerField(blank=True, null=True, verbose_name="Semester"),
+                ),
+                (
+                    "sec",
+                    models.CharField(
+                        blank=True, max_length=10, null=True, verbose_name="Section"
+                    ),
+                ),
+                (
+                    "date_of_joining",
+                    models.DateField(
+                        blank=True, null=True, verbose_name="Date of Joining"
+                    ),
+                ),
+                (
+                    "batch",
+                    models.CharField(
+                        blank=True, max_length=50, null=True, verbose_name="Lab Batch"
+                    ),
+                ),
+                (
+                    "sub_batch",
+                    models.CharField(
+                        blank=True,
+                        max_length=50,
+                        null=True,
+                        verbose_name="Lab Sub Batch",
+                    ),
+                ),
+                ("partially_done", models.BooleanField(default=False)),
+                ("done", models.BooleanField(default=False)),
             ],
             options={
-                'verbose_name_plural': 'users',
-                'verbose_name': 'user',
-                'abstract': False,
+                "verbose_name_plural": "users",
+                "verbose_name": "user",
+                "abstract": False,
             },
-            managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+            managers=[("objects", django.contrib.auth.models.UserManager())],
+        ),
+        migrations.CreateModel(
+            name="Department",
+            fields=[
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "name",
+                    models.CharField(
+                        help_text="Name of the department",
+                        max_length=250,
+                        verbose_name="Name",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Department',
+            name="Semester",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(help_text='Name of the department', max_length=250, verbose_name='Name')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("sem", models.IntegerField(default=1)),
+                ("active", models.BooleanField(default=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Semester',
+            name="Subject",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('sem', models.IntegerField(default=1)),
-                ('active', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="Subject Name")),
+                ("code", models.CharField(max_length=50, verbose_name="Subject Code")),
+                ("theory", models.BooleanField(default=True)),
+                ("elective", models.BooleanField(default=False)),
             ],
         ),
         migrations.CreateModel(
-            name='Subject',
+            name="Teaches",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='Subject Name')),
-                ('code', models.CharField(max_length=50, verbose_name='Subject Code')),
-                ('theory', models.BooleanField(default=True)),
-                ('elective', models.BooleanField(default=False)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "sem",
+                    models.CharField(max_length=50, verbose_name="Student's Semester"),
+                ),
+                (
+                    "sec",
+                    models.CharField(max_length=50, verbose_name="Student's Section"),
+                ),
+                (
+                    "batch",
+                    models.CharField(
+                        blank=True,
+                        max_length=50,
+                        null=True,
+                        verbose_name="Student's Batch",
+                    ),
+                ),
+                (
+                    "sub_batch",
+                    models.CharField(
+                        blank=True,
+                        max_length=50,
+                        null=True,
+                        verbose_name="Student's sub batch",
+                    ),
+                ),
+                (
+                    "department",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="general.Department",
+                        verbose_name="Student's department",
+                    ),
+                ),
+                (
+                    "subject",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="general.Subject",
+                    ),
+                ),
+                (
+                    "teacher",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Teaches',
+            name="UserType",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('sem', models.CharField(max_length=50, verbose_name="Student's Semester")),
-                ('sec', models.CharField(max_length=50, verbose_name="Student's Section")),
-                ('batch', models.CharField(blank=True, max_length=50, null=True, verbose_name="Student's Batch")),
-                ('sub_batch', models.CharField(blank=True, max_length=50, null=True, verbose_name="Student's sub batch")),
-                ('department', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='general.Department', verbose_name="Student's department")),
-                ('subject', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='general.Subject')),
-                ('teacher', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='UserType',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=50, verbose_name='Type of User')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=50, verbose_name="Type of User")),
             ],
         ),
         migrations.AddField(
-            model_name='user',
-            name='department',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, to='general.Department'),
+            model_name="user",
+            name="department",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="general.Department",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='elective',
-            field=models.ManyToManyField(blank=True, null=True, to='general.Subject'),
+            model_name="user",
+            name="elective",
+            field=models.ManyToManyField(blank=True, null=True, to="general.Subject"),
         ),
         migrations.AddField(
-            model_name='user',
-            name='groups',
-            field=models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups'),
+            model_name="user",
+            name="groups",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Group",
+                verbose_name="groups",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='user_permissions',
-            field=models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions'),
+            model_name="user",
+            name="user_permissions",
+            field=models.ManyToManyField(
+                blank=True,
+                help_text="Specific permissions for this user.",
+                related_name="user_set",
+                related_query_name="user",
+                to="auth.Permission",
+                verbose_name="user permissions",
+            ),
         ),
         migrations.AddField(
-            model_name='user',
-            name='user_type',
-            field=models.ManyToManyField(to='general.UserType'),
+            model_name="user",
+            name="user_type",
+            field=models.ManyToManyField(to="general.UserType"),
         ),
     ]

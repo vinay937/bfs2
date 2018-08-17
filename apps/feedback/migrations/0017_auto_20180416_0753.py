@@ -7,14 +7,12 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('feedback', '0016_auto_20180416_0747'),
-    ]
+    dependencies = [("feedback", "0016_auto_20180416_0747")]
 
     operations = [
         migrations.AlterField(
-            model_name='studentconsolidatedreport',
-            name='total',
-            field=models.FloatField(max_length=10, verbose_name='Total value they got'),
-        ),
+            model_name="studentconsolidatedreport",
+            name="total",
+            field=models.FloatField(max_length=10, verbose_name="Total value they got"),
+        )
     ]
