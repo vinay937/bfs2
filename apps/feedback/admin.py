@@ -1,11 +1,17 @@
 from django.contrib import admin
+from import_export.admin import ImportExportModelAdmin
+from import_export import resources
 
 from .models import *
 
 admin.site.register(FeedbackForm)
 admin.site.register(Question)
 admin.site.register(ConsolidatedReport)
-admin.site.register(StudentConsolidatedReport)
+
+
+class StudentConsolidatedResource(resources.ModelResource):
+    class Meta:
+        model = StudentConsolidatedReport
 
 
 @admin.register(Answer)
@@ -23,3 +29,8 @@ class StudentAnswerAdmin(admin.ModelAdmin):
 
     def get_code(self, obj):
         return obj.form.code
+
+
+@admin.register(StudentConsolidatedReport)
+class StudentConsolidatedAdmin(ImportExportModelAdmin):
+    resource_class = StudentConsolidatedResource

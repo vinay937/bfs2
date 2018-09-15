@@ -26,7 +26,8 @@ handler404 = "apps.general.views.page_not_found_view"
 handler500 = "apps.general.views.internal_server_error_view"
 
 urlpatterns = [
-    url(r"^admin/", admin.site.urls),
+    url(r"^jet/", include("jet.urls", "jet")),  # Django JET URLS
+    url(r"^admin/", include(admin.site.urls)),
     url(r"^", include("apps.feedback.urls")),
     url(r"^", include("apps.general.urls")),
     url(r"^$", HomeView.as_view()),

@@ -26,7 +26,7 @@ MEDIA_DIR = os.path.join(BASE_DIR, "media")
 SECRET_KEY = "l(p1)k6rv%d=6pv0cyazwli*ps21r4+&4%d+ka57%-z9yx_vkl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*", "feedback360.bmsit.ac.in"]
 
@@ -34,6 +34,7 @@ AUTH_USER_MODEL = "general.User"
 # Application definition
 
 INSTALLED_APPS = [
+    "jet",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     "apps.general",
     "apps.feedback",
     "apps.django_chatterbot",
+    "import_export",
 ]
 
 MIDDLEWARE = [
