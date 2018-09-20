@@ -177,7 +177,7 @@ class HomeView(FormView):
                         self.email_otp(random_otp, qs)
                         self.password_update(random_otp, usn)
                         messages.error(
-                            request, "OTP  + random_otp " sent to " + qs.phone + " and " + qs.email
+                            request, "OTP "  + random_otp  + " sent to " + qs.phone + " and " + qs.email
                         )
                         return HttpResponseRedirect("/login/usn=" + usn)
 
