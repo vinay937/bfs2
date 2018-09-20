@@ -138,7 +138,7 @@ class HomeView(FormView):
             "Feedback Support <feedbackotp@bmsit.in>",
             [qs.email],
         )
-        email.send()
+        #email.send()
 
     def feedback_over_view(self, request):
         template_name = "feedback_over_final.html"
