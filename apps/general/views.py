@@ -913,6 +913,9 @@ def Dashboard(request):
         "ise": User.objects.filter(
             done=False, user_type__name="Student", department__name="ISE"
         ).count(),
+        "mca": User.objects.filter(
+            done=False, user_type__name="Student", department__name="MCA"
+        ).count(),
         "cse_total": User.objects.filter(
             user_type__name="Student", department__name="CSE"
         ).count(),
@@ -933,6 +936,9 @@ def Dashboard(request):
         ).count(),
         "ise_total": User.objects.filter(
             user_type__name="Student", department__name="ISE"
+        ).count(),
+        "mca_total": User.objects.filter(
+            user_type__name="Student", department__name="MCA"
         ).count(),
         "total": total,
         "percent": total_percent,
