@@ -255,10 +255,30 @@ $( window ).resize(function() {
 <footer style="margin-top:5%;position: fixed; bottom: 0px; width:100%; background-color:#000; height:50px; color:white;" class="visible-xs">
     <div style="margin-top:2.5%">
 
+        {% if recipients_theory %}
         {% for rn in recipients_theory %}
         {% if rn.teacher.first_name == recipient_name.teacher.first_name and rn.subject == recipient_name.subject %}
-            <strong><center><span style="color: #FFF;">{{rn.subject_name}}</span></center></strong>
+            <strong><center><span style="color: #FFF;">{{rn.subject.name}}</span></center></strong>
         {% endif %}
         {% endfor %}
+        {% endif %}
+
+        {% if recipients_labs %}
+        {% for rn in recipients_labs %}
+        {% if rn.teacher.first_name == recipient_name.teacher.first_name and rn.subject == recipient_name.subject %}
+            <strong><center><span style="color: #FFF;">{{rn.subject.name}}</span></center></strong>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        {% if recipients_project %}
+        {% for rn in recipients_project %}
+        {% if rn.teacher.first_name == recipient_name.teacher.first_name and rn.subject == recipient_name.subject %}
+            <strong><center><span style="color: #FFF;">{{rn.subject.name}}</span></center></strong>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+
     </div>
 </footer>
