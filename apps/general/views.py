@@ -613,7 +613,7 @@ def show_message_sent_view(request):
     # # for i in data:
     # #     if i[0] != 'HOD_SPORTS':
     # #         print(i[0], i[1], i[2], i[3])
-    # count = 0
+    # `t = 0
     # message = ''
 
     # for i in data:
@@ -846,42 +846,42 @@ def Dashboard(request):
     total = (
         int(
             User.objects.filter(
-                user_type__name="Student", department__name="CSE"
+                user_type__name="Student", department__name="CSE",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="ECE"
+                user_type__name="Student", department__name="ECE",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="MECH"
+                user_type__name="Student", department__name="MECH",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="TCE"
+                user_type__name="Student", department__name="TCE",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="EEE"
+                user_type__name="Student", department__name="EEE",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="CIV"
+                user_type__name="Student", department__name="CIV",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="ISE"
+                user_type__name="Student", department__name="ISE",is_active=True
             ).count()
         )
         + int(
             User.objects.filter(
-                user_type__name="Student", department__name="MCA"
+                user_type__name="Student", department__name="MCA",is_active=True
             ).count()
         )
     )
@@ -893,52 +893,52 @@ def Dashboard(request):
         "username": user.username,
         "name": user.first_name,
         "cse": User.objects.filter(
-            done=False, user_type__name="Student", department__name="CSE"
+            done=False, user_type__name="Student", department__name="CSE",is_active=True
         ).count(),
         "ece": User.objects.filter(
-            done=False, user_type__name="Student", department__name="ECE"
+            done=False, user_type__name="Student", department__name="ECE",is_active=True
         ).count(),
         "mech": User.objects.filter(
-            done=False, user_type__name="Student", department__name="MECH"
+            done=False, user_type__name="Student", department__name="MECH",is_active=True
         ).count(),
         "tce": User.objects.filter(
-            done=False, user_type__name="Student", department__name="TCE"
+            done=False, user_type__name="Student", department__name="TCE",is_active=True
         ).count(),
         "eee": User.objects.filter(
-            done=False, user_type__name="Student", department__name="EEE"
+            done=False, user_type__name="Student", department__name="EEE",is_active=True
         ).count(),
         "civil": User.objects.filter(
-            done=False, user_type__name="Student", department__name="CIVIL"
+            done=False, user_type__name="Student", department__name="CIVIL",is_active=True
         ).count(),
         "ise": User.objects.filter(
-            done=False, user_type__name="Student", department__name="ISE"
+            done=False, user_type__name="Student", department__name="ISE",is_active=True
         ).count(),
         "mca": User.objects.filter(
-            done=False, user_type__name="Student", department__name="MCA"
+            done=False, user_type__name="Student", department__name="MCA",is_active=True
         ).count(),
         "cse_total": User.objects.filter(
-            user_type__name="Student", department__name="CSE"
+            user_type__name="Student", department__name="CSE",is_active=True
         ).count(),
         "ece_total": User.objects.filter(
-            user_type__name="Student", department__name="ECE"
+            user_type__name="Student", department__name="ECE",is_active=True
         ).count(),
         "mech_total": User.objects.filter(
-            user_type__name="Student", department__name="MECH"
+            user_type__name="Student", department__name="MECH",is_active=True
         ).count(),
         "tce_total": User.objects.filter(
-            user_type__name="Student", department__name="TCE"
+            user_type__name="Student", department__name="TCE",is_active=True
         ).count(),
         "eee_total": User.objects.filter(
-            user_type__name="Student", department__name="EEE"
+            user_type__name="Student", department__name="EEE",is_active=True
         ).count(),
         "civil_total": User.objects.filter(
-            user_type__name="Student", department__name="CIVIL"
+            user_type__name="Student", department__name="CIVIL",is_active=True
         ).count(),
         "ise_total": User.objects.filter(
-            user_type__name="Student", department__name="ISE"
+            user_type__name="Student", department__name="ISE",is_active=True
         ).count(),
         "mca_total": User.objects.filter(
-            user_type__name="Student", department__name="MCA"
+            user_type__name="Student", department__name="MCA",is_active=True
         ).count(),
         "total": total,
         "percent": total_percent,
