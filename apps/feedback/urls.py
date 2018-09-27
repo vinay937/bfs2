@@ -14,7 +14,7 @@ urlpatterns = [
     # url(r'^report-principal/$',TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='principal-select-faculty'),
     # If report portal is to be CLOSED, comment below, else comment above
     url(r"^report/", views.Report.as_view(), name="report"),
-    # url(r'^__/__/--/__/__reports/(?P<username>[-\w]+)/$',views.consolidated, name='reports-url'),
+    url(r'^__/__/--/__/__reports/(?P<username>[-\w]+)/$',views.consolidated, name='reports-url'),
     url(
         r"^reportstudent/(?P<username>[-\w]+)/$",
         views.Student_Report.as_view(),
