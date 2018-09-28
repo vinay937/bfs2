@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
+import datetime
+
 
 class FeedbackForm(models.Model):
     """
@@ -137,3 +139,4 @@ class StudentConsolidatedReport(models.Model):
         "Department Code", max_length=30, null=True, blank=True
     )
     teacher = models.ForeignKey("general.teaches", null=True)
+    date_created = models.DateField(auto_now_add=True, blank=True)
