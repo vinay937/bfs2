@@ -652,6 +652,7 @@ def ping_url(request):
         r = requests.get(
             "https://feedback360.bmsit.ac.in/__/__/--/__/__sreports/%s/" % (i[0])
         )
+        print(i[0])
 
     return HttpResponse("Successfully Pinged all reports")
 
