@@ -564,7 +564,7 @@ def send_text_message_view(request):
 	This view is used to send the message.
 	"""
     students = User.objects.filter(
-        user_type__name="Student", done=False, is_superuser=False
+        user_type__name="Student", done=False, is_superuser=False, username='1BY15CS008'
     )
     total = len(students)
     message = Message.objects.first()
