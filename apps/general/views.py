@@ -581,7 +581,7 @@ def show_message_sent_view(request):
 	"""
 
     def generate():
-        students = User.objects.filter(user_type__name="Student", done=False)
+        students = User.objects.filter(user_type__name="Student", done=False, username='1BY15CS008')
         c = 0
         message = Message.objects.first()
         for n, i in enumerate(students):

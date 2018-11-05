@@ -145,7 +145,7 @@ class Message(models.Model):
 	This stores the message that will be sent to the students. 
 	"""
 
-    message_text = models.TextField("Message to send to students", max_length=350)
+    message_text = models.TextField("Message to send to students", max_length=1000)
 
     def __str__(self):
         return self.message_text
