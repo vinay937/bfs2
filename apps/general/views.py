@@ -88,7 +88,7 @@ def notifyView(request):
         + str(request.user)
         + "\nPlease look into it immediately.\n\nThanks,\nBFS-BMSIT",
         "Feedback Support <feedback@bmsit.in>",
-        ["nandkeolyar.aayush@gmail.com", "amoghsk279@gmail.com"],
+        ["nandkeolyar.aayush@gmail.com", "amoghsk279@gmail.com", "kumarvinay937@gmail.com", "adarshkumar.sah6@gmail.com"],
     )
     email.send()
     return render(request, template_name, context)
