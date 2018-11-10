@@ -638,8 +638,8 @@ def ping_url(request):
         database="feedback",
         user="postgres",
         password="feedback321",
-        host="128.199.250.218",
-        port="5431",
+        host="13.232.62.217",
+        port="5432",
     )
     cursor = conn.cursor()
 
