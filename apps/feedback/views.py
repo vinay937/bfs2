@@ -490,7 +490,7 @@ def sconsolidated(request, username):
     """
 	This view displays the student feeddback reports of the faculty.
 	"""
-    template_name = "report_closed_for_feedback.html"
+    template_name = "feedback/student_report.html"
     user = get_user_model().objects.get(username=username)
     loggedin_user = request.user
     print(loggedin_user)
