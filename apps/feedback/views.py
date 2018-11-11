@@ -490,7 +490,7 @@ def sconsolidated(request, username):
     """
 	This view displays the student feeddback reports of the faculty.
 	"""
-    template_name = "report_closed_for_feedback.html"
+    template_name = "feedback/student_report.html"
     user = get_user_model().objects.get(username=username)
     loggedin_user = request.user
     print(loggedin_user)
@@ -513,155 +513,172 @@ def sconsolidated(request, username):
     data = Teaches.objects.filter(teacher__username=user)
     results = dict()
 
+    teach = []
+
     for form in forms:
         answers = StudentAnswer.objects.filter(
             form=form, teacher__teacher__username=user
         )
-        results[form] = answers
-
+        if answers:
+            # print("Answers\n",answers)
+            results[form] = answers
+            for i in answers:
+                # print("------------")
+                # print(i.teacher)
+                teach.append(i.teacher)
+        # else:
+            # print("None\n",answers)
+    teach = set(teach)
         # for i in data:
         # 	print(i.subject)
     good_total = 0
     value = list()
+    # teach = []
+    
+    # print("teaches")
+    # for i in teach:
+    #     print(i)
+
     for i in data:
-        # print("________________________| CLASS: |________________________")
-        # print("Subject",i.subject.name)
-        # print("Section",i.sec)
-        # print("Sem",i.sem.sem)
-        ls = [
-            i.sem.sem,
-            i.sec,
-            i.subject.name,
-            i.ug,
-            i.batch,
-            i.sub_batch,
-            i.department,
-            i.subject.elective,
-        ]
-        for form, answers in results.items():
-            excellent_total = 0
-            good_total = 0
-            satisfactory_total = 0
-            poor_total = 0
-            very_poor_total = 0
-            l = list()
-            que_count = 0
-            for que in form.question.all():
-                # print("________________________| QUESTION: |________________________")
-                # print(que.text)
+        if i in teach:
+            # print("________________________| CLASS: |________________________")
+            # print("Subject",i.subject.name)
+            # print("Section",i.sec)
+            # print("Sem",i.sem.sem)
+            ls = [
+                i.sem.sem,
+                i.sec,
+                i.subject.name,
+                i.ug,
+                i.batch,
+                i.sub_batch,
+                i.department,
+                i.subject.elective,
+            ]
+            for form, answers in results.items():
+                excellent_total = 0
+                good_total = 0
+                satisfactory_total = 0
+                poor_total = 0
+                very_poor_total = 0
+                l = list()
                 que_count = 0
-                excellent = 0
-                good = 0
-                satisfactory = 0
-                poor = 0
-                very_poor = 0
-                for j in answers:
-                    # print("________________________| THEORY: |________________________")
-                    # print(i.subject.theory, j.teacher.subject.theory)
-                    # print("________________________| ELECTIVE: |________________________")
-                    # print(i.subject.elective, j.teacher.subject.elective)
-                    # print("________________________| PROJECT: |________________________")
-                    # print(i.subject.project, j.teacher.subject.project)
-                    res = bool()
-                    if que_count < i.count:
-                        if i == j.teacher:
-                            # print("________________________| RESULT: |________________________")
-                            res = True
-                            # print(res)
-                        if j.question == que:
-                            if j.value == "Excellent":
-                                if res:
-                                    excellent += 1
-                                    excellent_total += 1
-                                    que_count += 1
+                for que in form.question.all():
+                    # print("________________________| QUESTION: |________________________")
+                    # print(que.text)
+                    que_count = 0
+                    excellent = 0
+                    good = 0
+                    satisfactory = 0
+                    poor = 0
+                    very_poor = 0
+                    for j in answers:
+                        # print("________________________| THEORY: |________________________")
+                        # print(i.subject.theory, j.teacher.subject.theory)
+                        # print("________________________| ELECTIVE: |________________________")
+                        # print(i.subject.elective, j.teacher.subject.elective)
+                        # print("________________________| PROJECT: |________________________")
+                        # print(i.subject.project, j.teacher.subject.project)
+                        res = bool()
+                        if que_count < i.count:
+                            if i == j.teacher:
+                                # print("________________________| RESULT: |________________________")
+                                res = True
+                                # print(res)
+                            if j.question == que:
+                                if j.value == "Excellent":
+                                    if res:
+                                        excellent += 1
+                                        excellent_total += 1
+                                        que_count += 1
 
-                            if j.value == "Good":
-                                if res:
-                                    good += 1
-                                    good_total += 1
-                                    que_count += 1
+                                if j.value == "Good":
+                                    if res:
+                                        good += 1
+                                        good_total += 1
+                                        que_count += 1
 
-                            if j.value == "Satisfactory":
-                                if res:
-                                    satisfactory += 1
-                                    satisfactory_total += 1
-                                    que_count += 1
+                                if j.value == "Satisfactory":
+                                    if res:
+                                        satisfactory += 1
+                                        satisfactory_total += 1
+                                        que_count += 1
 
-                            if j.value == "Poor":
-                                if res:
-                                    poor += 1
-                                    poor_total += 1
-                                    que_count += 1
+                                if j.value == "Poor":
+                                    if res:
+                                        poor += 1
+                                        poor_total += 1
+                                        que_count += 1
 
-                            if j.value == "Very Poor":
-                                if res:
-                                    very_poor += 1
-                                    very_poor_total += 1
-                                    que_count += 1
+                                if j.value == "Very Poor":
+                                    if res:
+                                        very_poor += 1
+                                        very_poor_total += 1
+                                        que_count += 1
 
-                if excellent or good or satisfactory or poor or very_poor:
-                    total = (
-                        (
-                            (excellent * 5)
-                            + (good * 4)
-                            + (satisfactory * 3)
-                            + (poor * 2)
-                            + (very_poor)
+                    if excellent or good or satisfactory or poor or very_poor:
+                        total = (
+                            (
+                                (excellent * 5)
+                                + (good * 4)
+                                + (satisfactory * 3)
+                                + (poor * 2)
+                                + (very_poor)
+                            )
+                            / ((excellent + good + satisfactory + poor + very_poor) * 5)
+                            * 100
                         )
-                        / ((excellent + good + satisfactory + poor + very_poor) * 5)
+                        l.append(
+                            [
+                                que.text,
+                                excellent,
+                                good,
+                                satisfactory,
+                                poor,
+                                very_poor,
+                                total,
+                            ]
+                        )
+                        # print("________________________| List: |________________________")
+                        # for x in l:
+                        # 	print(x)
+                if l:
+                    grand_total = (
+                        (
+                            (excellent_total * 5)
+                            + (good_total * 4)
+                            + (satisfactory_total * 3)
+                            + (poor_total * 2)
+                            + (very_poor_total)
+                        )
+                        / (
+                            (
+                                excellent_total
+                                + good_total
+                                + satisfactory_total
+                                + poor_total
+                                + very_poor_total
+                            )
+                            * 5
+                        )
                         * 100
                     )
-                    l.append(
+                    ls.append(l)
+                    ls.append(
                         [
-                            que.text,
-                            excellent,
-                            good,
-                            satisfactory,
-                            poor,
-                            very_poor,
-                            total,
+                            "Total",
+                            excellent_total,
+                            good_total,
+                            satisfactory_total,
+                            poor_total,
+                            very_poor_total,
+                            grand_total,
                         ]
                     )
-                    # print("________________________| List: |________________________")
-                    # for x in l:
+                    # print("________________________| LS: |________________________")
+                    # for x in ls:
                     # 	print(x)
-            if l:
-                grand_total = (
-                    (
-                        (excellent_total * 5)
-                        + (good_total * 4)
-                        + (satisfactory_total * 3)
-                        + (poor_total * 2)
-                        + (very_poor_total)
-                    )
-                    / (
-                        (
-                            excellent_total
-                            + good_total
-                            + satisfactory_total
-                            + poor_total
-                            + very_poor_total
-                        )
-                        * 5
-                    )
-                    * 100
-                )
-                ls.append(l)
-                ls.append(
-                    [
-                        "Total",
-                        excellent_total,
-                        good_total,
-                        satisfactory_total,
-                        poor_total,
-                        very_poor_total,
-                        grand_total,
-                    ]
-                )
-                # print("________________________| LS: |________________________")
-                # for x in ls:
-                # 	print(x)
-        value.append(ls)
+            value.append(ls)
 
         #
 
@@ -669,6 +686,8 @@ def sconsolidated(request, username):
         # for x in value:
         # 	print(x)
 
+    # for i in value:
+    #     print(i)
     context = {"user": user, "report": value}
     return render(request, template_name, context)
 
