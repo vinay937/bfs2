@@ -34,3 +34,6 @@ class StudentAnswerAdmin(admin.ModelAdmin):
 @admin.register(StudentConsolidatedReport)
 class StudentConsolidatedAdmin(ImportExportModelAdmin):
     resource_class = StudentConsolidatedResource
+
+    def __str__(self):
+    	return self.name + self.count

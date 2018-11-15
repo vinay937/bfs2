@@ -139,4 +139,5 @@ class StudentConsolidatedReport(models.Model):
         "Department Code", max_length=30, null=True, blank=True
     )
     teacher = models.ForeignKey("general.teaches", null=True)
+    count = models.IntegerField("No. of students",null=True, blank=True)
     date_created = models.DateField(auto_now_add=True, blank=True)

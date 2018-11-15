@@ -99,18 +99,22 @@ table, th, td {
     		<center>
     		<p>
     			<font size="3" face="arial">Faculty Feedback on <span id="time"></span> (Odd Semester 2018-19)</font>
+                <center><h4><span class="faculty_dept">Total No. of faculty: {{ count }} </span></h4></center>
     		</p>
     	</b>
     </center>
     <hr />
     {% for key, value in dept.items %}
-    <center><h1><span class="faculty_dept">DEPARTMENT : {{value}} </span></h1></center>
+
+    <center><h1><span class="faculty_dept">DEPARTMENT : {{value.0}} </span></h1></center>
+    <center><h4><span class="faculty_dept">No. of Faculty : {{value.1}} </span></h4></center>
     <br />
     <br />
             <table>
             <tr>
                 <th>Name</th>
                 <th>Subject</th>
+                <th>No. of Students</th>
                 <th>Semester</th>
                 <th>Section</th>
                 <th>Batch</th>
@@ -123,6 +127,7 @@ table, th, td {
                 <tr>
                     <td><center style="font-size:0.8em;">{{rep.name}}</center></td>
                     <td><center style="font-size:0.8em;">{{rep.teacher.subject.name}}</center></td>
+                    <td><center style="font-size:0.8em;">{{rep.count}}</center></td>
                     <td><center style="font-size:0.8em;">{{rep.teacher.sem.sem}}</center></td>
                     <td><center style="font-size:0.8em;">{{rep.teacher.sec}}</center></td>
                     <td><center style="font-size:0.8em;">{% if rep.teacher.batch != None %}{{rep.teacher.batch}}{% else %} - {% endif %}</center></td>
