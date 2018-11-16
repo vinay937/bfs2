@@ -141,3 +141,6 @@ class StudentConsolidatedReport(models.Model):
     teacher = models.ForeignKey("general.teaches", null=True)
     count = models.IntegerField("No. of students",null=True, blank=True)
     date_created = models.DateField(auto_now_add=True, blank=True)
+
+    def __str__(self):
+        return self.name + " | "+self.teacher.subject.name + " [" + str(self.count) + "]"

@@ -125,13 +125,13 @@ table, th, td {
             {% for rep in report %}
             {% if key == rep.department %}
                 <tr>
-                    <td><center style="font-size:0.8em;">{{rep.name}}</center></td>
-                    <td><center style="font-size:0.8em;">{{rep.teacher.subject.name}}</center></td>
+                    <td><center style="font-size:0.8em; text-transform: capitalize;">{{rep.name}}</center></td>
+                    <td><center style="font-size:0.8em; text-transform: capitalize;">{{rep.teacher.subject.name}}</center></td>
                     <td><center style="font-size:0.8em;">{{rep.count}}</center></td>
                     <td><center style="font-size:0.8em;">{{rep.teacher.sem.sem}}</center></td>
-                    <td><center style="font-size:0.8em;">{{rep.teacher.sec}}</center></td>
-                    <td><center style="font-size:0.8em;">{% if rep.teacher.batch != None %}{{rep.teacher.batch}}{% else %} - {% endif %}</center></td>
-                    <td><center style="font-size:0.8em;">{% if rep.teacher.sub_batch != None %}{{rep.teacher.sub_batch}}{% else %} - {% endif %}</center></td>
+                    <td><center style="font-size:0.8em; text-transform: uppercase;">{{rep.teacher.sec}}</center></td>
+                    <td><center style="font-size:0.8em; text-transform: uppercase;">{% if rep.teacher.batch != None %}{{rep.teacher.batch}}{% else %} - {% endif %}</center></td>
+                    <td><center style="font-size:0.8em; text-transform: uppercase;">{% if rep.teacher.sub_batch != None %}{{rep.teacher.sub_batch}}{% else %} - {% endif %}</center></td>
                     <td><center style="font-size:0.8em;">{{rep.teacher.department}}{% if rep.teacher.ug %} (UG){% else %} (PG){% endif %}</center></td>
                     <td><center style="color:{% if rep.total < 60.0 %}#ff084a{% else %}green{% endif %}; font-size:0.8em;">{{rep.total}}</center></td>
                 </tr>

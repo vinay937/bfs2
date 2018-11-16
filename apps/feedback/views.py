@@ -514,6 +514,21 @@ def sconsolidated(request, username):
     results = dict()
 
     teach = []
+    for form in forms:
+        answers = StudentAnswer.objects.filter(
+            form=form, teacher__teacher__username=user
+        )
+        if answers:
+            # print("Answers\n",answers)
+            results[form] = answers
+            for i in answers:
+                # print("------------")
+                # print(i.teacher)
+                teach.append(i.teacher)
+        # else:
+            # print("None\n",answers)
+    teach = set(teach)
+    no_stu = 0
 
     for i in data:
         if i in teach:
@@ -539,7 +554,6 @@ def sconsolidated(request, username):
                 very_poor_total = 0
                 l = list()
                 que_count = 0
-                no_stu = 0
                 for que in form.question.all():
                     # print("________________________| QUESTION: |________________________")
                     # print(que.text)
@@ -654,21 +668,11 @@ def sconsolidated(request, username):
                             no_stu,
                         ]
                     )
-                    # print("________________________| LS: |________________________")
-                    # for x in ls:
-                    #   print(x)
+                    # print(no_stu)
+
             value.append(ls)
 
-        #
-
-        # print("________________________| VALUE: |________________________")
-        # for x in value:
-        #   print(x)
-
-    # for i in value:
-    #     print(i)
-
-        print(no_stu)
+        # print(no_stu)
         if not StudentConsolidatedReport.objects.filter(
             name=user.first_name,
             total=round(grand_total, 2),
@@ -684,8 +688,8 @@ def sconsolidated(request, username):
                 count=no_stu
             )
 
-    print("________________________[]________________________")
-    print(excellent,good,satisfactory,poor,very_poor)
+    # print("________________________[]________________________")
+    # print(excellent,good,satisfactory,poor,very_poor)
     context = {"user": user, "report": value}
     return render(request, template_name, context)
 
@@ -717,13 +721,13 @@ def student_view_consolidated(request):
     }
 
 
-    print("_-_-_")
+    # print("_-_-_")
     for i in report:
         if i.name not in temp:
             department[i.department][1]+=1
             temp.append(i.name)
     count = len(temp)
-    print("_-_-_")
+    # print("_-_-_")
 
     context = {"report": report, "dept": department, "count":count}
     # for i in report:
@@ -825,6 +829,7 @@ def Test_report(request, username):
     satisfactory = 0
     poor = 0
     very_poor = 0
+    no_stu = 0
 
     for i in data:
         if i in teach:
@@ -850,7 +855,7 @@ def Test_report(request, username):
                 very_poor_total = 0
                 l = list()
                 que_count = 0
-                no_stu = 0
+                # no_stu = 0
                 for que in form.question.all():
                     # print("________________________| QUESTION: |________________________")
                     # print(que.text)
@@ -965,21 +970,11 @@ def Test_report(request, username):
                             no_stu,
                         ]
                     )
-                    # print("________________________| LS: |________________________")
-                    # for x in ls:
-                    #   print(x)
+                    # print(no_stu)
             value.append(ls)
 
-        #
-
-        # print("________________________| VALUE: |________________________")
-        # for x in value:
-        #   print(x)
-
-    # for i in value:
-    #     print(i)
-
-        print(no_stu)
+        # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+        # print(no_stu)
         if not StudentConsolidatedReport.objects.filter(
             name=user.first_name,
             total=round(grand_total, 2),
@@ -999,8 +994,8 @@ def Test_report(request, username):
             # for x in value:
             # 	print(x)
 
-    print("________________________[]________________________")
-    print(excellent,good,satisfactory,poor,very_poor)
+    # print("________________________[]________________________")
+    # print(excellent,good,satisfactory,poor,very_poor)
     context = {"user": user, "report": value}
     return render(request, template_name, context)
 

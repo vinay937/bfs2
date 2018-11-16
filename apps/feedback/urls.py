@@ -23,3 +23,4 @@ urlpatterns = [
 	url(r"^report-principal/$",views.select_teacher_principal.as_view(),name="principal-select-faculty"),
 	url(r"^__/__/--/__/__sreports/(?P<username>[-\w.]+)/$",views.Test_report,name="sreports-url"),
 ]
+
