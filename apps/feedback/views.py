@@ -528,7 +528,13 @@ def sconsolidated(request, username):
         # else:
             # print("None\n",answers)
     teach = set(teach)
+    excellent = 0
+    good = 0
+    satisfactory = 0
+    poor = 0
+    very_poor = 0
     no_stu = 0
+    grand_total = 0
 
     for i in data:
         if i in teach:
@@ -830,6 +836,7 @@ def Test_report(request, username):
     poor = 0
     very_poor = 0
     no_stu = 0
+    grand_total = 0
 
     for i in data:
         if i in teach:
