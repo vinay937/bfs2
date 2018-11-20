@@ -528,6 +528,16 @@ def sconsolidated(request, username):
         # else:
             # print("None\n",answers)
     teach = set(teach)
+        # for i in data:
+        #   print(i.subject)
+    good_total = 0
+    value = list()
+    # teach = []
+    
+    # print("teaches")
+    # for i in teach:
+    #     print(i)
+
     excellent = 0
     good = 0
     satisfactory = 0
@@ -538,10 +548,10 @@ def sconsolidated(request, username):
 
     for i in data:
         if i in teach:
-            # print("________________________| CLASS: |________________________")
-            # print("Subject",i.subject.name)
-            # print("Section",i.sec)
-            # print("Sem",i.sem.sem)
+            print("________________________| CLASS: |________________________")
+            print("Subject",i.subject.name)
+            print("Section",i.sec)
+            print("Sem",i.sem.sem)
             ls = [
                 i.sem.sem,
                 i.sec,
@@ -560,6 +570,7 @@ def sconsolidated(request, username):
                 very_poor_total = 0
                 l = list()
                 que_count = 0
+                # no_stu = 0
                 for que in form.question.all():
                     # print("________________________| QUESTION: |________________________")
                     # print(que.text)
@@ -675,9 +686,9 @@ def sconsolidated(request, username):
                         ]
                     )
                     # print(no_stu)
-
             value.append(ls)
 
+        # print("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
         # print(no_stu)
         if not StudentConsolidatedReport.objects.filter(
             name=user.first_name,
@@ -693,6 +704,10 @@ def sconsolidated(request, username):
                 teacher=i,
                 count=no_stu
             )
+
+            # print("________________________| VALUE: |________________________")
+            # for x in value:
+            #   print(x)
 
     # print("________________________[]________________________")
     # print(excellent,good,satisfactory,poor,very_poor)
@@ -840,10 +855,10 @@ def Test_report(request, username):
 
     for i in data:
         if i in teach:
-            # print("________________________| CLASS: |________________________")
-            # print("Subject",i.subject.name)
-            # print("Section",i.sec)
-            # print("Sem",i.sem.sem)
+            print("________________________| CLASS: |________________________")
+            print("Subject",i.subject.name)
+            print("Section",i.sec)
+            print("Sem",i.sem.sem)
             ls = [
                 i.sem.sem,
                 i.sec,
