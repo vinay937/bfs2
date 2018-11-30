@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     "apps.feedback",
     "apps.django_chatterbot",
     "import_export",
+    "apps",
 ]
 
 MIDDLEWARE = [
