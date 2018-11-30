@@ -4,7 +4,6 @@ from . import views
 from django.views.generic import TemplateView
 
 urlpatterns = [
-	# url(r"^entry/", views.FeedbackView.as_view(), name="feedback_form"),
 	# url(r'^report/', TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='report'),
 	# url(r'^reportstudent/(?P<username>[-\w]+)/$',TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='reportstudent'),
 	# url(r'^sreports/(?P<username>[-\w.]+)/$',TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='sconsolidated'),
@@ -12,6 +11,7 @@ urlpatterns = [
 	# url(r'^consolidated/$',TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='consolidated'),
 	# url(r'^consolidated_sixty/$',TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='consolidated_sixty'),
 	# url(r'^report-principal/$',TemplateView.as_view(template_name='report_closed_for_feedback.html'), name='principal-select-faculty'),
+	url(r"^entry/", views.FeedbackView.as_view(), name="feedback_form"),
 	# If report portal is to be CLOSED, comment below, else comment above
 	url(r"^report/", views.Report.as_view(), name="report"),
 	url(r'^__/__/--/__/__reports/(?P<username>[-\w]+)/$',views.consolidated, name='reports-url'),
