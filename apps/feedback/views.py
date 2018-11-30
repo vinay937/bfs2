@@ -548,10 +548,10 @@ def sconsolidated(request, username):
 
     for i in data:
         if i in teach:
-            print("________________________| CLASS: |________________________")
-            print("Subject",i.subject.name)
-            print("Section",i.sec)
-            print("Sem",i.sem.sem)
+            # print("________________________| CLASS: |________________________")
+            # print("Subject",i.subject.name)
+            # print("Section",i.sec)
+            # print("Sem",i.sem.sem)
             ls = [
                 i.sem.sem,
                 i.sec,
@@ -855,10 +855,10 @@ def Test_report(request, username):
 
     for i in data:
         if i in teach:
-            print("________________________| CLASS: |________________________")
-            print("Subject",i.subject.name)
-            print("Section",i.sec)
-            print("Sem",i.sem.sem)
+            # print("________________________| CLASS: |________________________")
+            # print("Subject",i.subject.name)
+            # print("Section",i.sec)
+            # print("Sem",i.sem.sem)
             ls = [
                 i.sem.sem,
                 i.sec,
