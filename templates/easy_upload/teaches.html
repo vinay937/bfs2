@@ -1,0 +1,97 @@
+{% extends "easy_upload/base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+
+        <h2>Upload Teaches</h2>
+        <p>Please ensure you have uploaded the subjects and users before uploading teaches. Make sure you follow the following data format for uploading. You can only upload CSV files. The fields in [] is optional. Please don't include the brackets while uploading the CSV. Please dont miss any headers or change the position of them.</p>
+        <p>The CSV should contain the following fields:</p>
+        <div class="table-responsive">
+          <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th>teacher</th>
+                <th>subject</th>
+                <th>sem</th>
+                <th>sec</th>
+                <th>[batch]</th>
+                <th>[sub_batch]</th>
+                <th>ug</th>
+                <th>count</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>8768282</th>
+                <th>19CS11</th>
+                <th>1</th>
+                <th>A</th>
+                <th>A1</th>
+                <th>A1A</th>
+                <th>Y</th>
+                <th>60</th>
+              </tr>
+              <tr>
+                <th>8768283</th>
+                <th>19CS12</th>
+                <th>1</th>
+                <th>A</th>
+                <th>A1</th>
+                <th>A1A</th>
+                <th>Y</th>
+                <th>60</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Please note that the ug field only takes 'Y' (Yes) or N (No). In teacher field the unique ID or the username should be added. Download <a href="">this csv file</a> for reference.  Contact Admin if you face any problems.</p>
+
+        <div class="line"></div>
+
+        <div>
+          {% if errors %}
+            <div>
+              <h5><i class="fas fa-exclamation-circle"></i> Please correct these errors before proceeding</h5>
+              <ul class="errors">
+                {% for error in errors %}
+                  <li class=""><i class="fas fa-exclamation"></i> {{error}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          <form class="form-group" action="/easy_upload/teaches" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row text-center">
+              <div class="upload-btn-wrapper m-1 col-lg-12">
+                <button class="btn button shadow-sm" id="file-name"><i class="fas fa-cloud-upload-alt"></i> Upload CSV</button>
+                {% render_field form.file required="required" class="" id="file-upload" name="myfile" accept=".csv"%}
+              </div>
+              <div class="col-lg-12">
+                <input type="submit" class="btn m-1" value="submit">
+              </div>
+            </div>
+          </form>
+          {% if updated %}
+            <div>
+              <h5><i class="fas fa-exclamation-circle"></i> {{updated|length}} rows updated.</h5>
+              <ul class="message">
+                {% for var in updated %}
+                  <li class=""><i class="fas fa-exclamation"></i> {{var}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if added %}
+            <div>
+              <h5><i class="fas fa-exclamation-circle"></i> {{added|length}} rows added.</h5>
+              <ul class="message">
+                {% for var in added %}
+                  <li class=""><i class="fas fa-exclamation"></i> {{var}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

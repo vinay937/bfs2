@@ -31,3 +31,10 @@ class LoginForm(AuthenticationForm):
             }
         ),
     )
+
+class FileUploadForm(forms.Form):
+    file = forms.FileField()
+
+    def clean(self):
+        cleaned_data = super(ContactForm, self).clean()
+        file = cleaned_data.get('file')

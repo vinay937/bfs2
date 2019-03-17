@@ -21,8 +21,8 @@ class Semester(models.Model):
     sem = models.IntegerField(default=1)
     active = models.BooleanField(default=True)
 
-    # def __str__(self):
-    # 	return self.sem
+    def __str__(self):
+    	return str(self.sem)
 
 
 class UserType(models.Model):
@@ -100,7 +100,7 @@ class Subject(models.Model):
 	"""
 
     name = models.CharField("Subject Name", max_length=50)
-    code = models.CharField("Subject Code", max_length=50)
+    code = models.CharField("Subject Code", max_length=50, unique=True)
 
     theory = models.BooleanField(default=True)
     elective = models.BooleanField(default=False)
@@ -142,7 +142,7 @@ class Teaches(models.Model):
 
 class Message(models.Model):
     """
-	This stores the message that will be sent to the students. 
+	This stores the message that will be sent to the students.
 	"""
 
     message_text = models.TextField("Message to send to students", max_length=1000)

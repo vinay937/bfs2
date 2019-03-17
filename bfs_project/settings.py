@@ -26,7 +26,7 @@ MEDIA_DIR = os.path.join(BASE_DIR, "media")
 SECRET_KEY = "l(p1)k6rv%d=6pv0cyazwli*ps21r4+&4%d+ka57%-z9yx_vkl"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["*", "feedback360.bmsit.ac.in"]
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "apps.django_chatterbot",
     "import_export",
     "apps",
+    'widget_tweaks',
 ]
 
 MIDDLEWARE = [
@@ -78,20 +79,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "bfs_project.wsgi.application"
 
-
+LOGIN_URL = "/login"
 LOGIN_REDIRECT_URL = "/main"
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     "default": {
+#         "ENGINE": "django.db.backends.postgresql_psycopg2",
+#         "NAME": "feedback",
+#         "USER": "postgres",
+#         "PASSWORD": "feedback321",
+#         "HOST": "13.232.62.217",
+#         "PORT": "5432",
+#     }
+# }
+
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "feedback",
-        "USER": "postgres",
-        "PASSWORD": "feedback321",
-        "HOST": "13.232.62.217",
-        "PORT": "5432",
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'mydatabase',
     }
 }
 

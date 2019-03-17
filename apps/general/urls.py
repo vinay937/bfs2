@@ -27,5 +27,9 @@ urlpatterns = [
     url(r"^send_message/", views.send_text_message_view, name="send_text_message_view"),
     url(r"^progress/", views.show_message_sent_view, name="show_message_sent_view"),
     url(r"^ping-report/$", views.ping_url, name="ping_url"),
+    url(r"^easy_upload/home", views.easy_upload, name="easy_upload"),
+    url(r"^easy_upload/subject", views.easy_upload_subject, name="easy_upload_subject"),
+    url(r"^easy_upload/teaches", views.easy_upload_teaches, name="easy_upload_teaches"),
+    url(r"^easy_upload/users", views.easy_upload_users, name="easy_upload_users"),
     # url(r'^consolidated/', views.consolidated.as_view(), name='feedback/consolidated_report'),
 ]

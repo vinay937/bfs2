@@ -1,0 +1,82 @@
+{% extends "easy_upload/base.html" %}
+{% load widget_tweaks %}
+{% block content %}
+
+        <h2>Upload Subjects</h2>
+        <p>Make sure you follow the following data format for uploading. You can only upload CSV files. Please dont miss any headers or change the position of them. In this all the fields are mandatory.</p>
+        <p>The CSV should contain the following fields:</p>
+        <div class="table-responsive">
+          <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th>name</th>
+                <th>code</th>
+                <th>type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Physics</th>
+                <th>19CS11</th>
+                <th>T</th>
+              </tr>
+              <tr>
+                <th>Basic Electricals</th>
+                <th>19CS12</th>
+                <th>E</th>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Please note that the type field only takes T (Theory), E (Elective) and P (project). If the subject code already exist then the name of the subject and the subject type will be updated. Download <a href="">this csv file</a> for reference.  Contact Admin if you face any problems.</p>
+
+        <div class="line"></div>
+
+        <div>
+          {% if errors %}
+            <div>
+              <h5><i class="fas fa-exclamation-circle"></i> Please correct these errors before proceeding</h5>
+              <ul class="errors">
+                {% for error in errors %}
+                  <li class=""><i class="fas fa-exclamation"></i> {{error}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          <form class="form-group" action="/easy_upload/subject" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row text-center">
+              <div class="upload-btn-wrapper m-1 col-lg-12">
+                <button class="btn button shadow-sm" id="file-name"><i class="fas fa-cloud-upload-alt"></i> Upload CSV</button>
+                {% render_field form.file required="required" class="" id="file-upload" name="myfile" accept=".csv"%}
+              </div>
+              <div class="col-lg-12">
+                <input type="submit" class="btn m-1" value="submit">
+              </div>
+            </div>
+          </form>
+          {% if updated %}
+            <div>
+              <h5><i class="fas fa-exclamation-circle"></i> {{updated|length}} rows updated.</h5>
+              <ul class="message">
+                {% for var in updated %}
+                  <li class=""><i class="fas fa-exclamation"></i> {{var}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+          {% if added %}
+            <div>
+              <h5><i class="fas fa-exclamation-circle"></i> {{added|length}} rows added.</h5>
+              <ul class="message">
+                {% for var in added %}
+                  <li class=""><i class="fas fa-exclamation"></i> {{var}}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
